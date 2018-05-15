@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "Web/qj_upload.min.js",
+    "inputFiles": [
+      "Web/qj_upload.js"
+    ]
+  },
+  {
+    "outputFileName": "Web/upload.min.js",
+    "inputFiles": [
+      "Web/upload.js"
+    ]
+  }
+]

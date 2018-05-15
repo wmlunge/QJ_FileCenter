@@ -1,0 +1,144 @@
+﻿<div ms-controller="LIST">
+    <!-- 添加按钮 -->
+
+    <!-- 按条件选择 -->
+    <div class="tab-filter-type">
+        <div class="oh" style="display: none">
+            <h5 class="pull-left tr">文件类别：</h5>
+            <ul class="tab-type ft14">
+                <li><span class="active">全部</span></li>
+                <li><span>视频</span></li>
+                <li><span>文档</span></li>
+                <li><span>其它</span></li>
+            </ul>
+        </div>
+
+        <!-- 搜索 -->
+        <div class="oh">
+            <div class="input-group ml15" style="width: 295px;">
+                <input type="search" class="form-control" value="" placeholder="请输入您要查找的文件名" id="search">
+                <span class="input-group-addon" ms-click="GetLIST()">搜索</span>
+            </div>
+        </div>
+    </div>
+    <!-- 展开更多选项 -->
+
+    <!-- 表格 -->
+    <div class="default-tab ft14 pt20">
+        <table class="table table-striped table-responsive hover-btn">
+            <thead>
+                <tr>
+
+                    <th class="tc">序号</th>
+                    <th>文件名称</th>
+                    <th>所在空间</th>
+<!--                    <th>物理路径</th>-->
+                    <th>文件大小(G)</th>
+                    <th>上传备注</th>
+                    <th>上传时间</th>
+                    <th>操作
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ms-repeat-el="DataList">
+                    <td class="tc">{{$index+1}}</td>
+                    <td>
+                        {{el.FileName}}<br />
+                    </td>
+                    <td>{{el.Qycode}}</td>
+<!--                    <td>{{el.FullPath}}</td>-->
+                    <td>{{ComFunJS.converfilesize(el.filesize)}}</td>
+                    <td>{{el.fileinfo||'0'}}</td>
+                    <td>{{el.RDate|date('yyyy-MM-dd HH:ss')}}</td>
+                    <td>
+                        <div class="btn-click">
+                            <a class="cz-btn ft18 js-color" data-toggle="tooltip" title="查看详情">
+                                <i class="iconfont icon-stop"></i>
+                            </a>
+                         
+                            <a class="cz-btn ft18 sc-color" data-toggle="tooltip" title="删除" ms-click="DelFile(el)">
+                                <i class="iconfont icon-shanchu"></i>
+                            </a>
+                        </div>
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div class="ui-datatable-page ft14 pl20">
+            <div id="pageDiv" ms-visible="model.page.total>model.pageNum[0].num" class="pull-right"></div>
+            <div class="pull-right" ms-visible="DataList.size()!=0">
+                <span>共{{model.page.total}}条记录</span>
+                <span ms-visible="model.page.total>model.pageNum[0].num">选择每页条数
+                    <select style="height: 25px; width: 50px;" ms-change="selNum(this.value)" ms-duplex="model.page.pagecount">
+                        <option ms-repeat-pg="pageNum" ms-attr-value="pg.num" ms-attr-selected="pg.num==model.page.pagecount?'selected':''">{{pg.num}}</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var tempindex = avalon.define({
+        $id: "LIST",
+        DataList: [],
+        selNum: function (item) {    //选择显示的条数
+            model.page.pagecount = item;
+            tempindex.GetLIST();
+        },
+        InitWigetData: function (arr) {
+            tempindex.GetLIST();
+        },
+        GetLIST: function () {
+            model.page.pageindex = 1;
+            $.getJSON('/adminapi/getfilelist', { p: 1, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
+                if (resultData.ErrorMsg == "") {
+                    tempindex.DataList = resultData.Result;
+                    model.page.total = resultData.Result1;
+                    laypage({
+                        cont: 'pageDiv', //容器。值支持id名、原生dom对象，jquery对象。
+                        pages: Math.ceil(parseInt(resultData.Result1) * 1.0 / model.page.pagecount), //通过后台拿到的总页数
+                        curr: 1, //初始化当前页
+                        skin: 'molv',
+                        jump: function (e) { //触发分页后的回调
+                            if (e.curr != model.page.pageindex) {
+                                $.getJSON('/adminapi/getfilelist', { p: e.curr, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
+                                    if (resultData.ErrorMsg == "") {
+                                        tempindex.DataList = resultData.Result;
+                                    }
+                                })
+                                model.page.pageindex = e.curr;
+                            }
+                        }
+                    });
+
+                }
+            })
+        },
+        DelFile: function (item, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            ComFunJS.winconfirm("确认要删除文件“" + item.FileName + "”吗？", function () {
+                $.post("/adminapi/delwj/" + item.ID, {  }, function (jsonresult) {
+                    if ($.trim(jsonresult.ErrorMsg) == "") {
+                        tempindex.DataList.remove(item);
+                        ComFunJS.winsuccess("操作成功");
+                    }
+                });
+            }, function () { })
+        },
+        selitem: function (item) {
+            tempindex.spaceitem = item;
+            $("#ADDKJ").modal('show')
+        },
+        addSpace: function () {
+            tempindex.spaceitem.ID == "0";
+            $("#ADDKJ").modal('show')
+        }
+    })
+    //# sourceURL=qjgl.js;
+</script>

@@ -1,0 +1,426 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_533449_y4cj8vk8wvvg3nmi.css">
+    <link rel="stylesheet" type="text/css" href="../Web/CSS/animate.css">
+    <link rel="stylesheet" type="text/css" href="../Web/CSS/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../Web/CSS/default.css">
+    <link rel="stylesheet" type="text/css" href="../Web/CSS/index.css?ver=2">
+
+    <style>
+        .ms-controller, .ms-important, [ms-controller], [ms-important] {
+            visibility: hidden;
+        }
+
+        .szhl_getPeoples {
+            display: none;
+        }
+
+        .modal {
+            top: 100px;
+        }
+
+        .modal-backdrop {
+            background-color: transparent;
+            display: none;
+        }
+    </style>
+</head>
+<body ms-controller="IndexV5" ondblclick="return false;">
+    <div class="worker mb20">
+        <div class="header box-shadow">
+            <div class="head-center clearfix">
+                <div class="logo c666 pull-left">
+                    <img src = "../Web/images/logo.png" style="max-height: 40px; margin-right: 10px;">{{CompanyData.QYName}}
+                </div>
+                <div class="pull-right top-fun">
+                    <ul class="clearfix">
+                        <li style="display:none">
+                            <a class="dropdown-toggle add-fq" data-toggle="dropdown" aria-expanded="true">
+                                <i class="iconfont icon-jiahao ft12"></i>
+                            </a>
+                            <ul class="dropdown-menu add-msg dropdown-menu add-msg animated fadeInRight">
+                                <li ms-repeat-item="KJFSData" ms-click="AddView(item.ModelCode,item.ModelName,'',item.PModelCode)">
+                                    <a href="###">
+                                        <img src = "../Web/images/icon/Common.png">{{item.ModelName}}
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li>
+                        <li ms-if="CompanyData.IsUseWX=='Y'">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <i class="iconfont icon-erweima tip" data-toggle="tooltip" title="扫描关注" data-placement="bottom"></i>
+                            </a>
+                            <div class="dropdown-menu animated fadeInRight" style="overflow: auto; width: 200px; text-align: center">
+                                <img width="100%" src='../Web/images/qrcode.png'>
+                                扫描二维码，关注企业号
+                            </div>
+                        </li>
+                        <li>
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" aria-haspopup="true">
+                                <i class="iconfont icon-pifu tip" data-toggle="tooltip" title="壁纸" data-placement="bottom"></i>
+                            </a>
+                            <div class="dropdown-menu animated fadeInRight" style="overflow: auto; text-align: center" id="dvskin">
+                                <table class="table noborder" style="margin-bottom: 0">
+                                    <tr>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin1.png" />
+                                        </td>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin2.png" />
+                                        </td>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin3.png" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin4.png" />
+                                        </td>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin5.png" />
+                                        </td>
+
+                                    </tr>
+                                </table>
+
+
+                                <div class="form-group" style="margin-top: 15px">
+                                    <label class="col-xs-3 control-label">透明度</label>
+                                    <input type="hidden" class="single-slider" value="0" />
+                                </div>
+
+                            </div>
+                        </li>
+                    
+                        <li ms-click="refiframe()">
+                            <a class="shuaxin">
+                                <i class="iconfont icon-shuaxin tip" data-toggle="tooltip" title="刷新" data-placement="bottom"></i>
+                            </a>
+                        </li>
+                        <li ms-click="exit()">
+                            <a>
+                                <i class="iconfont icon-tuichu tip" data-toggle="tooltip" title="退出登陆" data-placement="bottom"></i>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="big-nav" style="display:none">
+                <div class="big-nav-list">
+                    <div ms-repeat-item="LMData" ms-click="selyyType(item,this)">
+                        <a href="javascript:void(0);" class="yytype " ms-class-1="active:item.NAME=='工作台'"><i class="iconfont icon-yingyongzongshu mr5"></i>{{item.NAME}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="work">
+            <div class="fwlayout">
+                <!-- 左边导航 -->
+                <div class="leftlayout box-shadow" id="leftlayout">
+                    <div class="left-head">
+                        <div class="head-img pull-left">
+                            <img  src ="../Web/images/head.jpg" ms-click="SelUserInfo()" style="cursor: pointer;">
+                        </div>
+                        <div class="head-information c666 ft14 tc ">
+                            <div style="overflow: inherit;">
+                                <a class="head-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="true">{{UserData.UserRealName}}<i class="caret ml5" style="border-top: 5px dashed; border-top: 5px solid \9; border-right: 5px solid transparent; border-left: 5px solid transparent;"></i>
+                                </a>
+                                <ul class="dropdown-menu  animated fadeInRight">
+                                    
+                                    <li data-toggle="modal" data-target="#UpdatePDModal" data-index="1" data-backdrop="static">
+                                        <a>修改密码</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li ms-click="exit()">
+                                        <a>安全退出</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div>{{UserInfo.BranchInfo.DeptName}}</div>
+                            <div>{{UserData.zhiwu?UserData.zhiwu:"暂无"}}</div>
+                        </div>
+                    </div>
+                    <div class="nav-list">
+                        <ul>
+                            <li class="active" ms-click="SelModelMenu('')" ms-if="model.yytype=='WORK'">
+                                <a>
+                                    <i class="iconfont icon-gongzuotai"></i>
+                                    <span>首页</span>
+                                </a>
+                            </li>
+
+                            <li ms-repeat-item="UseYYList"  ms-click="SelModelMenu(item)">
+                                <a ms-attr-title="item.ModelName">
+                                    <i class="iconfont" ms-class-1="icon-{{item.ModelCode.toLowerCase()}}:true"></i>
+                                    <span>{{item.ModelName}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 右边内容 -->
+                <div class="rightlayout">
+                    <div ms-class-1="nomargin:!ishasLeft" ms-class-2="index-center:ishasLeft">
+                        <!-- 上边切换导航 -->
+                        <div class="menu-general ft16 box-shadow">
+                            <ul>
+                                <li ms-repeat-el="model.FunData" ms-class-1="active:el.PageName==model.FunData[0].PageName" ms-click="selmenulev2(el,this)" ms-visible="el.isshow"><a>{{el.PageName}}</a><i ms-if="el.PageName=='微信企业号'" style="position: absolute; right: -19px; top: -10px;">
+                                    <img src="../Web/images/tuijian.gif" /></i></li>
+                            </ul>
+                            <ins style="position: absolute; right: 25px; text-decoration: none; cursor: pointer; color: #666; font-size: 22px;" class="iconfont icon-shuaxin tip" ms-click="refpage('')" ms-if="!ishasLeft" data-toggle="tooltip" title="刷新" data-placement="bottom"></ins>
+
+
+                        </div>
+                        <!-- 下边内容 -->
+                        <div ms-visible="isshowload&&isiframe!='Y'" class="main-content ft16 mt10 pt20 c666 box-shadow clearfix" ms-include-src="PageCode" data-include-rendered='Temprender'>
+                        </div>
+                        <div class="iframecontent ft16 mt10 c666 box-shadow clearfix" ms-if="isiframe=='Y'">
+                            <iframe marginwidth="0" class="tabiframe" marginheight="0" frameborder="0" scrolling="no" height="100%" id="main" name="main" width="100%" style="min-height: 500px"></iframe>
+                        </div>
+                        <div class="index-right" ms-if="ishasLeft">
+                        
+                            <!-- 没有任何记录样式 -->
+                            <div class="right-list box-shadow bgfff mb20">
+                                <a href="###" class="small-title">
+                                    <i class="iconfont icon-you pull-right"></i>
+                                    <span class="small-img">
+                                        <img src="images/icon/XXFB.png">新闻公告
+                                    </span>
+                                </a>
+                                <ul>
+                                    <li ms-repeat-item="QYGGData" ms-visible="$index<5"><a href="javascript:void(0)" ms-click="ViewXXFB(item)" ms-attr-title="【{{item.TypeName}}】{{item.XXTitle }}">【{{item.TypeName}}】{{item.XXTitle }}</a></li>
+                                    <div ms-if="QYGGData.size()==0">您当前还没有记录</div>
+                                </ul>
+                            </div>
+                            <!-- 信息列表样式 -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 设置显示列 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close default"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">自定义显示菜单
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="modal-tj mt10">
+                        <ul class="list-unstyled fun-box crm-kh-px tc">
+                            <li ms-repeat-item="UseYYList" ms-click="SaveYY(item)" ms-visible="item.PModelCode==model.menutype">
+                                <div class="fun-list-cont " ms-class-1="active:item.ISSY==1">
+                                    <span>{{item.ModelName}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default tip" title="关闭"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 拖动排序 -->
+    <div class="modal fade in" id="DragSort" role="dialog">
+        <div class="modal-dialog" role="document" style="width: 500px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">设置工作台</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="pl20 c999">提示：点击可拖动排序菜单</div>
+                    <ul id="foo">
+                        <li ms-repeat-item="FunData" ms-attr-formcode="item.code">
+                            <i class="iconfont icon-tuodong"></i>{{item.PageName}}
+                            <div class=" pull-right" ms-click="ChangeModelIsShow(item,this,event)">
+                                <div class="icheckbox_square-blue" ms-class-1="checked:item.isshow"><span class="iconfont icon-check ft12"></span></div>
+                                显示
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info tip" data-toggle="tooltip" title="恢复工作台到初始状态" ms-click="initwork()" style="margin-right: 10PX">初始化工作台</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="UpdatePDModal" role="dialog">
+        <div class="modal-dialog" role="document" style="width: 500px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label"><span class="Required">*</span>新密码</label>
+                            <input type="password" class="form-control szhl_require" style="width: 200px" id="newPwd" placeholder="请输入新密码" />
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label"><span class="Required">*</span>确认密码</label>
+                            <input type="password" class="form-control szhl_require" style="width: 200px" id="newPwd2" placeholder="请输入确认密码" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-success" id="conaddForder" ms-click="ModifyPwd(this)"><i class="fa fa-spinner fa-spin" style="display: none"></i>确&nbsp;&nbsp;认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--聊天窗口-->
+    <!-- 自定义显示列 -->
+    <div class="modal fade" id="myselfModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close default"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">自定义显示列
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="fun-box-tj"><span class="tj-border-left"></span>选择显示列:</div>
+                    <div class="modal-tj">
+
+                        <ul class="list-unstyled fun-box crm-kh-px">
+                            <li ms-repeat-el="ShowColumns">
+                                <div class="fun-list-cont" ms-class-1="active:el.IsSel" ms-click="ReSetShow(el)">
+                                    <span>{{el.ColText}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                    <!-- <button type="button" class="btn btn-primary">
+                       提交更改
+                    </button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--引导html内容-->
+    <div id="nipic_search">
+        <div class="tipSwitch"></div>
+    </div>
+
+    <!-- 修改密码 -->
+    <script type="text/javascript" src="../Web/JS/jquery-1.11.1.min.js"></script>
+    <script src="../Web/JS/bootstrap.js"></script>
+    <script src="../Web/JS/layer/layer.js"></script>
+    <script src="../Web/JS/layer/extend/layer.ext.js"></script>
+    <script src="../Web/JS/laypage/laypage.js"></script>
+    <script src="../Web/JS/toastr.js"></script>
+    <script src="../Web/JS/avalon1.47.js?ver=1"></script>
+    <script src="../Web/JS/SZHLCommon.js"></script>
+    <script src="../Web/JS/index.js"></script>
+    <script type="text/javascript">
+        // 切换
+        $(function () {
+            $("#dvskin").bind("click", function (event) {
+                event.stopPropagation();
+            })
+            var skinurl = "../Web/images/skin/skin1.png";
+            if (localStorage.getItem("skin")) {
+                skinurl = localStorage.getItem("skin");
+            }
+            $("body").css("background", "url('" + skinurl + "')");
+            $(".skintp").bind('click', function (event) {
+                localStorage.setItem("skin", $(this).attr("src"));
+                $("body").css("background", "url('" + $(this).attr("src") + "')");
+            })
+            $("body").css("background-position", "center center").css("background-size", "cover");
+
+            var opacity = "97";
+            if (localStorage.getItem("opacity")) {
+                opacity = localStorage.getItem("opacity");
+            }
+            $("body").css("opacity", "." + opacity);
+            $(document).on("mouseover", ".tip", function () {
+                $(this).tooltip('show');
+            });//提示工具
+            $(document).on("click", ".nav-list li", function () {
+                $(this).addClass("active").siblings().removeClass("active")
+            });//一级菜单
+            $(document).on("click", ".menu-general li", function () {
+                $(this).addClass("active").siblings().removeClass("active")
+            });//二级菜单
+            $(document).on("click", ".default-tab .icheckbox_square-blue", function () {
+                $(this).toggleClass("checked");
+                if ($(this).parent().is("th")) {
+                    var obj = $(this).parent().parent().parent().parent().find("tbody");
+                    if ($(this).hasClass("checked")) {
+                        obj.find(".icheckbox_square-blue").addClass("checked");
+                    }
+                    else {
+                        obj.find(".icheckbox_square-blue").removeClass("checked");
+                    }
+                }
+                else {
+                    var obj = $(this).parent().parent().parent().parent().find("thead");
+                    if (!$(this).hasClass("checked")) {
+                        obj.find(".icheckbox_square-blue").removeClass("checked");
+                    }
+                }
+            });//勾选框
+            $(document).on("click", ".tab-type li span", function () {
+                $(this).addClass("active").parent().siblings().children().removeClass("active")
+            });//筛选类型
+            $(document).on("dblclick", ".layui-layer-shade", function () {
+                layer.closeAll();
+            });//筛选类型
+
+
+
+            //$(".shuaxin").click(function () {
+            //    $(this).toggleClass("dh")
+            //})
+            // 聊天窗口的显示隐藏
+
+            //保持页面永远能到底部
+            var h2 = window.innerHeight - 90;
+            document.getElementById("leftlayout").style.minHeight = h2 + "px";
+
+            
+
+
+        });
+    </script>
+
+
+</body>
+</html>

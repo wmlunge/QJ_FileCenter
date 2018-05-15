@@ -1,0 +1,167 @@
+﻿<div ms-controller="LIST">
+    <!-- 添加按钮 -->
+    <div class="btn-add">
+        <button type="button" class="btn btn-info btn-lg"  ms-click="addSpace()"><i class="iconfont icon-jiahao ft12 mr5"></i>添加存储空间</button>
+    </div>
+    <!-- 按条件选择 -->
+    <div class="tab-filter-type">
+        <div class="oh" style="display: none">
+            <h5 class="pull-left tr">项目类别：</h5>
+            <ul class="tab-type ft14">
+                <li><span class="active">全部</span></li>
+                <li><span>我负责的</span></li>
+                <li><span>我创建的</span></li>
+                <li><span>已结束的</span></li>
+            </ul>
+        </div>
+
+        <!-- 搜索 -->
+        <div class="oh">
+            <div class="input-group ml15" style="width: 295px;">
+                <input type="search" class="form-control" value="" placeholder="请输入您要查找的存储空间">
+                <span class="input-group-addon">搜索</span>
+            </div>
+        </div>
+    </div>
+    <!-- 展开更多选项 -->
+
+    <!-- 表格 -->
+    <div class="default-tab ft14 pt20">
+        <table class="table table-striped table-responsive hover-btn">
+            <thead>
+                <tr>
+
+                    <th class="tc">序号</th>
+                    <th>空间名称</th>
+                    <th>空间Code</th>
+                    <th>空间Scercet</th>
+                    <th>描述</th>
+                    <th>操作
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ms-repeat-el="DataList">
+
+                    <td class="tc">{{$index+1}}</td>
+                    <td>{{el.Name}}</td>
+                    <td>{{el.Code}}</td>
+                    <td>{{el.secret}}</td>
+                    <td>{{el.Description}}</td>
+                    <td>
+                        <div class="btn-click">
+                            <a class="cz-btn ft18 js-color" data-toggle="tooltip" title="查看空间">
+                                <i class="iconfont icon-stop"></i>
+                            </a>
+                            <a class="cz-btn ft18 bj-color" data-toggle="tooltip" title="编辑" ms-click="selitem(el)">
+                                <i class="iconfont icon-bianji"></i>
+                            </a>
+                            <a class="cz-btn ft18 sc-color" data-toggle="tooltip" title="删除" ms-click="DelType(el)">
+                                <i class="iconfont icon-shanchu"></i>
+                            </a>
+                        </div>
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div class="ml15 pb20" style="display: none">
+            <button type="button" class="btn btn-info">批量结束</button>
+            <button type="button" class="btn btn-info">批量删除</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ADDKJ" role="dialog">
+        <div class="modal-dialog" role="document" style="width: 500px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">空间管理</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label"><span class="Required " style="color: red">*</span>存储空间CODE</label>
+                            <input type="text" class="form-control szhl_require" style="width: 200px" placeholder="请输入存储空间CODE" ms-duplex="spaceitem.Code" />
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label"><span class="Required " style="color: red">*</span>存储空间名称</label>
+                            <input type="text" class="form-control szhl_require" style="width: 200px" placeholder="请输入存储空间名称" ms-duplex="spaceitem.Name" />
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label">APISecret</label>
+                            <input type="text" class="form-control" style="width: 200px" placeholder="APISecret" ms-duplex="spaceitem.secret" />
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label">存储空间描述</label>
+                            <textarea  rows="3" class="form-control" style="width: 200px" placeholder="空间描述" ms-duplex="spaceitem.Description" />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-success" id="conaddForder" ms-click="SaveSpace()">确&nbsp;&nbsp;认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var tempindex = avalon.define({
+        $id: "LIST",
+        DataList: [],
+        spaceitem: { ID: "0", Name: "", Description: "", Code: "", secret: "", space: "" },
+        InitWigetData: function (arr) {
+            tempindex.GetLIST();
+        },
+        GetLIST: function () {
+            $.getJSON('/adminapi/getqy', { P2: "" }, function (resultData) {
+                if (resultData.ErrorMsg == "") {
+                    tempindex.DataList = resultData.Result;
+                }
+            })
+        },
+        DelType: function (item, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            ComFunJS.winconfirm("确认要删除空间“" + item.Name + "”吗？", function () {
+                $.post("/adminapi/delqy", { P1: item.Code }, function (jsonresult) {
+                    if ($.trim(jsonresult.ErrorMsg) == "") {
+                        tempindex.DataList.remove(item);
+                        ComFunJS.winsuccess("操作成功");
+                    }
+                });
+            }, function () { })
+        },
+        SaveSpace: function () {
+            if (!tempindex.spaceitem.Name) {
+                ComFunJS.winwarning("请输入空间名称");
+                return;
+            }
+            if (!tempindex.spaceitem.Code) {
+                ComFunJS.winwarning("请输入空间代码");
+                return;
+            }
+            $.post("/adminapi/mangeqy", { P1: JSON.stringify(tempindex.spaceitem.$model) }, function (jsonresult) {
+                if ($.trim(jsonresult.ErrorMsg) == "") {
+                    ComFunJS.winsuccess("操作成功");
+                    $('#UpdateZD').modal('hide');
+                    top.model.refpage();
+                }
+            });
+        },
+        selitem: function (item) {
+            tempindex.spaceitem = item;
+            $("#ADDKJ").modal('show')
+        },
+        addSpace: function () {
+            tempindex.spaceitem.ID == "0";
+            $("#ADDKJ").modal('show')
+        }
+    })
+    //# TKFL.js;
+</script>

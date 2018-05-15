@@ -1,0 +1,65 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <title>文件中心后台登录</title>
+    <link href="../Web/CSS/style.css" rel="stylesheet" type="text/css" media="all" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="文件中心后台登录" />
+    <script src="../Web/js/jquery-1.11.1.min.js"></script>
+    <script src="../Web/js/avalon1.47.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#dl").click(function () {
+                $.post("/adminapi/login", { user: $("#user").val(), pasd: $("#pasd").val() }, function (result) {
+                    if (result.errorMsg=="") {
+                        if (result.result == "Y") {
+                            setCookie("user", $("#user").val());
+                            setCookie("pasd", $("#pasd").val());
+                            location.href = "admin/index";
+                        } else {
+                            alert("账号密码错误!")
+                        }
+                    }
+                })
+            })
+           
+        });
+
+        function setCookie (name, value) {
+            var Days = 30;
+            var exp = new Date();
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+        }
+    </script>
+</head>
+<body>
+    <div class="login-form" style="margin-top: 100px">
+        <!--<div class="top-login">
+				<span>文档中心后台</span>
+			</div>-->
+        <h1>文档中心后台管理V1.0</h1>
+        <div class="login-top">
+            <form>
+                <div class="login-ic">
+                    <i></i>
+                    <input type="text" value="admin" onfocus="this.value = '';"  id="user"  onblur="if (this.value == '') {this.value = 'User name';}" />
+                    <div class="clear"></div>
+                </div>
+                <div class="login-ic">
+                    <i class="icon"></i>
+                    <input type="password" value="" id="pasd" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'password';}" />
+                    <div class="clear"></div>
+                </div>
+
+                <div class="log-bwn">
+                    <input type="button" value="登陆" id="dl" >
+                </div>
+            </form>
+        </div>
+        <p class="copy">© 2018 企捷科技</p>
+    </div>
+</body>
+</html>

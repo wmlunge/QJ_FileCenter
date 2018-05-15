@@ -1,0 +1,551 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_eedtp7mde99q9f6r.css">
+    <link rel="stylesheet" type="text/css" href="/ViewV5/CSS/bootstrap3.3.5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/ViewV5/CSS/animate.css">
+    <link rel="stylesheet" type="text/css" href="/ViewV5/CSS/index.css">
+    <link rel="stylesheet" type="text/css" href="/ViewV5/CSS/default.css">
+    <link href="/ViewV5/JS/raty/jquery.raty.css" rel="stylesheet" />
+    <style>
+        .ms-controller, .ms-important, [ms-controller], [ms-important] {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body style="background-color: #F8F8F8; height: 100%;" ms-controller="VIEW">
+
+    <div class="padding20">
+
+        <div class="card card3 mb20">
+            <div class="detail-nav">
+                <div class="tab-kh nav-bt">
+                    <span ms-click="seltitle(1)" ms-class-1="cur:titletype==1"><i ms-if="titletype==1" class="iconfont icon-bookmark"></i>{{title}}</span>
+                    <span ms-if="title1" ms-click="seltitle(2)" ms-class-1="cur:titletype==2"><i ms-if="titletype==2" class="iconfont icon-bookmark"></i>{{title1}}</span>
+                    <span ms-if="title2" ms-click="seltitle(3)" ms-class-1="cur:titletype==3"><i ms-if="titletype==3" class="iconfont icon-bookmark"></i>{{title2}}</span>
+                    <div class="pr20" style="float: right;">
+                        <button class="btn btn-info" ms-if="isEdit=='Y'" ms-click="Edit()">编辑</button>
+                        <button class="btn btn-info" ms-if="ISCANCEL=='Y'||model.PIMODEL.IsCanceled == 'Y'" ms-click="CancelWF()">撤回到草稿箱</button>
+
+                        <a class="btn btn-success" ms-if="isBack=='Y'" href="javascript:history.go(-1)">返回</a>
+                        <a class="btn btn-info" ms-attr-href="/ViewV5/AppPage/{{FormCode}}/HtmlToWord.aspx?ID={{strId}}" target="_blank" ms-if="isExport">导出</a>
+                        <a class="btn btn-info" ms-click="print()">打印</a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="detail-con">
+                <div class="detail-item" ms-repeat-el="ShowColumns" ms-visible="titletype ==1&&modelData[el.ColName]" ms-class-1="{{el.class}}">
+                    <span class="item-tit">{{el.ColText}}</span>
+                    <div class="item-con">{{FnFormat(modelData[el.ColName],el)|html}}</div>
+                </div>
+                <div class="detail-item" ms-repeat-el="ShowColumns1" ms-visible="titletype ==2&&modelData[el.ColName]" ms-class-1="{{el.class}}">
+                    <span class="item-tit">{{el.ColText}}</span>
+                    <div class="item-con">{{FnFormat(modelData[el.ColName],el)|html}}</div>
+                </div>
+                <div class="detail-item" ms-repeat-el="ShowColumns2" ms-visible="titletype ==3 && modelData[el.ColName]" ms-class-1="{{el.class}}">
+                    <span class="item-tit">{{el.ColText}}</span>
+                    <div class="item-con">{{FnFormat(modelData[el.ColName],el)|html}}</div>
+                </div>
+                <div ms-include-src="/ViewV5/AppPage/{{PathCode}}/{{FormCode}}VIEW.html" data-include-rendered='Temprender'>
+                </div>
+                <div class="detail-item" ms-repeat-ext="modelData.SubExt">
+                    <span class="item-tit">{{ext.TableFiledName}}</span>
+                    <div class="item-con">{{ext.ExtendDataValue}} </div>
+                </div>
+                <div class="detail-item" ms-if="tpData&&tpData.size()!=0">
+                    <span class="item-tit">附件</span>
+                    <div class="fj clearfix mt10">
+                        <div class="pull-left" ms-repeat-file="tpData">
+                            <img ms-if="ComFunJS.isPic(file.FileExtendName)" ms-class="img-rounded:ComFunJS.isPic(file.FileExtendName)" ms-on-click="viewfile(file)" ms-attr-src="{{ComFunJS.getfile(file.ID)}}&width=45&height=45" ms-attr-imgyt="{{ComFunJS.getfile(file.ID)}}" style="border-radius: 2px" />
+                            <img ms-click="viewfile(file)" style="height: 45px; width: 45px" ms-if="!ComFunJS.isPic(file.FileExtendName)" ms-attr-src="/ViewV5/images/qywd/{{file.FileExtendName}}.png" onerror="javascript: this.src = '/ViewV5/images/qywd/file.png'" />
+                            <div class="fj-cont c999 ft12">
+                                <p class="word-break">{{file.Name}}.{{file.FileExtendName}}<span>({{Math.round(file.FileSize/1024)}}kb)</span></p>
+                                <p class="mt5">
+                                    <a ms-attr-href="{{file.YLUrl}}" ms-if="file.YLUrl" target="_blank">预览</a>
+                                    <a ms-attr-href="{{ComFunJS.getfile(file.ID)}}">下载</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-item" ms-if="TASKDATA.size()!=0">
+                    <span class="item-tit">抄送人</span>
+                    <div class="item-con">{{ComFunJS.convertuser(PIMODEL.ChaoSongUser)}}</div>
+                </div>
+                <div class="detail-item" ms-if="TASKDATA.size()!=0">
+                    <span class="item-tit">审核状态</span>
+                    <div class="item-con">{{shzt}}</div>
+                </div>
+
+                <div class="detail-item" ms-if="TASKDATA.size()!=0">
+                    <span class="item-tit">审核流程</span>
+                </div>
+                <div class="detail-item" style="padding: 0; margin: 10px 0; overflow-x: auto; margin-bottom: 0px" ms-if="TASKDATA.size()!=0">
+                    <div class="lcspstep"></div>
+                </div>
+                <div class="" ms-if="CSQKData.size()!=0">
+                    <div>
+                        <table class="table table-bordered table-condensed table-hover table-striped">
+
+                            <thead>
+                                <tr>
+                                    <td style="text-align: center" ms-attr-colspan="CSQKData.size()+1">抄送接收状况</td>
+                                </tr>
+                                <tr>
+                                    <th>抄送人</th>
+                                    <td ms-repeat-el="CSQKData">{{ComFunJS.convertuser(el.UserTO)}}</td>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>接收抄送时间</th>
+                                    <td ms-repeat-el="CSQKData">{{el.ReadDate?el.ReadDate:"暂未接收"}}</td>
+                                    <!--   |date("yyyy-MM-dd HH:ss")-->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="pl20 mb10">
+                <!-- <div ms-include="btn"></div>-->
+                <button class="btn btn-info" ms-if="ispl" ms-click="addPL()"><i class="iconfont icon-pinglun mr5 ft14"></i>添加{{plTitle}}</button>
+                <button class="btn btn-primary" ms-if="isEndTask" ms-click="tempindex.EndTask(modelData.ID)"><i class="iconfont icon-stop mr5 ft14"></i>结束任务 </button>
+                <button class="btn btn-primary" ms-if="isEndTask&&modelData.CRUser==nowuser" ms-click="tempindex.SendTXMsg(modelData.ID)"><i class="iconfont icon-cb mr5 ft14"></i>任务催办 </button>
+            </div>
+            <div class="padding20" ms-if="plData.size()>0">
+                <div class="lookright-box">
+                    <div class="menu-general ft14">
+                        <ul>
+                            <li class="active">
+                                <a>{{plTitle}}({{plData.size()}})</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <!--<div class="crm-dt clearfix nopadding pt20">
+                        <button class="btn btn-info pull-right" ms-click="addPL()"><i class="iconfont icon-jiahao ft12 mr5"></i>添加评论</button>
+                    </div>-->
+                    <div class="crm-dt" ms-repeat-item="plData">
+                        <span class="crm-yuan"></span>
+                        <div class="crm-dt-cont">
+                            <i class="bg"></i>
+                            <span class="wt"></span>
+                            <div style="margin: 10px 30px;" class="c666">
+
+                                <p class="c999">{{ComFunJS.convertuser(item.CRUser)}} {{pf(item.Points)|html}}<span class="pull-right">{{item.CRDate|date("yyyy年MM月dd日 HH:mm")}}</span></p>
+                                <h3 class="crm-xg ft14 mt5" style="word-wrap: break-word; word-break: break-all;">{{ComFunJS.bqhContent(item.MSGContent)|html}}</h3>
+
+                                <div class="fj clearfix mt10" ms-if="item.FileList&&item.FileList.size()!=0">
+                                    <div class="pull-left" ms-repeat-file="item.FileList">
+                                        <img ms-if="ComFunJS.isPic(file.FileExtendName)" ms-class="img-rounded:ComFunJS.isPic(file.FileExtendName)" ms-on-click="viewfile(file)" ms-attr-src="{{ComFunJS.getfile(file.ID)}}&width=45&height=45" ms-attr-imgyt="{{ComFunJS.getfile(file.ID)}}" style="border-radius: 2px" />
+                                        <img ms-click="viewfile(file)" style="height: 40px; width: 40px" ms-if="!ComFunJS.isPic(file.FileExtendName)" ms-attr-src="/ViewV5/images/qywd/{{file.FileExtendName}}.png" onerror="javascript: this.src = '/ViewV5/images/qywd/file.png'" />
+                                        <div class="fj-cont c999 ft12">
+                                            <p class="word-break">{{file.Name}}.{{file.FileExtendName}}<span>({{Math.round(file.FileSize/1024)}}kb)</span></p>
+                                            <p class="mt5">
+                                                <a ms-attr-href="{{file.YLUrl}}" ms-if="file.YLUrl" target="_blank">预览</a>
+                                                <a ms-attr-href="{{ComFunJS.getfile(file.ID)}}">下载</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt5 ft12 oh">
+                                    <a class="pull-right" style="color: blue;" ms-click="scpl(item)" ms-if="item.CRUser==nowuser">删除</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/ViewV5/JS/jquery-1.11.2.min.js"></script>
+    <script src="/ViewV5/JS/layer/layer.js"></script>
+    <script src="/ViewV5/CSS/bootstrap3.3.5/js/bootstrap.js"></script>
+    <script src="/ViewV5/JS/avalon1.47.js"></script>
+    <script src="/ViewV5/JS/SZHLCommon.js?jsver=20160929"></script>
+    <script src="/ViewV5/JS/YSteps/Steps.js"></script>
+    <script src="/ViewV5/JS/raty/jquery.raty.js"></script>
+    <script type="text/javascript">
+
+        var model = avalon.define({
+            $id: "VIEW",
+            title: "",
+            title1: "",
+            title2: "",
+            titletype: 1,
+            modelData: {},
+            ShowColumns: [],
+            ShowColumns1: [],
+            ShowColumns2: [],
+            tpData: [],
+            plData: [],
+            ispl: '',
+            CSQKData: [],//抄送人接收情况数据
+            nowuser: ComFunJS.getnowuser(),
+            PathCode: "",
+            FormCode: "",
+            strId: ComFunJS.getQueryString("ID"),
+            PIID: ComFunJS.getQueryString("PIID"),//流程ID
+            PDID: ComFunJS.getQueryString("PDID"),//流程配置ID
+            lctype: ComFunJS.getQueryString("LCTYPE", "-1"),
+            isBack: ComFunJS.getQueryString("isback", "N"),
+            PIMODEL: {},//流程数据
+            TASKDATA: [],//任务数据
+            shzt: "",
+            isExport: false,
+            isEdit: "N",
+            ISCANCEL: "N",
+            plTitle: "评论",
+            isEndTask: false,
+            Temprender: function () {
+                if (typeof (tempindex) != "undefined") {
+                    tempindex.InitWigetData(model.strId);
+                }
+                avalon.templateCache = null;
+
+            },
+            seltitle: function (type) {
+                model.titletype = type;
+            },
+            viewfile: function (file) {
+                if (ComFunJS.isPic(file.FileExtendName)) {
+                    ComFunJS.viewbigimg(this)
+                    return;
+                }
+                if (ComFunJS.isOffice(file.FileExtendName) && file.ISYL == "Y") {
+                    window.open(file.YLUrl);
+                    return;
+                }
+            },
+            Edit: function (ID) {
+                var str = model.FormCode;
+                if (tempindex.PCode) { str = tempindex.PCode + "_" + str; }
+                window.location.href = "/ViewV5/AppPage/APP_ADD_WF.html?FormCode=" + str + "&id=" + model.strId + "&PIID=" + model.PIID + "&PDID=" + model.PDID;
+            },
+            CancelWF: function () {//撤回表单到草稿箱
+                $.getJSON("/API/VIEWAPI.ashx?ACTION=LCSP_CANCELWF", { P1: model.PIID, DataID: model.strId, ModelCode: model.FormCode, P2: model.PIMODEL.PDID }, function (result) {
+                    if (result.ErrorMsg == "") {//流程数据
+                        model.ISCANCEL = "N";
+                        top.ComFunJS.winconfirm("操作成功,该表单已撤回到草稿箱,是否要重新发起该表单", function () {
+                            location.href = "/ViewV5/AppPage/APP_ADD_WF.html?FormCode=" + model.FormCode + "&PDID=" + model.PIMODEL.PDID + "&lctype=" + model.lctype;
+                        }, function () {
+                            top.layer.closeAll();
+                        })
+                    }
+                })
+            },
+            getwfdata: function () {
+                $.getJSON("/API/VIEWAPI.ashx?ACTION=LCSP_GETWFDATA", { P1: model.PIID, DataID: model.strId, ModelCode: model.FormCode, P2: model.PDID }, function (result) {
+                    if (result.ErrorMsg == "") {//流程数据
+                        if (result.Result) {
+                            model.PIMODEL = result.Result;
+                        }
+                        if (result.Result1)//任务数据
+                        {
+                            model.TASKDATA = result.Result1;
+                        }
+                        if (result.Result2) {//判断当前用户是否具有审批权限
+                            model.ISCANCEL = $.parseJSON(result.Result2).ISCANCEL;
+
+                        }
+                        if (result.Result3) {
+                            model.lctype = result.Result3;//流程类型
+                        }
+                        if (result.Result4) {
+                            model.isEdit = result.Result4;//流程类型
+                        }
+                        if (result.Result6) {
+                            model.CSQKData = result.Result6;//流程类型
+                        }
+                        model.LoadWFData();
+                    }
+                })
+            },
+            LoadWFData: function () {
+                if (model.TASKDATA.size() > 0) {
+                    var lcspTaskData = [];
+                    var lcspTask = { title: "", content: "" }
+                    var lcspTaskm = { title: "", content: "", Date: "" };//手机流程数据
+                    var array = ["第一步", "第二步", "第三步", "第四步", "第五步", "第六步", "第七步", "第八步", "第九步", "第十步", "第十一步"];
+                    var stepCount = 0;
+                    $(model.TASKDATA).each(function (i, item) {
+                        var reason = "";
+                        if (model.PIMODEL.IsCanceled == 'Y') {
+                            reason = item.EndTime && item.TaskUserView ? "[" + item.TaskUserView + "]\r\n" : "";
+                        } else {
+                            reason = item.EndTime && item.TaskUserView ? "[" + item.TaskUserView + "]\r\n" : "待处理"
+                        }
+
+                        lcspTask.title = (model.lctype == 1 ? (item.TaskName ? item.TaskName : '发起表单') : array[i]) + (model.lctype == 1 && item.TaskAssInfo ? "(" + item.TaskAssInfo + ")" : (item.TaskRole ? "(" + item.TaskRole + ")" : ""));
+                        lcspTask.content = item.userrealname + reason + (item.EndTime ? item.EndTime : "");
+                        stepCount += item.EndTime ? 1 : 0;
+                        var itemData = $.extend({}, lcspTask);
+                        lcspTaskData.push(itemData);
+
+                    })
+
+                    $(".lcspstep").loadStep({
+                        size: "large",
+                        color: "green",
+                        steps: lcspTaskData
+
+                    });
+                    $(".lcspstep").setStep(stepCount);
+
+                    model.shzt = "正在审批";
+                    if (model.PIMODEL.IsCanceled == 'Y') {
+                        var dom;
+                        if (model.lctype == 0) {
+                            dom = $(".ystep-container-steps .ystep-step-undone").last();
+                        } else {
+                            dom = $(".ystep-container-steps .ystep-step-undone").eq(stepCount - 1);
+                        }
+                        $(dom).css("color", "red");
+                        $(dom).text($(dom).text() + "(退回)");
+                        model.shzt = "已退回";
+                    }
+                    if (model.PIMODEL.isComplete == 'Y') {
+                        model.shzt = "已审批";
+                    }
+                }
+            },
+            pf: function (str) {
+                if (str) {
+                    var html = '<div></div>';
+                    var html1 = $(html).raty({
+                        readOnly: true,
+                        score: str * 1 / 20
+                    }).html();
+                    return html1;
+                }
+                else {
+                    return '';
+                }
+            },
+            print: function () {
+                window.print()
+            },
+            addPL: function () {
+                ComFunJS.winbtnwin("/ViewV5/Base/APP_COMMENT.html?ID=" + model.strId + "&contentdec=" + model.plTitle + "&Type=" + model.FormCode + "&r=" + Math.random(), model.plTitle, 600, 400, {}, function (layero, index) {
+                    var frameid = $("iframe", $(layero)).attr('id');
+                    var plnr = ComFunJS.isIE() ? window.frames[frameid].getpl() : window.frames[frameid].contentWindow.getpl();
+
+                    if (plnr.ID) {
+                        model.plData.push(plnr);
+                        top.ComFunJS.winsuccess(model.plTitle + "成功");
+                        layer.close(index);
+                    }
+                })
+            },
+            scpl: function (item) {
+                ComFunJS.winconfirm("确认要删除吗", function () {
+                    $.post('/API/VIEWAPI.ashx?Action=XTGL_DELCOMENT', { "P1": item.ID }, function (result) {
+                        if (result.ErrorMsg == "") {
+                            ComFunJS.winsuccess("删除成功");
+                            model.plData.remove(item);
+                        }
+                    })
+                }, function () { })
+            },
+            GetTypeDataByID: function (P1, callback) {//P1:字典类别ID，callback:回调函数
+                $.getJSON('/API/VIEWAPI.ashx?Action=XTGL_GETZIDIANSLIST', { P1: P1 }, function (resultData) {
+                    if (resultData.ErrorMsg == "") {
+                        if (callback) {
+                            return callback.call(this, resultData.Result);
+                        }
+                    }
+                })
+            },
+            //格式化
+            FnFormat: function (str, fmt) { //格式化
+                str = str + "";
+                if (str && fmt.format) {
+
+                    switch (fmt.format) {
+                        case "shstate": //审核状态转换成文字
+                            {
+                                if (str == "0") {
+                                    str = "未审核";
+                                } else if (str == "-1") {
+                                    str = "审核不通过";
+                                } else if (str == "1") {
+                                    str = "审核通过";
+                                }
+                            }
+                            break;
+
+                        case "statename": //审核流程，-1时不需要流程
+                            {
+                                if (str == "-1") str = "";
+                            }
+                            break;
+                        case "rwstate": //任务状态
+                            {
+                                if (str == "0") str = "待办任务";
+                                else if (str == "1") str = "已办任务";
+                                else if (str == "2") str = "过期任务";
+                            }
+                            break;
+                        case "dateformat": //日期格式，默认yyyy-mm-dd
+                            {
+                                str = ComFunJS.getnowdate("yyyy-mm-dd", str);
+                            }
+                            break;
+                        case "timeformat": //日期格式，默认yyyy-mm-dd
+                            {
+                                str = ComFunJS.getnowdate("yyyy-mm-dd hh:mm", str);
+                            }
+                            break;
+                        case "username": //用户id转成为用户名
+                            {
+                                str = ComFunJS.convertuser(str);
+                            }
+                            break;
+                        case "qrcode": //二维码图片展示
+                            {
+                                str = "<img src='" + str + "' style='width:60px;height:60px;' />"
+                            }
+                            break;
+                        case "bqh"://表情转换
+                            {
+                                return ComFunJS.bqhContent(str);
+                            }
+                            break;
+                        case "text"://截取字符串
+                            {
+                                str = ComFunJS.convstr(str);
+                            }
+                            break;
+                        case "txfs"://提醒方式
+                            {
+                                switch (str) {
+                                    case "0": str = '短信和微信'; break;
+                                    case "1": str = '短信'; break;
+                                    case "2": str = '微信'; break;
+                                }
+
+                            }
+                            break;
+                        case "hdlx"://活动类型
+                            {
+                                switch (str) {
+                                    case "0": str = '企业活动'; break;
+                                    case "1": str = '企业投票'; break;
+                                }
+                            }
+                            break;
+                        case "hdzt"://活动状态
+                            {
+                                switch (str) {
+                                    case "0": str = '已结束'; break;
+                                    case "1": str = '未开始'; break;
+                                    case "2": str = '正在进行'; break;
+                                }
+                            }
+                            break;
+                        case "sr":     //收入明细
+                            {
+                                if (str * 1 >= 0)
+                                    str = "￥" + str;
+                                else
+                                    str = "--";
+                            }
+                            break;
+                        case "zc":    //支出明细
+                            {
+                                if (str * 1 >= 0)
+                                    str = "--";
+                                else
+                                    str = "￥" + str;
+                            }
+                            break;
+                        case "dyxx":    //快递json转换
+                            {
+                                if (str) {
+                                    var jsonresult = $.parseJSON(str);
+                                    var txtmsg = '';
+                                    jsonresult.forEach(function (item) {
+                                        txtmsg = txtmsg + item.title + ":" + item.text + "，";
+                                    });
+                                    str = txtmsg;
+                                }
+                            }
+                            break;
+                        case "clzt":    //车辆状态
+                            {
+                                switch (str) {
+                                    case "0": str = '可用'; break;
+                                    case "1": str = '报废'; break;
+                                    case "2": str = '维修'; break;
+                                }
+                            }
+                            break;
+                        case "hyszt":     //会议室状态
+                            {
+                                switch (str) {
+                                    case "0": str = '启用'; break;
+                                    case "1": str = '禁用'; break;
+                                }
+                            }
+                            break;
+                        case "ksapstatus":
+
+                            switch (str) {
+                                case "0":
+                                    str = "未开始";
+                                    break;
+                                case "1":
+                                    str = "进行中";
+                                    break;
+                                case "2":
+                                    str = "考试已结束";
+                                    break;
+                                case "3":
+                                    str = "阅卷已结束";
+                                    break;
+                            }
+                            break
+                        case "kjtype":
+                            switch (str) {
+                                case "1": str = '视频'; break;
+                                case "2": str = '文档'; break;
+                            }
+                            break;
+                        default: {
+
+                        }
+                    }
+                }
+                if (fmt.len) {
+                    str = str.length > fmt.len ? str.substring(0, fmt.len) + '...' : str;
+                }
+                return str;
+            }
+        });
+        avalon.ready(function () {
+            var FormCode = ComFunJS.getQueryString("FormCode")
+            if (FormCode.indexOf("_") > 0) {
+                model.PathCode = FormCode.split('_')[0];
+                model.FormCode = FormCode.split('_')[1];
+            } else {
+                model.PathCode = FormCode;
+                model.FormCode = FormCode;
+            }
+            model.getwfdata();
+        })
+    </script>
+</body>
+</html>
