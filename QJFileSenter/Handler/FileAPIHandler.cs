@@ -155,6 +155,16 @@ namespace QJ_FileCenter.Handler
 
                 return Response.AsJson(result);
             };
+            Get["/document/zipfile/{md5}"] = p =>
+            {
+
+                string md5 = p.md5;
+                var filename = documentDomain.GetZipFile(md5);
+                var mimeType = "application/zip";
+                var extension = "zip";
+                var name = "打包下载的文件";
+                return Response.AsFile(filename, mimeType, extension, name);
+            };
             Get["/{qycode}/document/fileupload"] = p =>
             {
                 string strCode = p.qycode;
@@ -311,16 +321,7 @@ namespace QJ_FileCenter.Handler
             };
 
 
-            Get["/{qycode}/document/zipfile/{md5}"] = p =>
-            {
-
-                string md5 = p.md5;
-                var filename = documentDomain.GetZipFile(md5);
-                var mimeType = "application/zip";
-                var extension = "zip";
-                var name = "打包下载的文件";
-                return Response.AsFile(filename, mimeType, extension, name);
-            };
+        
 
             Post["/{qycode}/document/nestedfolder"] = p =>
             {
