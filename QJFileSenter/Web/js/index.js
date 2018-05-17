@@ -164,7 +164,7 @@
     },//应用类别
     menutype: "WORK",
     GetUserData: function () {
-        var userdata = { "User": { "ID": 5788, "UserName": "administrator", "UserRealName": "超级管理员", "UserPass": "E10ADC3949BA59ABBE56E057F20F883E", "BranchCode": 1728, "Sex": "男", "IsUse": "Y", "tx": "", "zhiwu": "admin", "pccode": "_Kle0ErPNzKc0KSgdLk_uKW1zrjl6Eyyh3vR0YIu8A7Lmq8k5zR1uEswbib19sqIxP-HQd83pxgza2ZDRVCssA", "ComId": 1 }, "QYinfo": { "ComId": 1, "QYName": "文档中心管理后台", "FileServerUrl": "http://www.qijiekeji.com:9000/v2/zxpx/document/", "LogoID": "" }, "BranchInfo": { "ComId": 1, "DeptCode": 1728, "DeptName": "管理员", "DeptShort": 0, "DeptDesc": "管理员", "DeptRoot": -1, "BranchLevel": 0 }, "UserRoleCode": "1218" };
+        var userdata = { "User": { "ID": 5788, "UserName": "administrator", "UserRealName": "超级管理员", "UserPass": "E10ADC3949BA59ABBE56E057F20F883E", "BranchCode": 1728, "Sex": "男", "IsUse": "Y", "tx": "", "zhiwu": "admin", "pccode": "_Kle0ErPNzKc0KSgdLk_uKW1zrjl6Eyyh3vR0YIu8A7Lmq8k5zR1uEswbib19sqIxP-HQd83pxgza2ZDRVCssA", "ComId": 1 }, "QYinfo": { "ComId": 1, "QYName": "文件中心管理后台", "FileServerUrl": "http://www.qijiekeji.com:9000/v2/zxpx/document/", "LogoID": "" }, "BranchInfo": { "ComId": 1, "DeptCode": 1728, "DeptName": "管理员", "DeptShort": 0, "DeptDesc": "管理员", "DeptRoot": -1, "BranchLevel": 0 }, "UserRoleCode": "1218" };
         model.UserInfo = userdata;
         model.UserData = userdata.User;
         model.CompanyData = userdata.QYinfo;
