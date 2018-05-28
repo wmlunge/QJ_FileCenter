@@ -206,6 +206,9 @@
     <Content Include="bin\Aspose.Slides.dll" />
     <Content Include="bin\Aspose.Words.dll" />
     <Content Include="bitbug_favicon.ico" />
+    <Content Include="Views\Temp\rzgl.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Temp\xtpz.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
