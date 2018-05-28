@@ -164,7 +164,7 @@
     },//应用类别
     menutype: "WORK",
     GetUserData: function () {
-        var userdata = { "User": { "ID": 5788, "UserName": "administrator", "UserRealName": "超级管理员", "UserPass": "E10ADC3949BA59ABBE56E057F20F883E", "BranchCode": 1728, "Sex": "男", "IsUse": "Y", "tx": "", "zhiwu": "admin", "pccode": "_Kle0ErPNzKc0KSgdLk_uKW1zrjl6Eyyh3vR0YIu8A7Lmq8k5zR1uEswbib19sqIxP-HQd83pxgza2ZDRVCssA", "ComId": 1 }, "QYinfo": { "ComId": 1, "QYName": "文件中心管理后台", "FileServerUrl": "http://www.qijiekeji.com:9000/v2/zxpx/document/", "LogoID": "" }, "BranchInfo": { "ComId": 1, "DeptCode": 1728, "DeptName": "管理员", "DeptShort": 0, "DeptDesc": "管理员", "DeptRoot": -1, "BranchLevel": 0 }, "UserRoleCode": "1218" };
+        var userdata = { "User": { "ID": 5788, "UserName": "administrator", "UserRealName": "超级管理员", "UserPass": "E10ADC3949BA59ABBE56E057F20F883E", "BranchCode": 1728, "Sex": "男", "IsUse": "Y", "tx": "", "zhiwu": "admin", "pccode": "_Kle0ErPNzKc0KSgdLk_uKW1zrjl6Eyyh3vR0YIu8A7Lmq8k5zR1uEswbib19sqIxP-HQd83pxgza2ZDRVCssA", "ComId": 1 }, "QYinfo": { "ComId": 1, "QYName": "文档中心管理后台", "FileServerUrl": "http://www.qijiekeji.com:9000/v2/zxpx/document/", "LogoID": "" }, "BranchInfo": { "ComId": 1, "DeptCode": 1728, "DeptName": "管理员", "DeptShort": 0, "DeptDesc": "管理员", "DeptRoot": -1, "BranchLevel": 0 }, "UserRoleCode": "1218" };
         model.UserInfo = userdata;
         model.UserData = userdata.User;
         model.CompanyData = userdata.QYinfo;
@@ -235,7 +235,8 @@
         var MenuResult = [
            //{ "ID": 26, "ModelName": "系统配置", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统配置", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/xtpz", "isiframe": "" }] },
            { "ID": 27, "ModelName": "空间管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYWD", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "空间管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/qygl", "isiframe": "" }] },
-           { "ID": 28, "ModelName": "文件管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/wjgl", "isiframe": "" }] }
+           { "ID": 28, "ModelName": "文件管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/wjgl", "isiframe": "" }] },
+           { "ID": 29, "ModelName": "日志管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "接口调用日志", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/rzgl", "isiframe": "" }] }
         ];
         MenuResult.forEach(function (val, i) {
             val.issel = val.issel == "True";

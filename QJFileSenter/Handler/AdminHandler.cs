@@ -49,7 +49,10 @@ namespace QJ_FileCenter.Handler
             {
                 return View["Temp/wjgl.html"];
             };
-
+            Get["/admin/temp/rzgl"] = p =>
+            {
+                return View["Temp/rzgl.html"];
+            };
             After += ctx =>
             {
                 Model.Action = Context.Request.Path;

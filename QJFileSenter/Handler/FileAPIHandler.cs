@@ -24,11 +24,13 @@ namespace QJ_FileCenter.Handler
             : base()
         {
             DocumentDomain documentDomain = new DocumentDomain(new DocumentRepository(), new AppRepository());
-
+            userlog log = new userlog();
             Before += ctx =>
             {
                 // new userlogB().Insert(new userlog {   });
-                
+                log.ip = ctx.Request.UserHostAddress;
+                log.loginfo = ctx.Request.Path;
+                log.remark = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
                 return ctx.Response;
             };
             Post["/document/checkauth"] = p =>
@@ -155,16 +157,6 @@ namespace QJ_FileCenter.Handler
 
                 return Response.AsJson(result);
             };
-            Get["/document/zipfile/{md5}"] = p =>
-            {
-
-                string md5 = p.md5;
-                var filename = documentDomain.GetZipFile(md5);
-                var mimeType = "application/zip";
-                var extension = "zip";
-                var name = "打包下载的文件";
-                return Response.AsFile(filename, mimeType, extension, name);
-            };
             Get["/{qycode}/document/fileupload"] = p =>
             {
                 string strCode = p.qycode;
@@ -193,6 +185,8 @@ namespace QJ_FileCenter.Handler
 
             Get["/{qycode}/document/{id}"] = p =>
             {
+                log.useraction = "下载文件";
+
                 string id = p.id;
                 string qycode = p.qycode;
                 if (!string.IsNullOrEmpty(id) && id.Contains(","))
@@ -232,8 +226,19 @@ namespace QJ_FileCenter.Handler
                 }
             };
 
+            Get["/document/zipfile/{md5}"] = p =>
+            {
+
+                string md5 = p.md5;
+                var filename = documentDomain.GetZipFile(md5);
+                var mimeType = "application/zip";
+                var extension = "zip";
+                var name = "打包下载的文件";
+                return Response.AsFile(filename, mimeType, extension, name);
+            };
             Get["/{qycode}/document/image/{id}"] = p =>
             {
+                log.useraction = "预览图片";
 
                 string id = p.id;
                 string qycode = p.qycode;
@@ -255,6 +260,7 @@ namespace QJ_FileCenter.Handler
             //修改缩略图接口
             Get["/{qycode}/document/image/{id}/{width?0}/{height?0}"] = p =>
             {
+                log.useraction = "预览压缩图片";
 
                 string id = p.id;
                 string qycode = p.qycode;
@@ -321,7 +327,16 @@ namespace QJ_FileCenter.Handler
             };
 
 
-        
+            Get["/{qycode}/document/zipfile/{md5}"] = p =>
+            {
+
+                string md5 = p.md5;
+                var filename = documentDomain.GetZipFile(md5);
+                var mimeType = "application/zip";
+                var extension = "zip";
+                var name = "打包下载的文件";
+                return Response.AsFile(filename, mimeType, extension, name);
+            };
 
             Post["/{qycode}/document/nestedfolder"] = p =>
             {
@@ -401,6 +416,8 @@ namespace QJ_FileCenter.Handler
             //返回office预览文件
             Get["/document/YL/{id}"] = p =>
             {
+                log.useraction = "预览OFFICE文件";
+
                 Document document = documentDomain.Fetch(p.id);
                 if (document == null)
                 {
@@ -438,6 +455,8 @@ namespace QJ_FileCenter.Handler
             //获取office转换后的图片
             Get["/document/YL/{id}/{index}"] = p =>
             {
+                log.useraction = "预览OFFICE图片";
+
                 string strReturn = "无法预览";
                 string id = p.id;
                 string index = p.index;
@@ -471,7 +490,12 @@ namespace QJ_FileCenter.Handler
                 return strReturn;
             };
 
+            After += ctx =>
+            {
+                //添加日志
+                new userlogB().Insert(log);
 
+            };
             #endregion
         }
     }

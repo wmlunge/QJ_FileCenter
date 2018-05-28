@@ -170,6 +170,7 @@ namespace QJ_FileCenter.Handler
                 }
                 return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
             };
+         
             //删除文件
             Post["/adminapi/delwj/{id}"] = p =>
             {
@@ -184,6 +185,42 @@ namespace QJ_FileCenter.Handler
                 {
                     File.Delete(strFile);
                 }
+                return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
+            };
+
+            //获取操作日志
+            Post["/adminapi/getloglist"] = p =>
+            {
+                int page = 0;
+                int pagecount = 8;
+                int.TryParse(Context.Request.Form["p"] ?? "1", out page);
+                int.TryParse(Context.Request.Form["pagecount"] ?? "8", out pagecount);//页数
+                page = page == 0 ? 1 : page;
+
+                string logname = Context.Request.Form["P1"];
+
+                if (!string.IsNullOrEmpty(logname))
+                {
+                    int total = new userlogB().GetEntities(d => d.useraction.Contains(logname)).Count();
+                    var files = new userlogB().GetEntities(d => d.useraction.Contains(logname)).OrderByDescending(d => d.ID).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
+                    msg.Result = files;
+                    msg.Result1 = total;
+                }
+                else
+                {
+                    int total = new userlogB().GetALLEntities().Count();
+                    var files = new userlogB().GetALLEntities().OrderByDescending(d => d.ID).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
+                    msg.Result = files;
+                    msg.Result1 = total;
+
+                }
+                return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
+            };
+
+            //删除日志
+            Post["/adminapi/delrz"] = p =>
+            {
+                new userlogB().Delete(d => d.useraction != "");
                 return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
             };
             After += ctx =>
