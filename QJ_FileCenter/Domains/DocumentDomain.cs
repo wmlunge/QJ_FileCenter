@@ -183,7 +183,7 @@ namespace QJ_FileCenter.Domains
         }
         public Document Fetch(string zyid)
         {
-            Document doc = new DocumentB().GetEntities(d => d.ID == zyid).FirstOrDefault();
+            Document doc = new DocumentB().GetEntities(d => d.ID == zyid || d.Md5 == zyid).FirstOrDefault();
             if (doc == null) return null;
             return doc;
             //    new
