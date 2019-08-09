@@ -14,8 +14,6 @@ namespace QJ_FileCenter.Handler
 {
     public class APIHandler : NancyModule
     {
-
-
         public APIHandler()
             : base()
         {

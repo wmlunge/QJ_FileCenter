@@ -21,41 +21,44 @@ namespace QJ_FileCenter
             Logger.Initialize(PathUtil.GetLog4netPath());
             Logger.LogError("开始");
 
-            //try
-            //{
-            //    var hostConfiguration = new HostConfiguration
-            //    {
-            //        UrlReservations = new UrlReservations() { CreateAutomatically = true }
-            //    };
-            //    AppRepository APPR = new AppRepository();
-            //    string url = string.Format("http://{0}:{1}", APPR.AppConfigModel.IP, APPR.AppConfigModel.NancyPort);
-            //    var rootPath = APPR.AppConfigModel.RootPath;
-            //    var nancyHost = new NancyHost(new RestBootstrapper(rootPath), hostConfiguration, new Uri(url));
-            //    nancyHost.Start();
-            //    System.Console.WriteLine("文件中心服务开启,管理地址:" + url.ToString());
-
-            //    Console.ReadLine();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError("启动NancyHost失败.");
-            //    Logger.LogError4Exception(ex);
-            //}
-            // Debug Code
-            if (!Environment.UserInteractive)
+            try
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[]
+                var hostConfiguration = new HostConfiguration
                 {
-                new QJ_FileCenterService()
+                    UrlReservations = new UrlReservations() { CreateAutomatically = true }
                 };
-                ServiceBase.Run(ServicesToRun);
+                AppRepository APPR = new AppRepository();
+                string url = string.Format("http://{0}:{1}", APPR.AppConfigModel.IP, APPR.AppConfigModel.NancyPort);
+                var rootPath = APPR.AppConfigModel.RootPath;
+                var nancyHost = new NancyHost(new RestBootstrapper(rootPath), hostConfiguration, new Uri(url));
+                nancyHost.Start();
+                System.Console.WriteLine("文件中心服务开启,管理地址:" + url.ToString());
+
+                Console.ReadLine();
             }
-            else
+            catch (Exception ex)
             {
-                QJ_FileCenterService service = new QJ_FileCenterService();
-                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);  // forces debug to keep VS running while we debug the service  
+                Logger.LogError("启动NancyHost失败.");
+                Logger.LogError4Exception(ex);
             }
+
+
+
+            // Debug Code
+            //if (!Environment.UserInteractive)
+            //{
+            //    ServiceBase[] ServicesToRun;
+            //    ServicesToRun = new ServiceBase[]
+            //    {
+            //    new QJ_FileCenterService()
+            //    };
+            //    ServiceBase.Run(ServicesToRun);
+            //}
+            //else
+            //{
+            //    QJ_FileCenterService service = new QJ_FileCenterService();
+            //    System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);  // forces debug to keep VS running while we debug the service  
+            //}
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

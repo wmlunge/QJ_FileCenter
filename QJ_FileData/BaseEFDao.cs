@@ -1,64 +1,72 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 
 namespace QJFile.Data
 {
     /// <summary>
     /// 公共接口
     /// </summary>
-    public class BaseEFDao<T> : IBaseDao<T> where T : class,new()   //限制T为class
+    public class BaseEFDao<T> : IBaseDao<T> where T : class, new()   //限制T为class
     {
+        public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
+        public SimpleClient<T> CurrentDb { get { return new SimpleClient<T>(Db); } }//用来处理T表的常用操作
+        public static string ConnectionString = @"DataSource=F:\Code\QJFileCenter\QJ_FileData\bin\FileCenter.db";
+
+        //public static string ConnectionString = Appsettings.app(new string[] { "ConnectionStrings", "Connection" });//获取连接字符串
+        //public static string DBType = Appsettings.app("DBType");//获取连接字符串
 
 
-        private DbContext GetDbContext()
+        public BaseEFDao()
         {
-            return new FileCenterEntities();
+
+
+            Db = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = ConnectionString,
+                DbType = SqlSugar.DbType.Sqlite,
+                InitKeyType = InitKeyType.SystemTable,//从特性读取主键和自增列信息
+                IsAutoCloseConnection = true,//开启自动释放模式和EF原理一样我就不多解释了
+
+            });
+            // 调式代码 用来打印SQL
+            //Db.Aop.OnLogExecuting = (sql, pars) =>
+            //{
+            //    WriteLOG(sql + "\r\n" + Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+            //};
+
         }
+
+        public void CModel()
+        {
+            Db.DbFirst.CreateClassFile("E:\\Demo", "QJY.Data");
+        }
+
+
+
+       
 
         public virtual IEnumerable<T> GetALLEntities()
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                //AsNoTracking不记录数据变化状况
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                return context.CreateObjectSet<T>().AsNoTracking().ToList();
-            }
+
+            //AsNoTracking不记录数据变化状况
+            return CurrentDb.GetList();
 
         }
         public virtual IEnumerable<T> GetEntities(Expression<Func<T, bool>> exp)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                //AsNoTracking不记录数据变化状况
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                return context.CreateObjectSet<T>().AsNoTracking().Where(exp).ToList();
-            }
-            
+
+            //AsNoTracking不记录数据变化状况
+            return CurrentDb.GetList(exp).ToList();
+
+
         }
 
 
-        public virtual IEnumerable<T> GetEntities(Expression<Func<T, bool>> exp, string ComId)
-        {
-            using (DbContext Entities = GetDbContext())
-            {
-                var param = Expression.Parameter(typeof(T), "x");
-                var left = Expression.Property(param, "ComId");
-                var right = Expression.Constant(ComId);
-                var equal = Expression.Equal(left, right);
-                var lambda = Expression.Lambda<Func<T, bool>>(equal, param);
-                //AsNoTracking不记录数据变化状况
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                return context.CreateObjectSet<T>().Where<T>(lambda).Where<T>(exp).ToList();
-            }
-        }
 
 
 
@@ -69,11 +77,8 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual T GetEntity(Expression<Func<T, bool>> exp)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                return context.CreateObjectSet<T>().Where(exp).SingleOrDefault();
-            }
+            return CurrentDb.GetList(exp).SingleOrDefault();
+
         }
 
         /// <summary>
@@ -84,11 +89,7 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual IEnumerable<T> GetEntities(string CommandText)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                return context.ExecuteStoreQuery<T>("select * from " + typeof(T).Name + " where 1=1 and  " + CommandText).ToList();
-            }
+            return Db.SqlQueryable<T>("select * from " + typeof(T).Name + " where 1=1 and  " + CommandText).ToList();
         }
 
 
@@ -99,13 +100,15 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual bool Insert(T entity)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                var obj = context.CreateObjectSet<T>();
-                obj.AddObject(entity);
-                return Entities.SaveChanges() > 0;
-            }
+            entity= Db.Insertable<T>(entity).ExecuteReturnEntity();
+            //int dataID = CurrentDb.InsertReturnIdentity(entity);
+            //List<string> List = Db.DbMaintenance.GetIsIdentities(entity.GetType().Name);
+            //if (List.Count > 0)
+            //{
+            //    //如果有自增,赋值
+            //    entity.GetType().GetProperty(List[0].ToString()).SetValue(entity, dataID, null);
+            //}
+            return true;
         }
 
         /// <summary>
@@ -115,17 +118,12 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual bool Insert(IEnumerable<T> entities)
         {
-            using (DbContext Entities = GetDbContext())
+            int Return = 0;
+            if (entities.Count() > 0)
             {
-                foreach (var entity in entities)
-                {
-                    ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-                    var obj = context.CreateObjectSet<T>();
-                    obj.AddObject(entity);
-                }
-
-                return Entities.SaveChanges() > 0;
+                Return = Db.Insertable(entities.ToArray()).ExecuteCommand();
             }
+            return Return > 0;
         }
 
         /// <summary>
@@ -135,15 +133,8 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual bool Update(T entity)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
+            return CurrentDb.Update(entity);
 
-                var obj = context.CreateObjectSet<T>();
-                obj.Attach(entity);
-                context.ObjectStateManager.ChangeObjectState(entity, System.Data.Entity.EntityState.Modified);
-                return context.SaveChanges() > 0;
-            }
         }
 
         /// <summary>
@@ -153,41 +144,17 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual bool Delete(T entity)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
+            return CurrentDb.Delete(entity);
 
-                var obj = context.CreateObjectSet<T>();
-
-                if (entity != null)
-                {
-                    obj.Attach(entity);
-                    context.ObjectStateManager.ChangeObjectState(entity, System.Data.Entity.EntityState.Deleted);
-
-                    obj.DeleteObject(entity);
-                    return context.SaveChanges() > 0;
-                }
-                return false;
-            }
         }
         /// <summary>
         /// 批量删除Entity
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public virtual bool Delete(Func<T, bool> exp)
+        public virtual bool Delete(Expression<Func<T, bool>> exp)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                ObjectContext context = ((IObjectContextAdapter)Entities).ObjectContext;
-
-                var q = context.CreateObjectSet<T>().Where(exp);
-                foreach (var item in q)
-                {
-                    context.DeleteObject(item);
-                }
-                return context.SaveChanges() >= 0;
-            }
+            return CurrentDb.Delete(exp);
         }
 
 
@@ -200,12 +167,7 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual DataTable GetDTByCommand(string CommandText)
         {
-
-            using (DbContext Entities = GetDbContext())
-            {
-                string connectionString = Entities.Database.Connection.ConnectionString;
-                return SqlQueryForDataTatable(connectionString, CommandText);
-            }
+            return Db.Ado.GetDataTable(CovSQL(CommandText));
         }
 
 
@@ -218,97 +180,40 @@ namespace QJFile.Data
         /// <returns></returns>
         public string GetDBString()
         {
+            return Db.CurrentConnectionConfig.ConnectionString;
 
-            using (DbContext Entities = GetDbContext())
-            {
-                string connectionString = Entities.Database.Connection.ConnectionString;
-                return connectionString;
-            }
-        }
-        /// <summary>
-        /// EF SQL 语句返回 dataTable
-        /// </summary>
-        /// <param name="db"></param>
-        /// <param name="sql"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public DataTable SqlQueryForDataTatable(string strCon,
-                 string sql)
-        {
-
-
-            SqlConnection conn = new System.Data.SqlClient.SqlConnection();
-            conn.ConnectionString = strCon;
-            if (conn.State != ConnectionState.Open)
-            {
-                conn.Open();
-            }
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = conn;
-            cmd.CommandText = sql;
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataTable table = new DataTable();
-            adapter.Fill(table);
-            conn.Close();
-            return table;
         }
 
-        public DataSet SqlQueryForDataSet(string strCon, string sql)
-        {
-            SqlConnection conn = new System.Data.SqlClient.SqlConnection();
-            conn.ConnectionString = strCon;
-            if (conn.State != ConnectionState.Open)
-            {
-                conn.Open();
-            }
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = conn;
-            cmd.CommandText = sql;
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataSet ds = new DataSet();
-            adapter.Fill(ds);
-            conn.Close();
-            return ds;
-        }
 
         //执行SQL语句
         public void ExsSql(string sql)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-
-                string connectionString = Entities.Database.Connection.ConnectionString;
-                SqlConnection conn = new System.Data.SqlClient.SqlConnection();
-                conn.ConnectionString = connectionString;
-                if (conn.State != ConnectionState.Open)
-                {
-                    conn.Open();
-                }
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
+            List<SugarParameter> parameters = null;
+            Db.Ado.ExecuteCommand(CovSQL(sql), parameters);
         }
 
         public object ExsSclarSql(string sql)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-
-                string connectionString = Entities.Database.Connection.ConnectionString;
-                SqlConnection conn = new System.Data.SqlClient.SqlConnection();
-                conn.ConnectionString = connectionString;
-                if (conn.State != ConnectionState.Open)
-                {
-                    conn.Open();
-                }
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                var result = cmd.ExecuteScalar();
-                conn.Close();
-
-                return result;
-            }
+            List<SugarParameter> parameters = null;
+            return Db.Ado.GetString(CovSQL(sql), parameters);
         }
+
+        /// <summary>
+        /// 替换
+        /// </summary>
+        /// <param name="strSQL"></param>
+        /// <returns></returns>
+        private string CovSQL(string strSQL)
+        {
+            if (Db.CurrentConnectionConfig.DbType == 0)//MYSQL数据库
+            {
+                strSQL = strSQL.Replace("isnull", "ifnull").Replace("ISNULL", "IFNULL");
+            }
+            return strSQL;
+        }
+
+
+
         /// <summary>
         /// 数据分页
         /// </summary>
@@ -322,56 +227,44 @@ namespace QJFile.Data
         /// <returns></returns>
         public DataTable GetDataPager(string viewName, string fieldName, int pageSize, int pageNo, string orderString, string whereString, ref int recordTotal)
         {
-            using (DbContext Entities = GetDbContext())
-            {
-                DataSet ds = new DataSet();
-                string connectionString = Entities.Database.Connection.ConnectionString;
 
-                SqlConnection conn = new System.Data.SqlClient.SqlConnection();
-                conn.ConnectionString = connectionString;
-                if (conn.State != ConnectionState.Open)
-                {
-                    conn.Open();
-                }
-                try
-                {
-
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = conn;
-                    cmd.CommandText = "usp_DataPager";
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    SqlParameter[] paras = new SqlParameter[7];
-                    paras[0] = new SqlParameter("viewName", viewName);
-                    paras[1] = new SqlParameter("fieldName", fieldName);
-                    paras[2] = new SqlParameter("pageSize", pageSize);
-                    paras[3] = new SqlParameter("pageNo", pageNo);
-                    paras[4] = new SqlParameter("orderString", orderString);
-                    if (whereString.Trim() == "")
-                    {
-                        whereString = " 1=1 ";
-                    }
-                    paras[5] = new SqlParameter("whereString", whereString);
-                    paras[5].Size = Int32.MaxValue;
-                    paras[6] = new SqlParameter("recordTotal", recordTotal);
-                    paras[6].Direction = ParameterDirection.Output;
-                    cmd.Parameters.AddRange(paras);
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-
-                    adapter.Fill(ds);
-
-                    recordTotal = Int32.Parse(paras[6].Value == null ? "0" : paras[6].Value.ToString());
-                    return ds.Tables[0];
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally { conn.Close(); }
-            }
-
+            DataTable dt = Db.SqlQueryable<Object>("select  " + fieldName + "  from " + viewName + " where " + whereString).OrderBy(orderString).ToDataTablePage(pageNo, pageSize, ref recordTotal);
+            return dt;
         }
 
+
+
+        /// <summary>
+        /// 行专列
+        /// </summary>
+        /// <param name="CommandText">Sql语句</param>
+        /// <param name="objParams">可变参数</param>
+        /// <returns></returns>
+        public string GetDTHZL(string ExtendModes, string pdid)
+        {
+            string strSQL = "";
+            if (Db.CurrentConnectionConfig.DbType == 0)//MYSQL数据库
+            {
+                string strTemp = "";
+                foreach (string filename in ExtendModes.Split(','))
+                {
+                    strTemp = strTemp + " MAX(CASE ExFiledColumn WHEN '" + filename + "' THEN ExtendDataValue ELSE 0 END ) " + filename + ",";
+                }
+                strTemp = strTemp.TrimEnd(',');
+                strSQL = " SELECT * FROM ( SELECT  uuid() AS ID, DataID,Yan_WF_PI.ISGD,Yan_WF_PI.BranchNo,Yan_WF_PI.BranchName,Yan_WF_PI.CRUser,Yan_WF_PI.CRUserName,  Yan_WF_PI.CRDate, " + strTemp + " FROM JH_Auth_ExtendData    INNER JOIN Yan_WF_PI  ON JH_Auth_ExtendData.DataID=Yan_WF_PI.ID  AND  JH_Auth_ExtendData.PDID='" + pdid + "' GROUP BY DataID,Yan_WF_PI.ISGD,Yan_WF_PI.BranchNo,Yan_WF_PI.BranchName,Yan_WF_PI.CRUser,Yan_WF_PI.CRUserName,  Yan_WF_PI.CRDate ) T  ";
+
+            }
+            else //sqlServer数据库
+            {
+                strSQL = " SELECT NEWID() AS ID, * FROM (  SELECT   Yan_WF_PI.ISGD,Yan_WF_PI.BranchNo,Yan_WF_PI.BranchName,JH_Auth_ExtendData.DataID, Yan_WF_PI.CRUser,Yan_WF_PI.CRUserName,  Yan_WF_PI.CRDate, JH_Auth_ExtendMode.TableFiledColumn,  ExtendDataValue  from JH_Auth_ExtendMode INNER JOIN JH_Auth_ExtendData ON JH_Auth_ExtendMode.PDID=JH_Auth_ExtendData.PDID and JH_Auth_ExtendMode.TableFiledColumn=JH_Auth_ExtendData.ExFiledColumn and JH_Auth_ExtendMode.PDID='" + pdid + "' INNER JOIN Yan_WF_PI  ON JH_Auth_ExtendData.DataID=Yan_WF_PI.ID  ) AS P PIVOT ( MAX(ExtendDataValue) FOR  p.TableFiledColumn  IN (" + ExtendModes + ") ) AS T ";
+
+            }
+            return strSQL;
+        }
+
+        public IEnumerable<T> GetEntities(Expression<Func<T, bool>> exp, string strComId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
