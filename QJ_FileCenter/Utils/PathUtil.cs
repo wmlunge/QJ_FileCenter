@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace QJ_FileCenter.Utils
+namespace QJ_FileCenter
 {
     public class PathUtil
     {

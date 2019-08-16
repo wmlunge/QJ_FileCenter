@@ -2,7 +2,7 @@
 using Nancy.Hosting.Self;
 using QJ_FileCenter.Domains;
 using QJ_FileCenter.Repositories;
-using QJ_FileCenter.Utils;
+using QJ_FileCenter;
 using System;
 using System.Net;
 using System.ServiceProcess;

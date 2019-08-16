@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QJ_FileCenter.Utils
+namespace QJ_FileCenter
 {
 
     #region 将word文档转换为图片

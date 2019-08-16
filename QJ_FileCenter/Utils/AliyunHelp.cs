@@ -9,7 +9,7 @@ using Aliyun.OSS;
 using Aliyun.OSS.Common;
 using glTech.Log4netWrapper;
 
-namespace QJ_FileCenter.Domains
+namespace QJ_FileCenter
 {
     public class AliyunHelp
     {

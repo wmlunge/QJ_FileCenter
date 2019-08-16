@@ -7,7 +7,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
 using ICSharpCode.SharpZipLib.Core;
 
-namespace QJ_FileCenter.Utils
+namespace QJ_FileCenter
 {
     public static class ZipUtil
     {

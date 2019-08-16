@@ -1,7 +1,6 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy.Hosting.Self;
 using QJ_FileCenter.Repositories;
-using QJ_FileCenter.Utils;
 using System;
 using System.Diagnostics;
 using System.ServiceProcess;

@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QJ_FileCenter.Domains
+namespace QJ_FileCenter
 {
     public class FileHelp
     {

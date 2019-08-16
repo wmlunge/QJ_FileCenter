@@ -3,7 +3,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using QJ_FileCenter.Models;
 using QJ_FileCenter.Repositories;
-using QJ_FileCenter.Utils;
+using QJ_FileCenter;
 using QJFile.Data;
 using System;
 using System.Collections.Generic;

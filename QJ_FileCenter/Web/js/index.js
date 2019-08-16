@@ -40,7 +40,7 @@
                 else {
                     // model.FunData = [{ code: "RWGL", name: "任务管理", wigetpath: "RWGL/RWGLLIST", issel: true, isshow: true, order: 0 }, { code: "LCSP", name: "流程管理", wigetpath: "RWGL/RWGLLIST", issel: false, isshow: true, order: 2 }, { code: "NOTE", name: "记事本", wigetpath: "RWGL/RWGLLIST", issel: false, isshow: true, order: 3 }, { code: "KJFS", name: "快捷网址", wigetpath: "RWGL/RWGLLIST", issel: false, isshow: true, order: 4 }];
                     model.FunData.pushArray([
-                        { PageCode: "/admin/temp/shouye", ExtData: "", code: "KJFS", PageName: "首页", issel: true, isshow: true, order: 0 }
+                        { PageCode: "/admin/page/shouye", ExtData: "", code: "KJFS", PageName: "首页", issel: true, isshow: true, order: 0 }
                     ]);
                     localStorage.setItem("WIGETDATAV5", JSON.stringify(model.FunData.$model));
 
@@ -233,10 +233,10 @@
     UseYYList: [],
     GetYYList: function () {
         var MenuResult = [
-           //{ "ID": 26, "ModelName": "系统配置", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统配置", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/xtpz", "isiframe": "" }] },
-           { "ID": 27, "ModelName": "空间管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYWD", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "空间管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/qygl", "isiframe": "" }] },
-           { "ID": 28, "ModelName": "文件管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/wjgl", "isiframe": "" }] },
-           { "ID": 29, "ModelName": "日志管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "接口调用日志", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/temp/rzgl", "isiframe": "" }] }
+           //{ "ID": 26, "ModelName": "系统配置", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统配置", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/page/xtpz", "isiframe": "" }] },
+            { "ID": 27, "ModelName": "空间管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYWD", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "空间管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/page/qygl", "isiframe": "" }] },
+            { "ID": 28, "ModelName": "文件管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/page/wjgl", "isiframe": "" }] },
+            { "ID": 29, "ModelName": "日志管理", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XTGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "接口调用日志", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/admin/page/rzgl", "isiframe": "" }] }
         ];
         MenuResult.forEach(function (val, i) {
             val.issel = val.issel == "True";

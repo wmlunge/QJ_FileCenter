@@ -1,17 +1,17 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy;
+using Newtonsoft.Json;
+using QJ_FileCenter;
+using QJ_FileCenter.Domains;
 using QJ_FileCenter.Models;
-using QJ_FileCenter.Utils;
 using System;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
-using QJ_FileCenter.Domains;
 
 namespace QJ_FileCenter.Handler
 {
-    public class AdminHandler : RavenModule
+    public class AdminHandler : NancyModule
     {
 
 
@@ -24,7 +24,14 @@ namespace QJ_FileCenter.Handler
                 //new userlogB().Insert(new userlog {    });
                 return ctx.Response;
             };
-
+            Get["/"] = p =>
+            {
+                return View["login"];
+            };
+            Get["/login"] = p =>
+            {
+                return View["login"];
+            };
             Get["/admin/index"] = p =>
             {
                 return View["index"];
@@ -33,25 +40,10 @@ namespace QJ_FileCenter.Handler
             {
                 return View["Loading"];
             };
-            Get["/admin/temp/xtpz"] = p =>
+           
+            Get["/admin/page/{page}"] = p =>
             {
-                return View["Temp/xtpz.html"];
-            };
-            Get["/admin/temp/shouye"] = p =>
-            {
-                return View["Temp/shouye.html"];
-            };
-            Get["/admin/temp/qygl"] = p =>
-            {
-                return View["Temp/qygl.html"];
-            };
-            Get["/admin/temp/wjgl"] = p =>
-            {
-                return View["Temp/wjgl.html"];
-            };
-            Get["/admin/temp/rzgl"] = p =>
-            {
-                return View["Temp/rzgl.html"];
+                return View["Page/" + p.page + ".html"];
             };
             After += ctx =>
             {

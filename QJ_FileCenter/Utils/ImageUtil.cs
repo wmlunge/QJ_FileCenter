@@ -7,7 +7,7 @@ using System.Web;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace QJ_FileCenter.Utils
+namespace QJ_FileCenter
 {
     public class ImageCLass
     {

@@ -120,10 +120,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domains\AliyunHelp.cs" />
-    <Compile Include="Domains\ResponseExtension.cs" />
+    <Compile Include="Utils\ResponseExtension.cs" />
     <Compile Include="Domains\DocumentDomain.cs" />
-    <Compile Include="Domains\FileHelp.cs" />
     <Compile Include="Domains\IDocumentDomain.cs" />
     <Compile Include="Handler\FileAPIHandler.cs" />
     <Compile Include="Handler\APIHandler.cs" />
@@ -148,8 +146,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Handler\MainHandler.cs" />
-    <Compile Include="Handler\RavenModule.cs" />
+    <Compile Include="Utils\AliyunHelp.cs" />
+    <Compile Include="Utils\FileHelp.cs" />
     <Compile Include="Utils\ImageUtil.cs" />
     <Compile Include="Utils\OfficeUtil.cs" />
     <Compile Include="Utils\MD5Util.cs" />
@@ -202,10 +200,10 @@
     <Content Include="bin\Aspose.Slides.dll" />
     <Content Include="bin\Aspose.Words.dll" />
     <Content Include="bitbug_favicon.ico" />
-    <Content Include="Views\Temp\rzgl.html">
+    <Content Include="Views\Page\rzgl.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Temp\xtpz.html">
+    <Content Include="Views\Page\xtpz.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\CSS\BootOver.css">
@@ -647,13 +645,13 @@
     <Content Include="Web\js\jquery.lazyload.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Temp\wjgl.html">
+    <Content Include="Views\Page\wjgl.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Temp\qygl.html">
+    <Content Include="Views\Page\qygl.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Temp\shouye.html">
+    <Content Include="Views\Page\shouye.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

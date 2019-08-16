@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace QJ_FileCenter.Utils
+namespace QJ_FileCenter
 {
     public static class MD5Util
     {
