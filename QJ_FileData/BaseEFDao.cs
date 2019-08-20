@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -48,7 +47,7 @@ namespace QJFile.Data
 
 
 
-       
+
 
         public virtual IEnumerable<T> GetALLEntities()
         {
@@ -100,7 +99,7 @@ namespace QJFile.Data
         /// <returns></returns>
         public virtual bool Insert(T entity)
         {
-            entity= Db.Insertable<T>(entity).ExecuteReturnEntity();
+            entity = Db.Insertable<T>(entity).ExecuteReturnEntity();
             //int dataID = CurrentDb.InsertReturnIdentity(entity);
             //List<string> List = Db.DbMaintenance.GetIsIdentities(entity.GetType().Name);
             //if (List.Count > 0)
@@ -205,7 +204,11 @@ namespace QJFile.Data
         /// <returns></returns>
         private string CovSQL(string strSQL)
         {
-            if (Db.CurrentConnectionConfig.DbType == 0)//MYSQL数据库
+            if (Db.CurrentConnectionConfig.DbType == 0)//MYSQL数据库,SQLlite数据库
+            {
+                strSQL = strSQL.Replace("isnull", "ifnull").Replace("ISNULL", "IFNULL");
+            }
+            if (Db.CurrentConnectionConfig.DbType == SqlSugar.DbType.Sqlite)//MYSQL数据库,SQLlite数据库
             {
                 strSQL = strSQL.Replace("isnull", "ifnull").Replace("ISNULL", "IFNULL");
             }

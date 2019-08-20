@@ -1,14 +1,16 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy;
-using QJ_FileCenter.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using QJ_FileCenter;
+using QJ_FileCenter.Domains;
+using QJ_FileCenter.Models;
+using QJFile.Data;
 using System;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
-using QJ_FileCenter.Domains;
-using QJFile.Data;
 
 namespace QJ_FileCenter.Handler
 {
@@ -18,6 +20,7 @@ namespace QJ_FileCenter.Handler
             : base()
         {
             Msg_Result msg = new Msg_Result() { Action = "", ErrorMsg = "" };
+            JH_Auth_UserB.UserInfo UserInfo = new JH_Auth_UserB.UserInfo();
             Before += ctx =>
             {
                 try
@@ -27,13 +30,29 @@ namespace QJ_FileCenter.Handler
                         return ctx.Response;
                     }
                     else
+                    if (ctx.Request.Path.StartsWith("/adminapi/dfile"))
+                    {
+                        return ctx.Response;
+                    }
+                    else
+                    if (ctx.Request.Path.StartsWith("/adminapi/ExeActionPub"))
+                    {
+                        return ctx.Response;
+                    }
+                    else
                     {
                         string strUser = ctx.Request.Cookies["user"];
                         string strpasd = ctx.Request.Cookies["pasd"];
-                        if (!new userB().isAuth(strUser, strpasd))
+                        var users = new JH_Auth_UserB().GetEntities(d => d.username == strUser && d.pasd == strpasd).ToList();
+
+                        if (users.Count() != 1)
                         {
                             msg.ErrorMsg = "NOSESSIONCODE";
                             return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
+                        }
+                        else
+                        {
+                            UserInfo.User = users[0];
                         }
                         return ctx.Response;
                     }
@@ -44,18 +63,36 @@ namespace QJ_FileCenter.Handler
                     msg.ErrorMsg = "程序错误！";
                     return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
                 }
-               
+
+            };
+            ///获取首页信息
+            Get["/adminapi/dfile/{fileid}"] = p =>
+            {
+                int fileId = 0;
+                int.TryParse(p.fileid.Value.Split(',')[0], out fileId);
+                FT_File file = new FT_FileB().GetEntity(d => d.ID == fileId);
+                string width = Context.Request.Query["width"].Value ?? "";
+                string height = Context.Request.Query["height"].Value ?? "";
+                Qycode qy = new QycodeB().GetALLEntities().FirstOrDefault();
+                string filename = Context.Request.Url.SiteBase + "/" + qy.Code + "/document/" + file.zyid;
+                if (width + height != "")
+                {
+                    filename = Context.Request.Url.SiteBase + "/" + qy.Code + "/document/image/" + file.zyid + (width + height != "" ? ("/" + width + "/" + height) : "");
+                }
+                return Response.AsRedirect(filename);
+
             };
             //登录接口
             Post["/adminapi/login"] = p =>
             {
                 string strUser = Context.Request.Form["user"];
                 string strpasd = Context.Request.Form["pasd"];
-                var users = new userB().GetEntities(d => d.username == strUser && d.pasd == strpasd);
+                var users = new JH_Auth_UserB().GetEntities(d => d.username == strUser && d.pasd == strpasd);
                 if (users.Count() == 1)
                 {
                     msg.Result = "Y";
-                    msg.Result1 = users.FirstOrDefault();
+                    msg.Result1 = new JH_Auth_UserB().GetUserInfo(strUser, strpasd);
+
                 }
                 else
                 {
@@ -76,7 +113,7 @@ namespace QJ_FileCenter.Handler
                 //JsonConvert.SerializeObject(Model).Replace("null", "\"\"");
                 return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
             };
-            
+
             //获取空间列表
             Post["/adminapi/getqy"] = p =>
             {
@@ -87,12 +124,12 @@ namespace QJ_FileCenter.Handler
             {
                 string P1 = Context.Request.Form["P1"];
                 string P2 = Context.Request.Form["P2"];
-                user User = new userB().GetALLEntities().FirstOrDefault();
+                user User = new JH_Auth_UserB().GetALLEntities().FirstOrDefault();
                 User.pasd = P2;
-                new userB().Update(User);
+                new JH_Auth_UserB().Update(User);
                 return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
             };
-            
+
             //管理存储空间
             Post["/adminapi/mangeqy"] = p =>
             {
@@ -153,7 +190,7 @@ namespace QJ_FileCenter.Handler
 
                 if (!string.IsNullOrEmpty(filename))
                 {
-                    int total = new DocumentB().GetEntities(d=>d.FileName.Contains(filename) || d.Qycode.Contains(filename)).Count();
+                    int total = new DocumentB().GetEntities(d => d.FileName.Contains(filename) || d.Qycode.Contains(filename)).Count();
                     var files = new DocumentB().GetEntities(d => d.FileName.Contains(filename) || d.Qycode.Contains(filename)).OrderByDescending(d => d.RDate).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
                     msg.Result = files;
                     msg.Result1 = total;
@@ -168,7 +205,7 @@ namespace QJ_FileCenter.Handler
                 }
                 return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
             };
-         
+
             //删除文件
             Post["/adminapi/delwj/{id}"] = p =>
             {
@@ -221,6 +258,71 @@ namespace QJ_FileCenter.Handler
                 new userlogB().Delete(d => d.useraction != "");
                 return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
             };
+
+            //删除日志
+            Post["/adminapi/ExeAction/{action}"] = p =>
+            {
+                JObject JsonData = new JObject();
+
+                foreach (string item in Context.Request.Form.Keys)
+                {
+                    JsonData.Add(item, Context.Request.Form[item].Value);
+                }
+                string PostData = "";
+                string P1 = JsonData["P1"] == null ? "" : JsonData["P1"].ToString();
+                string P2 = JsonData["P2"] == null ? "" : JsonData["P2"].ToString();
+                string strAction = p.action;
+
+
+                Qycode qy = new QycodeB().GetALLEntities().FirstOrDefault();
+                JH_Auth_QY QYinfo = new JH_Auth_QY();
+                QYinfo.FileServerUrl = Context.Request.Url.SiteBase;
+                QYinfo.QYCode = qy.Code;
+                UserInfo.QYinfo = QYinfo;
+                //Dictionary<string, string> results3 = JsonConvert.DeserializeObject<Dictionary<string, string>>(PostData.ToString());
+                var function = Activator.CreateInstance(typeof(QYWDManage)) as QYWDManage;
+                var method = function.GetType().GetMethod(strAction.ToUpper());
+                method.Invoke(function, new object[] { JsonData, msg, P1, P2, UserInfo });
+
+                IsoDateTimeConverter timeConverter = new IsoDateTimeConverter();
+                timeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+                string Result = JsonConvert.SerializeObject(msg, Formatting.Indented, timeConverter).Replace("null", "\"\"");
+                return Response.AsText(Result, "text/html; charset=utf-8");
+            };
+
+
+
+            //删除日志
+            Post["/adminapi/ExeActionPub/{action}"] = p =>
+            {
+                JObject JsonData = new JObject();
+
+                foreach (string item in Context.Request.Form.Keys)
+                {
+                    JsonData.Add(item, Context.Request.Form[item].Value);
+                }
+                string PostData = "";
+                string P1 = JsonData["P1"] == null ? "" : JsonData["P1"].ToString();
+                string P2 = JsonData["P2"] == null ? "" : JsonData["P2"].ToString();
+                string strAction = p.action;
+
+
+                Qycode qy = new QycodeB().GetALLEntities().FirstOrDefault();
+                JH_Auth_QY QYinfo = new JH_Auth_QY();
+                QYinfo.FileServerUrl = Context.Request.Url.SiteBase;
+                QYinfo.QYCode = qy.Code;
+                UserInfo.QYinfo = QYinfo;
+                //Dictionary<string, string> results3 = JsonConvert.DeserializeObject<Dictionary<string, string>>(PostData.ToString());
+                var function = Activator.CreateInstance(typeof(PubManage)) as PubManage;
+                var method = function.GetType().GetMethod(strAction.ToUpper());
+                method.Invoke(function, new object[] { JsonData, msg, P1, P2, UserInfo });
+
+                IsoDateTimeConverter timeConverter = new IsoDateTimeConverter();
+                timeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+                string Result = JsonConvert.SerializeObject(msg, Formatting.Indented, timeConverter).Replace("null", "\"\"");
+                return Response.AsText(Result, "text/html; charset=utf-8");
+            };
+
             After += ctx =>
             {
                 msg.Action = Context.Request.Path;

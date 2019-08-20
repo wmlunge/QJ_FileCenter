@@ -1,4 +1,6 @@
-﻿using System;
+﻿using QJ_FileCenter.Models;
+using QJFile.Data;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -43,6 +45,16 @@ namespace QJ_FileCenter
         public static string GetConfig(string strKey, string strDefault = "")
         {
             return ConfigurationManager.AppSettings[strKey] ?? strDefault;
+        }
+
+
+
+        public string CompressZip(string strFileData, JH_Auth_QY QYinfo)
+        {
+            Dictionary<String, String> DATA = new Dictionary<String, String>();
+            DATA.Add("data", strFileData);
+            HttpWebResponse ResponseData = CommonHelp.CreatePostHttpResponse(QYinfo.FileServerUrl.TrimEnd('/') + "/" + QYinfo.QYCode + "/document/zipfolder", DATA, 0, "", null);
+            return CommonHelp.GetResponseString(ResponseData);
         }
     }
     public class Msg_Result

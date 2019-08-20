@@ -45,6 +45,12 @@ namespace QJ_FileCenter.Handler
             {
                 return View["Page/" + p.page + ".html"];
             };
+            Get["/admin/tools/showvideo/{zyid}"] = p =>
+            {
+              //  return View["Tools/showvideo.html?zyid=" + p.zyid];
+                return View["Tools/showvideo.html"];
+
+            };
             After += ctx =>
             {
                 Model.Action = Context.Request.Path;

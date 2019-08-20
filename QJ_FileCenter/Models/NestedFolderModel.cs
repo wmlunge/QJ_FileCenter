@@ -108,4 +108,8 @@ namespace QJ_FileCenter.Models
         public string ID { get; set; }
         public string Type { get; set; }
     }
+
+
+
+
 }

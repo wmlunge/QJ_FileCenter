@@ -2,13 +2,13 @@
 <html>
 <head>
     <title>文件中心后台登录</title>
-    <link href="../Web/CSS/style.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/Web/CSS/style.css" rel="stylesheet" type="text/css" media="all" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="文件中心后台登录" />
-    <script src="../Web/js/jquery-1.11.1.min.js"></script>
-    <script src="../Web/js/avalon1.47.js"></script>
+    <script src="/Web/js/jquery-1.11.1.min.js"></script>
+    <script src="/Web/js/avalon1.47.js"></script>
     <script>
         $(document).ready(function () {
             $("#dl").click(function () {
@@ -17,7 +17,7 @@
                         if (result.result == "Y") {
                             setCookie("user", $("#user").val());
                             setCookie("pasd", $("#pasd").val());
-                            location.href = "admin/index";
+                            location.href = "Html/index.html";
                         } else {
                             alert("账号密码错误!")
                         }

@@ -1,0 +1,96 @@
+﻿<CuPlayer>
+ <Player_Set 
+		JcScpBufferTime = "3"
+ 		JcScpVolume = "75"
+		JcScpCode = "utf8"
+ 		JcScpImgDisplay = "no"
+		JcScpAutoHideControl="yes"
+		JcScpControlHideTime="0.5"
+		JcScpControlHeight="40"	
+		JcScpShowList= "no"
+		JcScpAutoRepeat = "no"
+		JcScpAutoPlay = "yes"
+		JcScpsetMode = "1"
+		JcScpAFrontCanClose = "no"
+		JcScpShowRightmenu = "no"
+		JcScpShareMode = "JcScpVideoPath"
+		JcScpLoadbarMode = "0"
+        JcScpLiveMode  = "0"
+	/>
+
+      <Logo_Set
+ 		JcScpLogoDisplay = "no"
+ 		JcScpLogoPath = "images/logo.png"
+ 		JcScpLogoPosition = "top-left"
+		JcScpLogoWidth = "150"
+ 		JcScpLogoHeight = "70"
+ 		JcScpLogoAlpha = "0.2"
+	/>
+
+      <Flashvars_Set 
+	  
+       JcScpServer  =""
+       JcScpVideoPath = ""
+
+		JcScpVideoPathHD = ""
+		JcScpImg ="images/startpic.jpg" 
+        JcScpTitle  = ""
+		JcScpStarTime = "0" 
+		JcScpEndTime = "0"
+ 
+		JcScpCuePointInfo = ""
+		JcScpCuePointTime = ""
+		
+		ShowJcScpAFront = "no"
+		JcScpCountDowns = "5"
+		JcScpCountDownsPosition = "top-right"
+		JcScpAFrontW = "730"
+		JcScpAFrontH = "454"
+		JcScpAFrontPath = ""
+		JcScpAFrontLink = "/"
+		 
+		ShowJcScpAVideo= "no"
+		JcScpAVideoServer= ""	
+		JcScpAVideoPath= ""	
+		JcScpAVideoLink= "/"
+		
+		ShowJcScpAPause = "no"
+		JcScpAPausePath = ""
+		JcScpAPauseW = "300"
+		JcScpAPauseH = "250"
+		JcScpAPauseLink= "/"
+		
+		ShowJcScpACorner = "no"
+		JcScpACornerPath= ""
+		JcScpACornerW = "90"
+		JcScpACornerH = "50"
+		JcScpACornerPosition = "top-right"
+		JcScpACornerLink = "/"
+ 
+		ShowJcScpAEnd = "no"
+		JcScpAEndPath = ""
+		JcScpAEndW = "400"
+		JcScpAEndH = "300"
+		JcScpAEndLink= "/"
+
+		ShowJcScpAMoveText = "no"
+		
+	 />
+
+	 <SkinColor_Set
+ 		JcScpBackcolor = "0x000000"
+        JcScpBackcolortop = "0x353535"
+        JcScpLightcolor = "0xcfcfcf"
+        
+        JcScpFontcolor = "0xffffff"
+        JcScptimebg = "0x393939"
+        
+        JcScpLoadbar = "0x00a0e9"
+        JcScpLoaded = "0x4d4b4b"
+        JcScpLoadbg = "0x000000"
+        JcScpPlayBtn = "0x2d2d2d"
+		
+        JcScpBar = "0xffffff" 
+	 />
+  
+</CuPlayer>

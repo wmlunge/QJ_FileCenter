@@ -78,7 +78,7 @@
             //},
 
             // swf文件路径
-            swf: '../Web/webuploader/Uploader.swf',
+            swf: '/Web/webuploader/Uploader.swf',
             auto: true,
             disableGlobalDnd: true,
             //runtimeOrder :'flash',

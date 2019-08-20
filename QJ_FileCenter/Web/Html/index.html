@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="renderer" content="webkit|ie-comp|ie-stand" />
     <link rel="stylesheet" href="//at.alicdn.com/t/font_533449_y4cj8vk8wvvg3nmi.css">
-    <link rel="stylesheet" type="text/css" href="../Web/CSS/animate.css">
-    <link rel="stylesheet" type="text/css" href="../Web/CSS/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../Web/CSS/default.css">
-    <link rel="stylesheet" type="text/css" href="../Web/CSS/index.css?ver=2">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/animate.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/default.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/index.css?ver=2">
 
     <style>
         .ms-controller, .ms-important, [ms-controller], [ms-important] {
@@ -35,7 +35,7 @@
         <div class="header box-shadow">
             <div class="head-center clearfix">
                 <div class="logo c666 pull-left">
-                    <img src = "../Web/images/logo.png" style="max-height: 40px; margin-right: 10px;">{{CompanyData.QYName}}
+                    <img src="/Web/images/logo.png" style="max-height: 40px; margin-right: 10px;">{{CompanyData.QYName}}
                 </div>
                 <div class="pull-right top-fun">
                     <ul class="clearfix">
@@ -46,18 +46,18 @@
                             <ul class="dropdown-menu add-msg dropdown-menu add-msg animated fadeInRight">
                                 <li ms-repeat-item="KJFSData" ms-click="AddView(item.ModelCode,item.ModelName,'',item.PModelCode)">
                                     <a href="###">
-                                        <img src = "../Web/images/icon/Common.png">{{item.ModelName}}
+                                        <img src="/Web/images/icon/Common.png">{{item.ModelName}}
                                     </a>
                                 </li>
                             </ul>
 
                         </li>
-                        <li ms-if="CompanyData.IsUseWX=='Y'">
+                        <li style="display:none">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                 <i class="iconfont icon-erweima tip" data-toggle="tooltip" title="扫描关注" data-placement="bottom"></i>
                             </a>
                             <div class="dropdown-menu animated fadeInRight" style="overflow: auto; width: 200px; text-align: center">
-                                <img width="100%" src='../Web/images/qrcode.png'>
+                                <img width="100%" src='/Web/images/qrcode.png'>
                                 扫描二维码，关注企业号
                             </div>
                         </li>
@@ -69,21 +69,21 @@
                                 <table class="table noborder" style="margin-bottom: 0">
                                     <tr>
                                         <td style="border: 0">
-                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin1.png" />
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin1.png" />
                                         </td>
                                         <td style="border: 0">
-                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin2.png" />
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin2.png" />
                                         </td>
                                         <td style="border: 0">
-                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin3.png" />
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin3.png" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="border: 0">
-                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin4.png" />
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin4.png" />
                                         </td>
                                         <td style="border: 0">
-                                            <img class="skintp" style="width: 120px; height: 70px" src="../Web/images/skin/skin5.png" />
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin5.png" />
                                         </td>
 
                                     </tr>
@@ -97,7 +97,7 @@
 
                             </div>
                         </li>
-                    
+
                         <li ms-click="refiframe()">
                             <a class="shuaxin">
                                 <i class="iconfont icon-shuaxin tip" data-toggle="tooltip" title="刷新" data-placement="bottom"></i>
@@ -126,14 +126,15 @@
                 <div class="leftlayout box-shadow" id="leftlayout">
                     <div class="left-head">
                         <div class="head-img pull-left">
-                            <img  src ="../Web/images/head.jpg" ms-click="SelUserInfo()" style="cursor: pointer;">
+                            <img src="/Web/images/head.jpg" ms-click="SelUserInfo()" style="cursor: pointer;">
                         </div>
                         <div class="head-information c666 ft14 tc ">
                             <div style="overflow: inherit;">
-                                <a class="head-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="true">{{UserData.UserRealName}}<i class="caret ml5" style="border-top: 5px dashed; border-top: 5px solid \9; border-right: 5px solid transparent; border-left: 5px solid transparent;"></i>
+                                <a class="head-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    {{UserData.UserRealName}}<i class="caret ml5" style="border-top: 5px dashed; border-top: 5px solid \9; border-right: 5px solid transparent; border-left: 5px solid transparent;"></i>
                                 </a>
                                 <ul class="dropdown-menu  animated fadeInRight">
-                                    
+
                                     <li data-toggle="modal" data-target="#UpdatePDModal" data-index="1" data-backdrop="static">
                                         <a>修改密码</a>
                                     </li>
@@ -157,7 +158,7 @@
                                 </a>
                             </li>
 
-                            <li ms-repeat-item="UseYYList"  ms-click="SelModelMenu(item)">
+                            <li ms-repeat-item="UseYYList" ms-click="SelModelMenu(item)">
                                 <a ms-attr-title="item.ModelName">
                                     <i class="iconfont" ms-class-1="icon-{{item.ModelCode.toLowerCase()}}:true"></i>
                                     <span>{{item.ModelName}}</span>
@@ -172,8 +173,11 @@
                         <!-- 上边切换导航 -->
                         <div class="menu-general ft16 box-shadow">
                             <ul>
-                                <li ms-repeat-el="model.FunData" ms-class-1="active:el.PageName==model.FunData[0].PageName" ms-click="selmenulev2(el,this)" ms-visible="el.isshow"><a>{{el.PageName}}</a><i ms-if="el.PageName=='微信企业号'" style="position: absolute; right: -19px; top: -10px;">
-                                    <img src="../Web/images/tuijian.gif" /></i></li>
+                                <li ms-repeat-el="model.FunData" ms-class-1="active:el.PageName==model.FunData[0].PageName" ms-click="selmenulev2(el,this)" ms-visible="el.isshow">
+                                    <a>{{el.PageName}}</a><i ms-if="el.PageName=='微信企业号'" style="position: absolute; right: -19px; top: -10px;">
+                                        <img src="/Web/images/tuijian.gif" />
+                                    </i>
+                                </li>
                             </ul>
                             <ins style="position: absolute; right: 25px; text-decoration: none; cursor: pointer; color: #666; font-size: 22px;" class="iconfont icon-shuaxin tip" ms-click="refpage('')" ms-if="!ishasLeft" data-toggle="tooltip" title="刷新" data-placement="bottom"></ins>
 
@@ -186,7 +190,7 @@
                             <iframe marginwidth="0" class="tabiframe" marginheight="0" frameborder="0" scrolling="no" height="100%" id="main" name="main" width="100%" style="min-height: 500px"></iframe>
                         </div>
                         <div class="index-right" ms-if="ishasLeft">
-                        
+
                             <!-- 没有任何记录样式 -->
                             <div class="right-list box-shadow bgfff mb20">
                                 <a href="###" class="small-title">
@@ -214,10 +218,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close default"
-                        data-dismiss="modal" aria-hidden="true">
+                            data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">自定义显示菜单
+                    <h4 class="modal-title" id="myModalLabel">
+                        自定义显示菜单
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -234,7 +239,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default tip" title="关闭"
-                        data-dismiss="modal">
+                            data-dismiss="modal">
                         关闭
                     </button>
                 </div>
@@ -301,10 +306,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close default"
-                        data-dismiss="modal" aria-hidden="true">
+                            data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">自定义显示列
+                    <h4 class="modal-title" id="myModalLabel">
+                        自定义显示列
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -323,7 +329,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
-                        data-dismiss="modal">
+                            data-dismiss="modal">
                         关闭
                     </button>
                     <!-- <button type="button" class="btn btn-primary">
@@ -339,22 +345,34 @@
     </div>
 
     <!-- 修改密码 -->
-    <script type="text/javascript" src="../Web/JS/jquery-1.11.1.min.js"></script>
-    <script src="../Web/JS/bootstrap.js"></script>
-    <script src="../Web/JS/layer/layer.js"></script>
-    <script src="../Web/JS/layer/extend/layer.ext.js"></script>
-    <script src="../Web/JS/laypage/laypage.js"></script>
-    <script src="../Web/JS/toastr.js"></script>
-    <script src="../Web/JS/avalon1.47.js?ver=1"></script>
-    <script src="../Web/JS/SZHLCommon.js"></script>
-    <script src="../Web/JS/index.js"></script>
+    <script type="text/javascript" src="/Web/JS/jquery-1.11.1.min.js"></script>
+    <script src="/Web/JS/bootstrap.js"></script>
+    <script src="/Web/JS/layer/layer.js"></script>
+    <script src="/Web/JS/layer/extend/layer.ext.js"></script>
+    <script src="/Web/JS/laypage/laypage.js"></script>
+    <script src="/Web/JS/toastr.js"></script>
+    <script src="/Web/JS/clipboard.js"></script>
+    <script src="/Web/JS/avalon1.47.js?ver=1"></script>
+    <script src="/Web/JS/SZHLCommon.js"></script>
+    <script src="/Web/JS/index.js"></script>
     <script type="text/javascript">
+
+
+        var clipboard = new Clipboard(".copyBtn");
+        clipboard.on('success', function (e) {
+            top.ComFunJS.winsuccess("复制成功");
+
+        });
+
+        clipboard.on('error', function (e) {
+            top.ComFunJS.winsuccess("复制失败，请重试");
+        });
         // 切换
         $(function () {
             $("#dvskin").bind("click", function (event) {
                 event.stopPropagation();
             })
-            var skinurl = "../Web/images/skin/skin1.png";
+            var skinurl = "/Web/images/skin/skin1.png";
             if (localStorage.getItem("skin")) {
                 skinurl = localStorage.getItem("skin");
             }
@@ -415,7 +433,7 @@
             var h2 = window.innerHeight - 90;
             document.getElementById("leftlayout").style.minHeight = h2 + "px";
 
-            
+
 
 
         });

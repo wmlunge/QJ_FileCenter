@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>文档属性</title>
+    <!-- Bootstrap -->
+    <link href="/CSS/bootstrap3.3.5/css/bootstrap.css" rel="stylesheet">
+    <link href="/CSS/Vcss/BaseClassV3.css" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body ms-controller="APP_QYWD_SX">
+    <div class="container-fluid maindiv" style="margin: 20px" id="dvContent">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#xxnr" role="tab" data-toggle="tab">详细内容</a></li>
+            <li role="presentation" ms-if="filetype=='file'"><a href="#bbgl" role="tab" data-toggle="tab">版本管理<span class="label label-info" ms-if="verdata.size()>0">{{verdata.size()}}</span></a></li>
+            <li role="presentation" style="display:none"><a href="#beizhu" role="tab" data-toggle="tab">备注</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="xxnr" style="padding-left: 0;padding-right: 0;">
+                <table class="table table-bordered table-hover table-hover" style="margin-top:20px;background-color:transparent">
+                    <tr>
+                        <th class="text-right" style="width:160px">名称</th>
+                        <td>{{data.Name}}</td>
+                    </tr>
+                    <tr style="display:none">
+                        <th class="text-right">包含</th>
+                        <td>2个文件,1 个文件夹</td>
+                    </tr>
+                    <tr style="display:none">
+                        <th class="text-right">位置</th>
+                        <td>{{path}}</td>
+                    </tr>
+                    <tr style="display:none">
+                        <th class="text-right">大小</th>
+                        <td>{{data.FileSize}}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right">创建时间</th>
+                        <td>{{data.CRDate}}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right">创建人</th>
+                        <td>{{ ComFunJS.convertuser(data.CRUser)}}</td>
+                    </tr>
+                    <tr ms-if="filetype=='file'&&ComFunJS.isOffice(data.FileExtendName)">
+                        <th class="text-right">预览URL</th>
+                        <td><a target="_blank" ms-href="data.YLUrl">{{data.YLUrl}}</a></td>
+                    </tr>
+                    <tr ms-if="filetype=='file'&&ComFunJS.isOffice(data.FileExtendName)">
+                        <th class="text-right">手机预览二维码</th>
+                        <td id="qrCodeDiv"></td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="bbgl" style="padding-left: 0;padding-right: 0;">
+                <table class="table table-bordered table-hover  table-striped" style="margin-top:10px">
+                    <thead>
+                        <tr>
+                            <th>版本</th>
+                            <th>创建人</th>
+                            <th>创建时间</th>
+                            <th>大小</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ms-repeat-version="verdata">
+                            <td>{{$index+1}}</td>
+                            <td>{{ComFunJS.convertuser(version.CRUser)}}</td>
+                            <td>{{version.CRDate}}</td>
+                            <td>{{ComFunJS.converfilesize(version.FileSize)}}</td>
+                            <td><a href="#" ms-click="downfile(version)">下载</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="beizhu" style="padding-left: 0;padding-right: 0;">
+            </div>
+        </div>
+    </div>
+    <script src="/Scripts/jquery-1.11.2.min.js"></script>
+    <script src="/Scripts/avalon.js"></script>
+    <script src="/CSS/bootstrap3.3.5/js/bootstrap.js"></script>
+    <script src="/Scripts/SZHLCommon.js?jsver=20160425"></script>
+    <script src="/Scripts/jquery.qrcode.min.js"></script>
+    <script>
+        var model = avalon.define({
+            $id: "APP_QYWD_SX",
+            path: ComFunJS.getQueryString("path"),
+            dataid: ComFunJS.getQueryString("id"),
+            filetype: ComFunJS.getQueryString("type"),
+            data: {},
+            verdata: [],
+            downfile: function (item) {
+                ComFunJS.winold("/View/Common/DownLoadFile.aspx?MD5=" + item.FileMD5)
+            }
+        })
+        avalon.ready(function () {
+            ComFunJS.initsetajax();
+            if (model.dataid) {
+                $.getJSON('/API/VIEWAPI.ashx?Action=QYWD_GETWDITEM', { P1: model.filetype, P2: model.dataid }, function (resultData) {//P1为个人文件夹
+                    if (resultData.ErrorMsg == "") {
+                        model.data = resultData.Result;
+                        model.verdata = resultData.Result1;
+                        if (model.data.YLUrl) {
+                            $("#qrCodeDiv").qrcode({
+                                render: "canvas",
+                                text: model.data.YLUrl,
+                                width: 120,
+                                height: 120
+                            });
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+</html>

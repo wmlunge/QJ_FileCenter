@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>操作成功</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_533449_y4cj8vk8wvvg3nmi.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/animate.css">
+    <link href="/Web/CSS/bootstrap.css" rel="stylesheet">
+    <link href="/Web/CSS/BootOver.css" rel="stylesheet" />
+    <script type="text/javascript" src="/Web/JS/jquery-1.11.1.min.js"></script>
+    <script src="/Web/JS/avalon1.47.js"></script>
+    <script src="/Web/JS/SZHLCommon.js?jsver=20160915"></script>
+
+    <script>
+        var model = avalon.define({
+            $id: "wdlist",
+            wjjData: [],
+            itemtype: ComFunJS.getQueryString("foldertype", "2"),
+            initfolderid: ComFunJS.getQueryString("folderid", "2"),
+            selfolder: {},
+            pathdata: [],
+            getlist: function () {
+                $.getJSON("/adminapi/ExeAction/GETLISTDATA", { P1: model.selfolder.ID, itemtype: 2 }, function (r) {
+                    if (r.ErrorMsg == "") {
+                        for (var i = 0; i < r.Result.length; i++) {
+                            r.Result[i].issel = false;
+                        }
+                        model.wjjData = r.Result;
+                        model.selfiles.clear();//清空选中项
+                    }
+                })
+            },
+            enterwjj: function (item) {
+                var itemData = $.extend({}, item);
+                model.pathdata.push(itemData)
+                model.selfolder = item;
+                model.getlist();
+            },
+            gopath: function (item, itemindex) {
+                model.pathdata.splice(itemindex + 1, model.pathdata.length - itemindex);
+                model.selfolder = item;
+                model.getlist();
+            },
+            clickFolder: function (file, event) {
+                var initstatus = file.issel;
+                model.wjjData.forEach(function (file) {
+                    file.issel = false;
+                })
+                file.issel = !initstatus;
+                if (file.issel) {
+                    model.selfiles.push(file);
+                } else {
+                    model.selfiles.remove(file);
+                }
+            },//选文件夹
+            selfiles: []
+        })
+        avalon.ready(function () {
+            model.selfolder = { ID: model.initfolderid, Name: "个人文档" };
+            model.pathdata.push({ ID: model.initfolderid, Name: "个人文档" });
+            model.getlist();
+        })
+    </script>
+</head>
+<body ms-controller="wdlist">
+    <div class="container-fluid text-center" style="margin:0;padding:0">
+        <div class="panel panel-default" style="border:0">
+            <!-- Default panel contents -->
+            <div class="panel-heading text-left">
+                <ol class="breadcrumb" style="margin-bottom:0">
+                    <li ms-repeat-el="pathdata" ms-click="gopath(el,$index)"><a href="javascript:void(0)">{{el.Name}}</a></li>
+                </ol>
+            </div>
+            <!-- Table -->
+            <table class="table">
+                <tbody>
+                    <tr ms-repeat-wjj="wjjData" style="width:100%">
+                        <th style="width:40px;vertical-align:middle">
+                            <div class="icheckbox_square-blue" ms-click="clickFolder(wjj,$event)" ms-class-1="checked:wjj.issel">
+                                <span class="iconfont icon-check ft12"></span>
+                            </div>
+                        </th>
+                        <th>
+                            <img style="height:40px;width:40px" src="/Web/images/qywd/file1.png" /><a style="margin-left:5px" href="#" ms-click="enterwjj(wjj)"> {{wjj.Name}}</a>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

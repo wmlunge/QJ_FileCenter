@@ -74,10 +74,18 @@
     <Compile Include="IBaseDao.cs" />
     <Compile Include="model\Document.cs" />
     <Compile Include="model\FileCenter.cs" />
+    <Compile Include="model\FT_File.cs" />
+    <Compile Include="model\FT_File_Downhistory.cs" />
+    <Compile Include="model\FT_File_Share.cs" />
+    <Compile Include="model\FT_File_UserAuth.cs" />
+    <Compile Include="model\FT_File_UserTag.cs" />
+    <Compile Include="model\FT_File_Vesion.cs" />
+    <Compile Include="model\FT_Folder.cs" />
     <Compile Include="model\Qycode.cs" />
     <Compile Include="model\user.cs" />
     <Compile Include="model\userlog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlHelp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

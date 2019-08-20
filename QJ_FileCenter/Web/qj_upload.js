@@ -17,10 +17,11 @@ function QJUpload(t) {
         urlPrefix: "",
         source: "qj-upload"
     },
-    this.uploadButton = document.getElementById(t.uploadButtton),
-    this.upid = t.uploadButtton,
-    this.url = t.fileapiurl + "/" + t.usercode + "/document/fileupload",
-    this._init()
+        this.uploadButton = document.getElementById(t.uploadButtton),
+        this.upid = t.uploadButtton,
+        //this.url = t.fileapiurl + "/" + t.usercode + "/document/fileupload",
+        this.url = t.fileapiurl + "/Web/Html/Tools/fileupload.html",
+        this._init()
 }
 QJUpload.prototype = {
     constructor: QJUpload,
@@ -29,63 +30,63 @@ QJUpload.prototype = {
     },
     _checkH5Support: function () {
         var t = document.createElement("input")
-          , e = !(!window.File || !window.FileList)
-          , o = new XMLHttpRequest
-          , i = !!window.FormData;
+            , e = !(!window.File || !window.FileList)
+            , o = new XMLHttpRequest
+            , i = !!window.FormData;
         return "multiple" in t && e && "onprogress" in o && "upload" in o && i
     },
     _init: function () {
         var t = this;
         // this._checkH5Support() || (this.url = this.options.urlPrefix + "/upload-flash/index.html");
         var e = this._createIframe()
-          , o = function () {
-              this.readyState && "complete" !== this.readyState || t.update()
-          }
-        ;
+            , o = function () {
+                this.readyState && "complete" !== this.readyState || t.update()
+            }
+            ;
         this.frameMsg = e.contentWindow,
-        e.attachEvent ? e.attachEvent("onload", o) : e.onload = o,
-        this._addHander(this.uploadButton, "click", function (event) {
-            t.openWrap()
-        }),
-        this._handleMsgReceive()
+            e.attachEvent ? e.attachEvent("onload", o) : e.onload = o,
+            this._addHander(this.uploadButton, "click", function (event) {
+                t.openWrap()
+            }),
+            this._handleMsgReceive()
     },
     _createIframe: function () {
         var op = this;
 
         var t = document.createElement("div")
-          , e = document.createElement("div")
-          , o = document.createElement("div")
-          , f = document.createElement("div")
-          , i = document.createElement("span")
-          , n = document.createElement("iframe");
+            , e = document.createElement("div")
+            , o = document.createElement("div")
+            , f = document.createElement("div")
+            , i = document.createElement("span")
+            , n = document.createElement("iframe");
         return t.setAttribute("id", "qj-wrapAll" + op.upid),
-        t.style.display = "none",
-        f.style.cssText = "width: 100%;height: 50px;background-color:#fff;margin-top: -6px;text-align: right;",
-        e.style.cssText = "display: block;position: fixed;left: 0;top: 0;width: 100%;height: 100%;z-index: 2001;background-color: #000;-moz-opacity: 0.5;opacity: .50;filter: alpha(opacity=50);",
-        o.style.cssText = "display: block;position: fixed;left: " + op.options.left + ";top: " + op.options.top + ";width: " + op.options.width + ";height: " + op.options.height + ";BACKGROUND-COLOR: #00b7ee; z-index: 2002;box-shadow: 0 0 25px rgba(0,0,0,0.7);border-radius: 5px;padding-top: 45px;",
-        i.innerHTML = "&times;",
-        f.innerHTML = " <button id='qjclose" + op.upid + "' style='margin-top: 5px;cursor:pointer;height: 40px;margin-right: 10px;width: 120px;font-size: 14px;background-color: rgb(0, 183, 238); border: 0; color: #fff;'>确定</button>",
-        i.style.cssText = "width: 40px;height: 40px;position: absolute;top: 0px;right: 0px;cursor: pointer;text-align: center;line-height: 40px;color: #FFF;font-size: 30px;font-family: microsoft yahei;border-radius: 0 5px 0 0;",
-        i.onclick = function () {
-            t.style.display = "none"
-        },
-      //n.setAttribute("src", this.url),
-        n.setAttribute("id", "qj-iframe" + op.upid),
-        n.setAttribute("name", "qj-iframe" + op.upid),
-        n.setAttribute("width", "1000px"),
-        n.setAttribute("height", "600px"),
-        n.style.cssText = "width: 100%;height: 100%;z-index: 2002;border:none;background-color: #fff;",
-        o.appendChild(n),
-        o.appendChild(i),
-        o.appendChild(f),
-        t.appendChild(e),
-        t.appendChild(o),
-        document.getElementsByTagName("body")[0].appendChild(t),
-        document.getElementById("qjclose" + op.upid).onclick = function () {
-            document.getElementById("qj-wrapAll" + op.upid).style.display = "none";
-            "function" == typeof op.options.closeupwin && op.options.closeupwin(qjfiledata, op.uploadButton);
-        },
-        n
+            t.style.display = "none",
+            f.style.cssText = "width: 100%;height: 50px;background-color:#fff;margin-top: -6px;text-align: right;",
+            e.style.cssText = "display: block;position: fixed;left: 0;top: 0;width: 100%;height: 100%;z-index: 2001;background-color: #000;-moz-opacity: 0.5;opacity: .50;filter: alpha(opacity=50);",
+            o.style.cssText = "display: block;position: fixed;left: " + op.options.left + ";top: " + op.options.top + ";width: " + op.options.width + ";height: " + op.options.height + ";BACKGROUND-COLOR: #00b7ee; z-index: 2002;box-shadow: 0 0 25px rgba(0,0,0,0.7);border-radius: 5px;padding-top: 45px;",
+            i.innerHTML = "&times;",
+            f.innerHTML = " <button id='qjclose" + op.upid + "' style='margin-top: 5px;cursor:pointer;height: 40px;margin-right: 10px;width: 120px;font-size: 14px;background-color: rgb(0, 183, 238); border: 0; color: #fff;'>确定</button>",
+            i.style.cssText = "width: 40px;height: 40px;position: absolute;top: 0px;right: 0px;cursor: pointer;text-align: center;line-height: 40px;color: #FFF;font-size: 30px;font-family: microsoft yahei;border-radius: 0 5px 0 0;",
+            i.onclick = function () {
+                t.style.display = "none"
+            },
+            //n.setAttribute("src", this.url),
+            n.setAttribute("id", "qj-iframe" + op.upid),
+            n.setAttribute("name", "qj-iframe" + op.upid),
+            n.setAttribute("width", "1000px"),
+            n.setAttribute("height", "600px"),
+            n.style.cssText = "width: 100%;height: 100%;z-index: 2002;border:none;background-color: #fff;",
+            o.appendChild(n),
+            o.appendChild(i),
+            o.appendChild(f),
+            t.appendChild(e),
+            t.appendChild(o),
+            document.getElementsByTagName("body")[0].appendChild(t),
+            document.getElementById("qjclose" + op.upid).onclick = function () {
+                document.getElementById("qj-wrapAll" + op.upid).style.display = "none";
+                "function" == typeof op.options.closeupwin && op.options.closeupwin(qjfiledata, op.uploadButton);
+            },
+            n
     },
     _handleMsgReceive: function () {
         var t = this;
