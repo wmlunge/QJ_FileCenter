@@ -18,6 +18,72 @@ namespace QJ_FileCenter
 
 
 
+
+        public void GETUSERINFO(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            msg.Result = UserInfo;
+            msg.Result1 = appsetingB.GetValueByKey("sysname");
+            msg.Result2 = appsetingB.GetValueByKey("qyname");
+
+        }
+
+
+
+        /// <summary>
+        /// 获取用户列表,排除管理员
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="msg"></param>
+        /// <param name="P1"></param>
+        /// <param name="P2"></param>
+        /// <param name="UserInfo"></param>
+
+        public void GETUSERS(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+
+            msg.Result = new JH_Auth_UserB().GetEntities(D => D.username != "admin");
+
+        }
+
+
+        public void DELUSER(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            new JH_Auth_UserB().Delete(D => D.username == P1);
+        }
+
+
+        public void MANGUSER(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+
+            user model = JsonConvert.DeserializeObject<user>(P1);
+
+            if (string.IsNullOrEmpty(model.username))
+            {
+                msg.ErrorMsg = "用户名称不能为空";
+            }
+            else
+            {
+                if (model.ID == 0)
+                {
+                    user nmodel = new JH_Auth_UserB().GetEntity(d => d.username == model.username);
+                    if (nmodel != null)
+                    {
+                        msg.ErrorMsg = "存储空间已存在";
+                    }
+                }
+            }
+            if (model.ID == 0)
+            {
+                model.Space = 0;
+                model.pasd = CommonHelp.GetMD5("abc123");
+                new JH_Auth_UserB().Insert(model);
+            }
+            else
+            {
+                new JH_Auth_UserB().Update(model);
+            }
+        }
+
         /// <summary>
         /// 添加文件夹
         /// </summary>
@@ -118,11 +184,19 @@ namespace QJ_FileCenter
                         FT_Folder PModel = new FT_FolderB().GetEntity(d => d.ID == PID);
                         FT_Folder Model = new FT_FolderB().GetEntity(d => d.ID == itemid);
                         Model.PFolderID = PID;
-                        Model.Remark = PModel.Remark + "-" + Model.ID;
                         new FT_FolderB().Update(Model);
 
+                        //找到所有需要更新得，然后批量更新
+                        List<FT_Folder> ALLFolders = new FT_FolderB().GetEntities(" Remark LIKE '" + Model.Remark + "%'").ToList();
+                        string strOldRemark = Model.Remark;
+                        string strNewRemark = PModel.Remark + "-" + Model.ID;
+                        foreach (FT_Folder folder in ALLFolders)
+                        {
+                            folder.Remark = folder.Remark.Replace(strOldRemark, strNewRemark);
+                        }
+                        new FT_FolderB().Update(ALLFolders);
                         //子文件夹路径修改
-                        new FT_FolderB().ExsSql("  UPDATE  FT_Folder set Remark= '" + PModel.Remark + "'+SUBSTRING(Remark, CHARINDEX('-" + Model.ID + "-',Remark), 2000) WHERE  Remark LIKE '" + Model.Remark + "-%' ");
+                        // new FT_FolderB().ExsSql("  UPDATE  FT_Folder set Remark= '" + PModel.Remark + "'+SUBSTRING(Remark, CHARINDEX('-" + Model.ID + "-',Remark), 2000) WHERE  Remark LIKE '" + Model.Remark + "-%' ");
                     }
                 }
             }
@@ -138,6 +212,10 @@ namespace QJ_FileCenter
                 if (item["type"].ToString() == "file")
                 {//删除文件
                     new FT_FileB().Delete(d => d.ID.ToString() == item["ID"].ToString());
+
+                    string strZYID = item["zyid"].ToString();
+                    //物理删除
+                    DELWJ(context, msg, strZYID, P2, UserInfo);
                     new FT_File_UserAuthB().Delete(d => d.RefID.ToString() == item["ID"].ToString() && d.RefType == "1");
                 }
                 else
@@ -648,7 +726,7 @@ namespace QJ_FileCenter
         /// <param name="UserInfo"></param>
         public void GETNBGXLY(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
-            string strSQL = " SELECT DISTINCT  FT_File_UserAuth.CRUser,JH_Auth_User.UserRealName FROM FT_File_UserAuth LEFT JOIN  JH_Auth_User ON FT_File_UserAuth.CRUser=JH_Auth_User.UserName  WHERE    " + SqlHelp.concat("','+AuthUser+','") + "   like '%," + UserInfo.User.username + ",%'";
+            string strSQL = " SELECT DISTINCT  FT_File_UserAuth.CRUser,user.UserRealName FROM FT_File_UserAuth LEFT JOIN  user ON FT_File_UserAuth.CRUser=user.username  WHERE    " + SqlHelp.concat("','+AuthUser+','") + "   like '%," + UserInfo.User.username + ",%'";
             DataTable dtUserS = new FT_FolderB().GetDTByCommand(strSQL);
             msg.Result = dtUserS;
         }
@@ -931,11 +1009,6 @@ namespace QJ_FileCenter
         #endregion
 
 
-
-
-
-
-
         #region 文档知识库
 
 
@@ -1081,6 +1154,170 @@ namespace QJ_FileCenter
             new FT_FileB().Update(model);
             msg.Result = model;
 
+        }
+
+        #endregion
+
+
+
+
+        #region 管理员接口
+
+        public void GETSYDATA(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            msg.Result = new QycodeB().GetALLEntities().Count();
+            msg.Result1 = new DocumentB().GetALLEntities().Count();
+            msg.Result2 = new DocumentB().GetALLEntities().Sum(d => long.Parse(d.filesize)).ToString();
+        }
+
+
+
+        public void GETQY(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            msg.Result = new QycodeB().GetALLEntities();
+        }
+
+
+        public void UPMM(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+
+            user User = new JH_Auth_UserB().GetALLEntities().FirstOrDefault();
+            User.pasd = CommonHelp.GetMD5(P2);
+            new JH_Auth_UserB().Update(User);
+        }
+
+
+        public void MANGEQY(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            Qycode model = JsonConvert.DeserializeObject<Qycode>(P1);
+
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                msg.ErrorMsg = "存储空间名称不能为空";
+            }
+            else
+            {
+                if (model.ID == 0)
+                {
+                    Qycode nmodel = new QycodeB().GetEntity(d => d.Name == model.Name);
+                    if (nmodel != null)
+                    {
+                        msg.ErrorMsg = "存储空间已存在";
+                    }
+                }
+            }
+            if (model.ID == 0)
+            {
+                model.crdate = DateTime.Now;
+                model.filecount = 0;
+                model.space = "0";
+                model.yyspace = "0";
+                new QycodeB().Insert(model);
+            }
+            else
+            {
+                new QycodeB().Update(model);
+            }
+            msg.Result = model;
+        }
+
+        public void DELQY(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            string QYCODE = P1;
+            if (!new QycodeB().Delete(D => D.Code == QYCODE))
+            {
+                msg.ErrorMsg = "删除失败";
+            }
+
+
+        }
+
+
+
+        public void GETFILELIST(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            int page = 0;
+            int pagecount = 8;
+            int.TryParse(context.Request("p") ?? "1", out page);
+            int.TryParse(context.Request("pagecount") ?? "8", out pagecount);//页数
+            page = page == 0 ? 1 : page;
+
+            string filename = P1;
+
+            if (!string.IsNullOrEmpty(filename))
+            {
+                int total = new DocumentB().GetEntities(d => d.FileName.Contains(filename) || d.Qycode.Contains(filename)).Count();
+                var files = new DocumentB().GetEntities(d => d.FileName.Contains(filename) || d.Qycode.Contains(filename)).OrderByDescending(d => d.RDate).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
+                msg.Result = files;
+                msg.Result1 = total;
+            }
+            else
+            {
+                int total = new DocumentB().GetALLEntities().Count();
+                var files = new DocumentB().GetALLEntities().OrderByDescending(d => d.RDate).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
+                msg.Result = files;
+                msg.Result1 = total;
+
+            }
+        }
+
+
+        public void GETLOGLIST(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            int page = 0;
+            int pagecount = 8;
+            int.TryParse(context.Request("p") ?? "1", out page);
+            int.TryParse(context.Request("pagecount") ?? "8", out pagecount);//页数
+            page = page == 0 ? 1 : page;
+
+            string logname = P1;
+
+            if (!string.IsNullOrEmpty(logname))
+            {
+                int total = new userlogB().GetEntities(d => d.useraction.Contains(logname)).Count();
+                var files = new userlogB().GetEntities(d => d.useraction.Contains(logname)).OrderByDescending(d => d.ID).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
+                msg.Result = files;
+                msg.Result1 = total;
+            }
+            else
+            {
+                int total = new userlogB().GetALLEntities().Count();
+                var files = new userlogB().GetALLEntities().OrderByDescending(d => d.ID).Take(pagecount * page).Skip(pagecount * (page - 1)).ToList();
+                msg.Result = files;
+                msg.Result1 = total;
+
+            }
+
+        }
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="msg"></param>
+        /// <param name="P1"></param>
+        /// <param name="P2"></param>
+        /// <param name="UserInfo"></param>
+        public void DELWJ(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            string ID = P1;
+            Document Model = new DocumentB().GetEntity(D => D.ID == ID);
+            string strFile = Model.FullPath;
+            if (!new DocumentB().Delete(Model))
+            {
+                msg.ErrorMsg = "删除失败";
+            }
+            else
+            {
+                File.Delete(strFile);
+            }
+
+
+        }
+
+
+        public void DELRZ(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            new userlogB().Delete(d => d.ID != 0);
         }
 
         #endregion

@@ -176,7 +176,7 @@
             var image = {
                 "alt": $(this).attr("filename") ? $(this).attr("filename") : "",
                 "pid": "", //图片id
-                "src": $(this).attr("imgyt"), //原图地址
+                "src": ComFunJS.getRoot() + "/" + $(this).attr("imgyt"), //原图地址
                 "thumb": $(this).attr("src") //缩略图地址
             }
             ImagesData.data.push(image);
@@ -189,9 +189,9 @@
         });
         return;
     },
-    viewfile: function (item) {
+    viewfile: function (dom,item) {
         if (ComFunJS.isPic(item.FileExtendName)) { //如果是图片格式，显示图片
-            ComFunJS.viewbigimg(this, ".imageYL")
+            ComFunJS.viewbigimg(dom, ".imageYL")
             return;
         }
         if (item.FileExtendName.toLowerCase() == "mp4") {

@@ -115,7 +115,7 @@
         fileUnit: 0,
     
         InitWigetData: function () {
-                $.getJSON('/adminapi/getsydata', {}, function (resultData) {
+            $.getJSON('/adminapi/ExeActionAuth/GETSYDATA', {}, function (resultData) {
                     if (resultData.ErrorMsg == "") {
                         tempindex.TotalSpace = resultData.Result;
                         tempindex.FileSize = resultData.Result1;

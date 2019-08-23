@@ -159,7 +159,7 @@
         },
         GetLIST: function () {
             model.page.pageindex = 1;
-            $.getJSON('/adminapi/getfilelist', { p: 1, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
+            $.getJSON('/adminapi/ExeActionAuth/GETFILELIST', { p: 1, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
                 if (resultData.ErrorMsg == "") {
                     tempindex.DataList = resultData.Result;
                     model.page.total = resultData.Result1;
@@ -170,7 +170,7 @@
                         skin: 'molv',
                         jump: function (e) { //触发分页后的回调
                             if (e.curr != model.page.pageindex) {
-                                $.getJSON('/adminapi/getfilelist', { p: e.curr, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
+                                $.getJSON('/adminapi/ExeActionAuth/GETFILELIST', { p: e.curr, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
                                     if (resultData.ErrorMsg == "") {
                                         tempindex.DataList = resultData.Result;
                                     }
@@ -188,7 +188,7 @@
                 event.stopPropagation();
             }
             ComFunJS.winconfirm("确认要删除文件“" + item.FileName + "”吗？", function () {
-                $.post("/adminapi/delwj/" + item.ID, {}, function (jsonresult) {
+                $.getJSON("/adminapi/ExeActionAuth/DELWJ", { P1: item.ID }, function (jsonresult) {
                     if ($.trim(jsonresult.ErrorMsg) == "") {
                         tempindex.DataList.remove(item);
                         ComFunJS.winsuccess("操作成功");

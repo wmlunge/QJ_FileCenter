@@ -20,7 +20,7 @@
         }
 
     .link-logo {
-        background: url(/ViewV5/images/qywd/hand.png) no-repeat;
+        background: url(/Web/images/qywd/hand.png) no-repeat;
         margin-top: -10px;
         display: block;
         height: 16px;
@@ -58,8 +58,9 @@
         cursor: zoom-in;
     }
 </style>
-<script src="/ViewV5/JS/timego.js"></script>
-
+<script src="/Web/JS/timego.js"></script>
+<script src="/Web/JS/contextmenu.js"></script>
+<script src="/Web/JS/jquery.qrcode.min.js"></script>
 <div ms-controller="APP_QYWD">
     <div class="padding20">
         <button type="button" class="btn btn-info ml20" ms-click="downloaditem"><i class="iconfont icon-xiazai ft14 mr5"></i>下载</button>
@@ -96,7 +97,7 @@
                 </thead>
                 <tbody class="wdlist">
 
-                    <tr ms-repeat-folder="FolderList" ms-on-mousedown="filecontextmenu(folder,$event)" data-repeat-rendered="filechange">
+                    <tr ms-repeat-folder="FolderList" ms-on-mousedown="filecontextmenu(folder,$event,0)" data-repeat-rendered="filechange">
                         <td class="tc">
                             <div class="icheckbox_square-blue" ms-click="selItems(folder,$event)" ms-class-1="checked:folder.issel">
                                 <span class="iconfont icon-check ft12"></span>
@@ -104,7 +105,7 @@
                         </td>
                         <td ms-click="enterFolder(folder,$event)" class="trdata">
                             <div>
-                                <img src="/ViewV5/images/qywd/file1.png" class="img40 mr5">
+                                <img src="/Web/images/qywd/file1.png" class="img40 mr5">
                                 <span class="link-logo" ms-if="folder.AuthUser"></span>
                                 {{folder.Name}}
                             </div>
@@ -116,7 +117,7 @@
                         <td>{{folder.CRDate}}</td>
 
                     </tr>
-                    <tr ms-repeat-file="FileList" ms-on-mousedown="filecontextmenu(file,$event)" data-repeat-rendered="filechange" class="trdata">
+                    <tr ms-repeat-file="FileList" ms-on-mousedown="filecontextmenu(file,$event,1)" data-repeat-rendered="filechange" class="trdata">
                         <td class="tc" style="width: 40px;">
                             <div class="icheckbox_square-blue" ms-click="selItems(file,$event)" ms-class-1="checked:file.issel">
                                 <span class="iconfont icon-check ft12"></span>
@@ -124,7 +125,7 @@
                         </td>
                         <td>
                             <div>
-                                <img ms-attr-filename="file.name" ms-attr-src="getsrc(file)" ms-click="viewitem(file)" ms-attr-imgyt="{{ComFunJS.getfile(file.ID)}}" ms-class-1="imageYL:ComFunJS.isPic(file.FileExtendName)" class="img40 mr5" onerror="javascript: this.src = '/ViewV5/images/qywd/file.png'">{{file.Name}}
+                                <img ms-attr-filename="file.name" ms-attr-src="getsrc(file)" ms-click="viewitem(file)" ms-attr-imgyt="{{ComFunJS.getfile(file.ID)}}" ms-class-1="imageYL:ComFunJS.isPic(file.FileExtendName)" class="img40 mr5" onerror="javascript: this.src = '/Web/images/qywd/file.png'">{{file.Name}}
 
                             </div>
                         </td>
@@ -193,15 +194,7 @@
 
                             </div>
                         </div>
-                        <div class="form-group mt20 mb10 c999" style="display:none">
-                            设置分享类型
-                            <select style="width:130px;height:30px;">
-                                <option value="volvo">Volvo</option>
-                                <option value="saab">Saab</option>
-                                <option value="opel">Opel</option>
-                                <option value="audi">Audi</option>
-                            </select>
-                        </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -215,7 +208,6 @@
     </div>
 
 </div>
-<script src="/ViewV5/JS/contextmenu.js"></script>
 <script>
     var tempindex = avalon.define({
         $id: "APP_QYWD",
@@ -229,13 +221,13 @@
         }],
         getsrc: function (item) {//图片真实路径
             if (item.type == 'folder') {
-                return " /ViewV5/images/qywd/file1.png";
+                return " /Web/images/qywd/file1.png";
             } else {
                 if (ComFunJS.isPic(item.FileExtendName)) {
                     return ComFunJS.getfile(item.ID) + "&width=40&height=40";
                 }
                 else {
-                    return " /ViewV5/images/qywd/" + item.FileExtendName + ".png";
+                    return " /Web/images/qywd/" + item.FileExtendName + ".png";
                 }
             }
 
@@ -257,7 +249,7 @@
         FolderList: [],
         FileList: [],
         GetListData: function (PID) {
-            $.getJSON('/api/Bll/ExeAction?Action=QYWD_GETLISTDATA', {
+            $.getJSON('/adminapi/ExeAction/GETLISTDATA', {
                 P1: PID, itemtype: tempindex.itemtype
             }, function (resultData) {//P1为个人文件夹
                 if (resultData.ErrorMsg == "") {
@@ -336,37 +328,28 @@
 
         },//进入文件夹
         viewitem: function (item) {
-            if (ComFunJS.isPic(item.FileExtendName)) { //如果是图片格式，显示图片
-                ComFunJS.viewbigimg(this, ".imageYL")
-                return;
-            }
-            if (item.FileExtendName.toLowerCase() == "mp4") {
-                top.layer.open({
-                    type: 2,
-                    fix: true, //不固定
-                    area: ['700px', '500px'],
-                    maxmin: false,
-                    content: "/ViewV5/Base/showvideo.html?md5=" + item.FileMD5,
-                    title: "",
-                    shadeClose: false, //加上边框
-                    scrollbar: false,
-                    shade: 0.4,
-                    shift: 0
-                });
-            }
-            if (ComFunJS.isOffice(item.FileExtendName)) {
-                window.open(item.YLUrl)
-            }
-
+            ComFunJS.viewfile(this, item);
         },//查看文件
-        filecontextmenu: function (item, event) {
+        filecontextmenu: function (item, event, type) {
             if (event.button == "2") {
-                tempindex.FolderList.forEach(function (el) {
-                    el.issel = item.ID == el.ID;
-                })
-                tempindex.FileList.forEach(function (el) {
-                    el.issel = item.ID == el.ID;
-                })
+                //右键选择需要特殊处理下
+                if (type == '0') {
+                    tempindex.FolderList.forEach(function (el) {
+                        el.issel = item.ID == el.ID;
+                    })
+                    tempindex.FileList.forEach(function (el) {
+                        el.issel = false;
+                    })
+                }
+                if (type == '1') {
+                    tempindex.FileList.forEach(function (el) {
+                        el.issel = item.ID == el.ID;
+                    })
+                    tempindex.FolderList.forEach(function (el) {
+                        el.issel = false;
+                    })
+                }
+
                 tempindex.SelItemData.clear();
                 tempindex.SelItemData.push(item.$model)
             }
@@ -398,7 +381,7 @@
                 if (code.length > 1) {
                     code = code.substring(0, code.length - 1)
                 }
-                top.ComFunJS.winviewform("/ViewV5/AppPage/QYWD/DownFolder.html?code=" + code, "下载文件", "550", "450")
+                top.ComFunJS.winviewform("/Web/Html/Tools/DownFolder.html?code=" + code, "下载文件", "550", "450")
             }
         },//下载文件
         ShareData: {},
@@ -406,10 +389,9 @@
         ShareWJ: function () {
             if (tempindex.SelItemData.size() == 1) {
                 var type = tempindex.SelItemData[0].FileExtendName ? "file" : "wj";
-                $.getJSON('/api/Bll/ExeAction?Action=QYWD_ADDSHARECODE', {
-                    "P1": tempindex.SelItemData[0].ID, "P2": type, url: "http://" + location.host + "/ViewV5/share.html"
+                $.getJSON('/adminapi/ExeAction/ADDSHARECODE', {
+                    "P1": tempindex.SelItemData[0].ID, "P2": type, url: "http://" + location.host + "/Web/Html/Tools/share.html"
                 }, function (result) {
-                    var result = $.parseJSON(result);
                     if (result.ErrorMsg == "") {
                         tempindex.shareType = result.Result1;
                         result.Result.ShareDueDate = result.Result.ShareDueDate.substring(0, 10);
@@ -432,8 +414,10 @@
         isDueShow: false, SetDueShow: function () {
             tempindex.isPassShow = false;
             tempindex.isDueShow = !tempindex.isDueShow;
-        }, DueDate: "", ModifyDate: function () {
-            $.getJSON('/api/Bll/ExeAction?Action=QYWD_MODIFYJZDATE', {
+        },
+        DueDate: "",
+        ModifyDate: function () {
+            $.getJSON('/adminapi/ExeAction/MODIFYJZDATE', {
                 "P1": tempindex.ShareData.ID, "P2": tempindex.DueDate
             }, function (result) {
                 if (result.ErrorMsg == "") {
@@ -441,8 +425,9 @@
                     tempindex.ShareData.ShareDueDate = tempindex.DueDate.substring(0, 10);
                 }
             })
-        }, DelShare: function () {
-            $.getJSON('/api/Bll/ExeAction?Action=QYWD_DELSHARECODE', {
+        },
+        DelShare: function () {
+            $.getJSON('/adminapi/ExeAction/DELSHARECODE', {
                 "P1": tempindex.ShareData.ID
             }, function (result) {
                 if (result.ErrorMsg == "") {
@@ -450,22 +435,24 @@
                     $("#FenXiangModal").modal("hide");
                 }
             })
-        }, SetPassWord: function () {
-            $.getJSON('/api/Bll/ExeAction?Action=QYWD_MODIFYPASSWORD', {
+        },
+        SetPassWord: function () {
+            $.getJSON('/adminapi/ExeAction/MODIFYPASSWORD', {
                 "P1": tempindex.ShareData.ID, P2: tempindex.ShareData.ShareType == "0" ? "1" : "0"
             }, function (result) {
                 if (result.ErrorMsg == "") {
                     tempindex.ShareData = result.Result;
-                    top.ComFunJS.winsuccess("设置提取码成功");
+                    top.ComFunJS.winsuccess("操作成功");
                 }
             })
-        }, searchContent: "",
+        },
+        searchContent: "",
         getSearchFile: function () {
             tempindex.FileList.clear();
             tempindex.FolderList.clear();
             tempindex.SelItemData.clear();
             if (tempindex.searchContent) {
-                $.getJSON('/api/Bll/ExeAction?Action=QYWD_QUERYFILE', {
+                $.getJSON('/adminapi/ExeAction/QUERYFILE', {
                     P1: tempindex.itemtype, P2: tempindex.searchContent
                 }, function (resultData) {//P1为个人文件夹
                     if (resultData.ErrorMsg == "") {

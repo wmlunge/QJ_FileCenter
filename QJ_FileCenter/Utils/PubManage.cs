@@ -12,9 +12,9 @@ using System.Net;
 
 namespace QJ_FileCenter
 {
-    public class PubManage 
+    public class PubManage
     {
-     
+
 
 
         #region 分享查看文档操作
@@ -50,9 +50,9 @@ namespace QJ_FileCenter
 
                 if (Model.SharePasd == P2 || Model.ShareType == "0")//公开链接或者输入提取码正确
                 {
-                    string strSql = string.Format(@"SELECT qy.QYName,qy.LogoID,share.CRUserName,share.RefType,share.ShareDueDate,share.CRDate,CASE WHEN share.RefType='file' then f.Name WHEN share.RefType='wj'  THEN folder.Name END Name 
-                                            ,CASE WHEN share.RefType='file' then f.ID WHEN share.RefType='wj'  THEN folder.ID END  ID ,f.FileExtendName,f.FileSize,share.ComId,f.ISYL,f.FileMD5,qy.FileServerUrl,f.YLUrl
-                                            from FT_File_Share share INNER join JH_Auth_QY  qy on share.ComId=qy.ComId
+                    string strSql = string.Format(@"SELECT share.CRUserName,share.RefType,share.ShareDueDate,share.CRDate,CASE WHEN share.RefType='file' then f.Name WHEN share.RefType='wj'  THEN folder.Name END Name 
+                                            ,CASE WHEN share.RefType='file' then f.ID WHEN share.RefType='wj'  THEN folder.ID END  ID ,f.FileExtendName,f.FileSize,share.ComId,f.ISYL,f.FileMD5,f.YLUrl
+                                            from FT_File_Share share 
                                             LEFT join FT_File f on share.RefID=f.ID and share.ComId=f.ComId and share.RefType='file'
                                             LEFT join  FT_Folder folder on share.RefID=folder.ID and share.RefType='wj' where share.ID={0} and share.IsDel!='Y'", ID);
                     DataTable dt = new FT_File_ShareB().GetDTByCommand(strSql);
@@ -62,6 +62,10 @@ namespace QJ_FileCenter
                         if (DateTime.TryParse(dt.Rows[0]["ShareDueDate"].ToString(), out dueDate) && dueDate > DateTime.Now)
                         {
                             msg.Result = dt;
+                            msg.Result1 = appsetingB.GetValueByKey("qyname");
+                            msg.Result2 = appsetingB.GetValueByKey("qyico");
+                            msg.Result3 = appsetingB.GetValueByKey("sysname");
+
                         }
                         else
                         {
@@ -85,9 +89,8 @@ namespace QJ_FileCenter
         public void GETFILELIST(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
             int FolderID = int.Parse(P1);//
-            int ComId = int.Parse(P2);
-            msg.Result = new FT_FolderB().GetEntities(d => d.ComId == ComId && d.PFolderID == FolderID);
-            msg.Result1 = new FT_FileB().GetEntities(d => d.ComId == ComId && d.FolderID == FolderID);
+            msg.Result = new FT_FolderB().GetEntities(d => d.PFolderID == FolderID);
+            msg.Result1 = new FT_FileB().GetEntities(d => d.FolderID == FolderID);
             return;
         }
 
@@ -104,7 +107,15 @@ namespace QJ_FileCenter
         {
             int ID = int.Parse(P1);//
             FT_File_Share Model = new FT_File_ShareB().GetEntity(d => d.ID == ID && d.IsDel != "Y");
-            msg.Result = Model.ShareType;
+            msg.Result = "0";//默认公开分享
+            if (Model != null)
+            {
+                msg.Result = Model.ShareType;
+                if (Model.ShareDueDate < DateTime.Now)
+                {
+                    msg.Result1 = "-1";//过期了
+                }
+            }
         }
         /// <summary>
         /// 向服务器发送压缩目录命令
@@ -220,7 +231,7 @@ namespace QJ_FileCenter
 
 
 
-     
+
 
 
 

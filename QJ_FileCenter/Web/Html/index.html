@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/Web/CSS/animate.css">
     <link rel="stylesheet" type="text/css" href="/Web/CSS/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/Web/CSS/default.css">
-    <link rel="stylesheet" type="text/css" href="/Web/CSS/index.css?ver=2">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/index.css?ver=3">
 
     <style>
         .ms-controller, .ms-important, [ms-controller], [ms-important] {
@@ -28,6 +28,10 @@
             background-color: transparent;
             display: none;
         }
+
+        .chosen-container {
+            width: 98% !important;
+        }
     </style>
 </head>
 <body ms-controller="IndexV5" ondblclick="return false;">
@@ -35,7 +39,7 @@
         <div class="header box-shadow">
             <div class="head-center clearfix">
                 <div class="logo c666 pull-left">
-                    <img src="/Web/images/logo.png" style="max-height: 40px; margin-right: 10px;">{{CompanyData.QYName}}
+                    <img src="/Web/images/logo.png" style="max-height: 40px; margin-right: 10px;">{{QYData.sysname}}
                 </div>
                 <div class="pull-right top-fun">
                     <ul class="clearfix">
@@ -61,6 +65,12 @@
                                 扫描二维码，关注企业号
                             </div>
                         </li>
+                        <li ms-click="setyy()" ms-if="UserInfo.User.Role.indexOf('管理员') > -1">
+                            <a class="shuaxin">
+                                <i class="iconfont icon-shezhi tip" data-toggle="tooltip" title="个人/系统" data-placement="bottom"></i>
+                            </a>
+                        </li>
+                      
                         <li>
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" aria-haspopup="true">
                                 <i class="iconfont icon-pifu tip" data-toggle="tooltip" title="壁纸" data-placement="bottom"></i>
@@ -85,6 +95,21 @@
                                         <td style="border: 0">
                                             <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin5.png" />
                                         </td>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin6.jpg" />
+                                        </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin7.jpg" />
+                                        </td>
+                                        <td style="border: 0">
+                                            <img class="skintp" style="width: 120px; height: 70px" src="/Web/images/skin/skin8.jpg" />
+                                        </td>
+                                        <td style="border: 0"></td>
+
 
                                     </tr>
                                 </table>
@@ -131,7 +156,7 @@
                         <div class="head-information c666 ft14 tc ">
                             <div style="overflow: inherit;">
                                 <a class="head-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                    {{UserData.UserRealName}}<i class="caret ml5" style="border-top: 5px dashed; border-top: 5px solid \9; border-right: 5px solid transparent; border-left: 5px solid transparent;"></i>
+                                    {{UserInfo.User.UserRealName}}<i class="caret ml5" style="border-top: 5px dashed; border-top: 5px solid \9; border-right: 5px solid transparent; border-left: 5px solid transparent;"></i>
                                 </a>
                                 <ul class="dropdown-menu  animated fadeInRight">
 
@@ -145,22 +170,22 @@
                                 </ul>
                             </div>
 
-                            <div>{{UserInfo.BranchInfo.DeptName}}</div>
-                            <div>{{UserData.zhiwu?UserData.zhiwu:"暂无"}}</div>
+                            <div>{{UserInfo.User.Role}}</div>
+                            <div>{{UserInfo.User.username}}</div>
                         </div>
                     </div>
                     <div class="nav-list">
                         <ul>
-                            <li class="active" ms-click="SelModelMenu('')" ms-if="model.yytype=='WORK'">
+                            <!--<li class="active" ms-click="SelModelMenu('')" ms-if="model.yytype=='WORK'">
                                 <a>
                                     <i class="iconfont icon-gongzuotai"></i>
                                     <span>首页</span>
                                 </a>
-                            </li>
+                            </li>-->
 
-                            <li ms-repeat-item="UseYYList" ms-click="SelModelMenu(item)">
+                            <li ms-repeat-item="UseYYList" ms-click="SelModelMenu(item)" ms-visible="item.PModelCode==model.yytype">
                                 <a ms-attr-title="item.ModelName">
-                                    <i class="iconfont" ms-class-1="icon-{{item.ModelCode.toLowerCase()}}:true"></i>
+                                    <i class="iconfont icon-yingyongzongshu"></i>
                                     <span>{{item.ModelName}}</span>
                                 </a>
                             </li>
@@ -196,7 +221,7 @@
                                 <a href="###" class="small-title">
                                     <i class="iconfont icon-you pull-right"></i>
                                     <span class="small-img">
-                                        <img src="images/icon/XXFB.png">新闻公告
+                                        <img src="/Web/images/icon/XXFB.png">新闻公告
                                     </span>
                                 </a>
                                 <ul>
@@ -229,7 +254,7 @@
 
                     <div class="modal-tj mt10">
                         <ul class="list-unstyled fun-box crm-kh-px tc">
-                            <li ms-repeat-item="UseYYList" ms-click="SaveYY(item)" ms-visible="item.PModelCode==model.menutype">
+                            <li ms-repeat-item="UseYYList" ms-click="SaveYY(item)" ms-visible="item.PModelCode==model.yytype">
                                 <div class="fun-list-cont " ms-class-1="active:item.ISSY==1">
                                     <span>{{item.ModelName}}</span>
                                 </div>
@@ -344,7 +369,6 @@
         <div class="tipSwitch"></div>
     </div>
 
-    <!-- 修改密码 -->
     <script type="text/javascript" src="/Web/JS/jquery-1.11.1.min.js"></script>
     <script src="/Web/JS/bootstrap.js"></script>
     <script src="/Web/JS/layer/layer.js"></script>
@@ -353,6 +377,8 @@
     <script src="/Web/JS/toastr.js"></script>
     <script src="/Web/JS/clipboard.js"></script>
     <script src="/Web/JS/avalon1.47.js?ver=1"></script>
+    <script src="/Web/JS/chosen/chosen.jquery.min.js?ver=1"></script>
+    <script src="/Web/JS/range/range.js"></script>
     <script src="/Web/JS/SZHLCommon.js"></script>
     <script src="/Web/JS/index.js"></script>
     <script type="text/javascript">
@@ -388,6 +414,21 @@
                 opacity = localStorage.getItem("opacity");
             }
             $("body").css("opacity", "." + opacity);
+            $('.single-slider').val(opacity)
+            $('.single-slider').jRange({
+                from: 75,
+                to: 99,
+                step: 1,
+                scale: [75, 99],
+                format: '%s',
+                width: 280,
+                onstatechange: function (val) {
+                    $("body").css("opacity", "." + val);
+                    localStorage.setItem("opacity", val);
+
+                }
+            });
+
             $(document).on("mouseover", ".tip", function () {
                 $(this).tooltip('show');
             });//提示工具

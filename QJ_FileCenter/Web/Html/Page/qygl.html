@@ -118,7 +118,7 @@
             tempindex.GetLIST();
         },
         GetLIST: function () {
-            $.getJSON('/adminapi/getqy', { P2: "" }, function (resultData) {
+            $.getJSON('/adminapi/ExeActionAuth/GETQY', { P2: "" }, function (resultData) {
                 if (resultData.ErrorMsg == "") {
                     tempindex.DataList = resultData.Result;
                 }
@@ -129,7 +129,7 @@
                 event.stopPropagation();
             }
             ComFunJS.winconfirm("确认要删除空间“" + item.Name + "”吗？", function () {
-                $.post("/adminapi/delqy", { P1: item.Code }, function (jsonresult) {
+                $.getJSON("/adminapi/ExeActionAuth/DELQY", { P1: item.Code }, function (jsonresult) {
                     if ($.trim(jsonresult.ErrorMsg) == "") {
                         tempindex.DataList.remove(item);
                         ComFunJS.winsuccess("操作成功");
@@ -146,7 +146,7 @@
                 ComFunJS.winwarning("请输入空间代码");
                 return;
             }
-            $.post("/adminapi/mangeqy", { P1: JSON.stringify(tempindex.spaceitem.$model) }, function (jsonresult) {
+            $.getJSON("/adminapi/ExeActionAuth/MANGEQY", { P1: JSON.stringify(tempindex.spaceitem.$model) }, function (jsonresult) {
                 if ($.trim(jsonresult.ErrorMsg) == "") {
                     ComFunJS.winsuccess("操作成功");
                     $('#UpdateZD').modal('hide');

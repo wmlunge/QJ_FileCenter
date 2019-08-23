@@ -67,7 +67,9 @@ namespace QJ_FileCenter
         public dynamic Result1 { get; set; }
         public dynamic Result2 { get; set; }
 
+        public dynamic Result3 { get; set; }
 
+        public dynamic Result4 { get; set; }
 
     }
 }

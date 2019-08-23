@@ -68,9 +68,8 @@
         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addForderModal"><i class="iconfont icon-xinjian ft14 mr5"></i>新建文件夹</button>
         <button type="button" class="btn btn-info ml20" ms-click="downloaditem()"><i class="iconfont icon-xiazai ft14 mr5"></i>下载</button>
         <button type="button" class="btn btn-info" ms-click="delitem()"><i class="iconfont icon-shanchu ft14 mr5"></i>删除</button>
-        <button type="button" class="btn btn-info" ms-click="moveitem()" ms-if="itemtype==2"><i class="iconfont icon-shanchu ft14 mr5"></i>移动</button>
-        <button type="button" class="btn btn-info" ms-click="Share()" ms-if="itemtype==2"><i class="iconfont icon-fenxiang2 ft14 mr5"></i>分享</button>
-
+        <button type="button" class="btn btn-info" ms-click="moveitem()"><i class="iconfont icon-yidong2 ft14 mr5"></i>移动</button>
+        <button type="button" class="btn btn-info" ms-click="Share()"><i class="iconfont icon-fenxiang2 ft14 mr5"></i>分享</button>
         <div class="input-group ml15 pull-right" style="width: 355px;">
             <input type="search" class="form-control" ms-duplex="searchContent" placeholder="输入文件名或后缀搜索">
             <span class="input-group-addon" ms-click="getSearchFile()">搜索</span>
@@ -95,13 +94,13 @@
                         <th>文件名</th>
                         <th style="width: 120px;"></th>
                         <th style="width: 40px;"></th>
-                        <th style="width: 100px;">大小</th>
+                        <th style="width: 120px;">大小</th>
                         <th style="width: 80px;">格式</th>
                         <th style="width: 160px;">创建时间</th>
                     </tr>
                 </thead>
                 <tbody class="wdlist">
-                    <tr ms-repeat-folder="FolderList" ms-on-mousedown="filecontextmenu(folder,$event)" data-repeat-rendered="filechange">
+                    <tr ms-repeat-folder="FolderList" ms-on-mousedown="filecontextmenu(folder,$event,0)" data-repeat-rendered="filechange">
                         <td class="tc">
                             <div class="icheckbox_square-blue" ms-click="selItems(folder,$event)" ms-class-1="checked:folder.issel">
                                 <span class="iconfont icon-check ft12"></span>
@@ -122,7 +121,7 @@
                         <td></td>
                         <td>{{folder.CRDate|date('yyyy-MM-dd HH:ss')}}</td>
                     </tr>
-                    <tr ms-repeat-file="FileList" ms-on-mousedown="filecontextmenu(file,$event)" data-repeat-rendered="filechange" class="trdata">
+                    <tr ms-repeat-file="FileList" ms-on-mousedown="filecontextmenu(file,$event,1)" data-repeat-rendered="filechange" class="trdata">
                         <td class="tc" style="width: 40px;">
                             <div class="icheckbox_square-blue" ms-click="selItems(file,$event)" ms-class-1="checked:file.issel">
                                 <span class="iconfont icon-check ft12"></span>
@@ -134,7 +133,7 @@
                             </div>
                         </td>
                         <td class="tl">
-                            <a class="btn btn-link" ms-if="(file.ISYL&&file.YLUrl)||file.FileExtendName.toLowerCase()=='mp4'" ms-click="viewitem(file)">{{file.FileExtendName.toLowerCase()=="mp4"?"播放":"预览"}}</a>
+                            <a class="btn btn-link" ms-if="file.ISYL||file.FileExtendName.toLowerCase()=='mp4'" ms-click="viewitem(file)">{{file.FileExtendName.toLowerCase()=="mp4"?"播放":"预览"}}</a>
                         </td>
                         <td class="tc"></td>
                         <td>{{ComFunJS.converfilesize(file.FileSize)}}</td>
@@ -151,10 +150,6 @@
                     <!--   <li><a href="javascript:void(0)">&nbsp;复制</a></li>
                     <li><a href="javascript:void(0)">&nbsp;剪切</a></li>-->
                     <li><a href="javascript:void(0)" ms-click="delitem">&nbsp;删除</a></li>
-                    <!--  <li ms-visible="!menuattr.issc"><a href="javascript:void(0)">&nbsp;收藏</a></li>
-                    <li style="background-color: antiquewhite" ms-visible="menuattr.issc"><a href="javascript:void(0)">&nbsp;取消收藏</a></li>-->
-                    <!--<li ms-class-1="active:menuattr.isfx"><a href="javascript:void(0)">&nbsp;外部分享</a></li>-->
-                    <!--     <li ms-class-1="active:menuattr.isgx" ms-if="rootpath!=2"><a href="javascript:void(0)">&nbsp;内部权限设置</a></li>-->
                     <li role="separator" class="divider"></li>
                     <li><a href="javascript:void(0)" ms-click="moveitem()" ms-if="itemtype==2">&nbsp;移动</a></li>
                     <li><a href="javascript:void(0)" ms-click="Share()">&nbsp;外部分享</a></li>
@@ -250,15 +245,7 @@
                             <div id="qrcode" class="c999 text-blue-2 ml20 pl20 mt10">
                             </div>
                         </div>
-                        <div class="form-group mt20 mb10 c999" style="display: none">
-                            设置分享类型
-                            <select style="width: 130px; height: 30px;">
-                                <option value="volvo">Volvo</option>
-                                <option value="saab">Saab</option>
-                                <option value="opel">Opel</option>
-                                <option value="audi">Audi</option>
-                            </select>
-                        </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -292,10 +279,12 @@
                             <div style="display: block">
                                 <p>选择要授权的人员</p>
                                 <div class="input-group mt10 mb10" style="width: 500px;">
-                                    <input type="search" class="form-control szhl_getPeoples" id="squsers" style="display: none">
+                                    <select class="form-control chosen-select" id="squsers" ms-duplex="ShareData.ShareURL" multiple style="width:98%" data-placeholder="选择授权人员">
+                                        <option ms-repeat-item="userlist" ms-attr-value="item.username">{{item.UserRealName}}</option>
+                                    </select>
                                 </div>
                             </div>
-                            <span class="c999  text-blue-2"><a ms-click="cancelshouquan()" style="font-size: 14px">取消授权</a></span>
+                            <span class="c999  text-blue-2 hidden"><a ms-click="cancelshouquan()" style="font-size: 14px">取消授权</a></span>
                         </div>
                     </div>
                 </div>
@@ -364,6 +353,7 @@
             }
             tempindex.GetListData(tempindex.itemtype);
             tempindex.initFile();
+
             // 切换
         },
         Pathdata: [],
@@ -388,6 +378,8 @@
         gopath: function (path) {
             tempindex.SelItemData.clear();//清除选择项
             $(".icheckbox_square-blue").removeClass("checked")//清除所有样式
+            tempindex.FolderList = [];
+            tempindex.FileList = [];
             tempindex.GetListData(path.ID);
             for (i = tempindex.Pathdata.size() - 1; i >= 0; i--) {
                 if (tempindex.Pathdata[i].ID != path.ID) {
@@ -401,6 +393,7 @@
         },//目录链接
         FolderList: [],
         FileList: [],
+        userlist: [],
         GetListData: function (PID) {
             $.getJSON('/adminapi/ExeAction/GETLISTDATA', {
                 P1: PID, P2: "Y", itemtype: tempindex.itemtype
@@ -504,7 +497,7 @@
                     tempindex.Pathdata.forEach(function (item) {
                         if (item.active) {
                             newforder.PFolderID = item.ID;
-                            newforder.FolderLev = item.FolderLev * 1 + 1;
+                            newforder.FolderLev = 0;
                             newforder.Remark = item.Remark;//路径
                         }
                     })//计算新增文件夹的父目录和层级（默认父目录为2,层级为1）
@@ -577,6 +570,13 @@
                     }
                 });
             })
+            $.getJSON('/adminapi/ExeAction/GETUSERS', {
+            }, function (resultData) {//获取用户列表
+                if (resultData.ErrorMsg == "") {
+                    tempindex.userlist = resultData.Result;
+                    $(".chosen-select").chosen();
+                }
+            })
         },
         downloaditem: function () {
             if (tempindex.SelItemData.size() == 0) {
@@ -604,14 +604,26 @@
             })
             ComFunJS.winviewform("/Web/Html/Tools/APP_QYWD_SX.html?path=" + escape(path) + "&id=" + tempindex.SelItemData[0].ID + "&type=" + tempindex.SelItemData[0].type, "属性", "700", "550");
         },//属性
-        filecontextmenu: function (item, event) {
+        filecontextmenu: function (item, event, type) {
             if (event.button == "2") {
-                tempindex.FolderList.forEach(function (el) {
-                    el.issel = item.ID == el.ID;
-                })
-                tempindex.FileList.forEach(function (el) {
-                    el.issel = item.ID == el.ID;
-                })
+                //右键选择需要特殊处理下
+                if (type == '0') {
+                    tempindex.FolderList.forEach(function (el) {
+                        el.issel = item.ID == el.ID;
+                    })
+                    tempindex.FileList.forEach(function (el) {
+                        el.issel = false;
+                    })
+                }
+                if (type == '1') {
+                    tempindex.FileList.forEach(function (el) {
+                        el.issel = item.ID == el.ID;
+                    })
+                    tempindex.FolderList.forEach(function (el) {
+                        el.issel = false;
+                    })
+                }
+
                 tempindex.SelItemData.clear();
                 tempindex.SelItemData.push(item.$model)
             }
@@ -673,30 +685,37 @@
             }
         },//修改名称
         viewitem: function (item) {
-            ComFunJS.viewfile(item);
+            ComFunJS.viewfile(this, item);
         },//查看文件
         nbShare: function () {
             $.getJSON('/adminapi/ExeAction/GETNBSQUSERS', {
                 "P1": tempindex.SelItemData[0].ID
             }, function (result) {
                 if (result.ErrorMsg == "") {
-                    $("#squsers").val(result.Result),
-                        ComFunJS.initForm();
+                    var rolecode = result.Result.split(',')
+                    $("#squsers").val(rolecode)
+                    $('#squsers').trigger('chosen:updated');
                     $("#NBFenXiangModal").modal("show");
                 }
             })
         },
         shouquan: function () {
             if (tempindex.SelItemData.size() == 1) {
-                $.getJSON('/adminapi/ExeAction/SETAUTH', {
-                    P1: $("#squsers").val(),
-                    "P2": tempindex.SelItemData[0].ID
-                }, function (result) {
-                    if (result.ErrorMsg == "") {
-                        top.ComFunJS.winsuccess("授权成功");
-                        $("#NBFenXiangModal").modal("hide");
-                    }
-                })
+                if ($("#squsers").val()) {
+                    $.getJSON('/adminapi/ExeAction/SETAUTH', {
+                        P1: $("#squsers").val().join(),
+                        "P2": tempindex.SelItemData[0].ID
+                    }, function (result) {
+                        if (result.ErrorMsg == "") {
+                            top.ComFunJS.winsuccess("授权成功");
+                            $("#NBFenXiangModal").modal("hide");
+                        }
+                    })
+                } else {
+                    //取消授权
+                    tempindex.cancelshouquan()
+                }
+
             } else {
                 top.ComFunJS.winwarning("请选中一项要授权的文件夹");
             }
@@ -746,7 +765,9 @@
         isDueShow: false, SetDueShow: function () {
             tempindex.isPassShow = false;
             tempindex.isDueShow = !tempindex.isDueShow;
-        }, DueDate: "", ModifyDate: function () {
+        },
+        DueDate: "",
+        ModifyDate: function () {
             $.getJSON('/adminapi/ExeAction/MODIFYJZDATE', {
                 "P1": tempindex.ShareData.ID, "P2": tempindex.DueDate
             }, function (result) {
@@ -755,7 +776,8 @@
                     tempindex.ShareData.ShareDueDate = tempindex.DueDate.substring(0, 10);
                 }
             })
-        }, DelShare: function () {
+        },
+        DelShare: function () {
             $.getJSON('/adminapi/ExeAction/DELSHARECODE', {
                 "P1": tempindex.ShareData.ID
             }, function (result) {
@@ -764,7 +786,8 @@
                     $("#FenXiangModal").modal("hide");
                 }
             })
-        }, SetPassWord: function () {
+        },
+        SetPassWord: function () {
             $.getJSON('/adminapi/ExeAction/MODIFYPASSWORD', {
                 "P1": tempindex.ShareData.ID, P2: tempindex.ShareData.ShareType == "0" ? "1" : "0"
             }, function (result) {
@@ -773,23 +796,19 @@
                     top.ComFunJS.winsuccess("操作成功");
                 }
             })
-        }, moveitem: function () {
+        },
+        moveitem: function () {
             if (tempindex.SelItemData.size()) {
-                top.ComFunJS.winbtnwin("/Web/Html/Tools/FolderSel.html", "选择文件夹", "550", "500", {}, function (layero, index, btdom) {
+                top.ComFunJS.winbtnwin("/Web/Html/Tools/FolderSel.html?foldertype=" + tempindex.itemtype, "选择文件夹", "450", "500", {}, function (layero, index, btdom) {
                     var fjids = ""
                     var frameid = $("iframe", $(layero)).attr('id');
                     var nowwin = ComFunJS.isIE() ? top.window.frames[frameid] : top.window.frames[frameid].contentWindow;
-                    var fjdata = nowwin.model.selfiles.$model;
-                    if (nowwin.model.selfiles.size() == 0) {
-
-                        top.ComFunJS.winwarning("请选择移动到的文件夹");
-                        return;
-                    }
+                    var fjdata = nowwin.model.selfolder.$model;
                     $.getJSON('/adminapi/ExeAction/PASTEITEM', {
-                        "P1": fjdata[0].ID, P2: JSON.stringify(tempindex.SelItemData.$model), PASTETYPE: "PASTE"
+                        "P1": fjdata.ID, P2: JSON.stringify(tempindex.SelItemData.$model), PASTETYPE: "PASTE"
                     }, function (result) {
                         if (result.ErrorMsg == "") {
-                            tempindex.GetListData(tempindex.SelItemData[0].FolderID);
+                            tempindex.gopath(tempindex.Pathdata[tempindex.Pathdata.length - 1]);
                             top.ComFunJS.winsuccess("移动成功");
                         }
                     })

@@ -14,6 +14,20 @@ namespace QJFile.Data
     {
 
     }
+
+    public class appsetingB : BaseEFDao<appseting>
+    {
+        public static string GetValueByKey(string strKey)
+        {
+            string strValue = "";
+            var keys = new appsetingB().GetEntities(d => d.Key == strKey).ToList();
+            if (keys.Count() > 0)
+            {
+                strValue = keys[0].Value;
+            }
+            return strValue;
+        }
+    }
     public class JH_Auth_UserB : BaseEFDao<user>
     {
         /// <summary>

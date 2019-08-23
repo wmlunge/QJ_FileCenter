@@ -20,11 +20,11 @@
             $id: "wdlist",
             wjjData: [],
             itemtype: ComFunJS.getQueryString("foldertype", "2"),
-            initfolderid: ComFunJS.getQueryString("folderid", "2"),
+            initfolderid: ComFunJS.getQueryString("foldertype", "2"),
             selfolder: {},
             pathdata: [],
             getlist: function () {
-                $.getJSON("/adminapi/ExeAction/GETLISTDATA", { P1: model.selfolder.ID, itemtype: 2 }, function (r) {
+                $.getJSON("/adminapi/ExeAction/GETLISTDATA", { P1: model.selfolder.ID, itemtype: model.itemtype }, function (r) {
                     if (r.ErrorMsg == "") {
                         for (var i = 0; i < r.Result.length; i++) {
                             r.Result[i].issel = false;
@@ -60,8 +60,8 @@
             selfiles: []
         })
         avalon.ready(function () {
-            model.selfolder = { ID: model.initfolderid, Name: "个人文档" };
-            model.pathdata.push({ ID: model.initfolderid, Name: "个人文档" });
+            model.selfolder = { ID: model.initfolderid, Name: "根目录" };
+            model.pathdata.push({ ID: model.initfolderid, Name: "根目录" });
             model.getlist();
         })
     </script>
@@ -79,11 +79,11 @@
             <table class="table">
                 <tbody>
                     <tr ms-repeat-wjj="wjjData" style="width:100%">
-                        <th style="width:40px;vertical-align:middle">
+                        <!--<th style="width:40px;vertical-align:middle">
                             <div class="icheckbox_square-blue" ms-click="clickFolder(wjj,$event)" ms-class-1="checked:wjj.issel">
                                 <span class="iconfont icon-check ft12"></span>
                             </div>
-                        </th>
+                        </th>-->
                         <th>
                             <img style="height:40px;width:40px" src="/Web/images/qywd/file1.png" /><a style="margin-left:5px" href="#" ms-click="enterwjj(wjj)"> {{wjj.Name}}</a>
                         </th>

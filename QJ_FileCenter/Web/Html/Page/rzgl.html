@@ -85,7 +85,7 @@
         },
         DelLog: function () {
             ComFunJS.winconfirm("确认要清空日志吗？", function () {
-                $.post("/adminapi/delrz", { P1: "" }, function (jsonresult) {
+                $.getJSON("/adminapi/ExeActionAuth/DELRZ", { P1: "" }, function (jsonresult) {
                     if ($.trim(jsonresult.ErrorMsg) == "") {
                         tempindex.GetLIST();
                         ComFunJS.winsuccess("操作成功");
@@ -95,7 +95,7 @@
         },
         GetLIST: function () {
             model.page.pageindex = 1;
-            $.getJSON('/adminapi/getloglist', { p: 1, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
+            $.getJSON('/adminapi/ExeActionAuth/GETLOGLIST', { p: 1, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
                 if (resultData.ErrorMsg == "") {
                     tempindex.DataList = resultData.Result;
                     model.page.total = resultData.Result1;
@@ -106,7 +106,7 @@
                         skin: 'molv',
                         jump: function (e) { //触发分页后的回调
                             if (e.curr != model.page.pageindex) {
-                                $.getJSON('/adminapi/getloglist', { p: e.curr, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
+                                $.getJSON('/adminapi/ExeActionAuth/GETLOGLIST', { p: e.curr, pagecount: model.page.pagecount, P1: $("#search").val() }, function (resultData) {
                                     if (resultData.ErrorMsg == "") {
                                         tempindex.DataList = resultData.Result;
                                     }

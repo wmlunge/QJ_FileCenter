@@ -91,15 +91,18 @@ QJUpload.prototype = {
     _handleMsgReceive: function () {
         var t = this;
         this._addHander(window, "message", function (e) {
-            var o = JSON.parse(e.data);
-            switch (o.type) {
-
-                case "filecomplete":
-                    qjfiledata = o.data;
-                    "function" == typeof t.options.filecomplete && t.options.filecomplete(o.data);
-                    break;
-                case "closewin":
-                    closeWrap();
+            try {
+                var o = JSON.parse(e.data);
+                switch (o.type) {
+                    case "filecomplete":
+                        qjfiledata = o.data;
+                        "function" == typeof t.options.filecomplete && t.options.filecomplete(o.data);
+                        break;
+                    case "closewin":
+                        closeWrap();
+                }
+            } catch (e) {
+                console.debug(e.message);
             }
         })
     },

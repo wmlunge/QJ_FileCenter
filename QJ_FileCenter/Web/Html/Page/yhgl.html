@@ -1,0 +1,175 @@
+﻿<div ms-controller="LIST">
+    <!-- 添加按钮 -->
+    <div class="btn-add">
+        <button type="button" class="btn btn-info btn-lg" ms-click="add()"><i class="iconfont icon-jiahao ft12 mr5"></i>添加用户</button>
+    </div>
+    <!-- 按条件选择 -->
+    <div class="tab-filter-type">
+        <div class="oh" style="display: none">
+            <h5 class="pull-left tr">用户类别：</h5>
+            <ul class="tab-type ft14">
+                <li><span class="active">全部</span></li>
+                <li><span>我负责的</span></li>
+                <li><span>我创建的</span></li>
+                <li><span>已结束的</span></li>
+            </ul>
+        </div>
+
+        <!-- 搜索 -->
+        <div class="oh">
+            <div class="input-group ml15" style="width: 295px;">
+                <input type="search" class="form-control" value="" placeholder="请输入您要查找的用户">
+                <span class="input-group-addon">搜索</span>
+            </div>
+        </div>
+    </div>
+    <!-- 展开更多选项 -->
+    <!-- 表格 -->
+    <div class="default-tab ft14 pt20">
+        <table class="table table-striped table-responsive hover-btn">
+            <thead>
+                <tr>
+
+                    <th class="tc">序号</th>
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>所在分组</th>
+                    <th>所用空间</th>
+                    <th>
+                        操作
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ms-repeat-el="DataList">
+
+                    <td class="tc">{{$index+1}}</td>
+                    <td>{{el.username}}</td>
+                    <td>{{el.UserRealName}}</td>
+                    <td>{{el.Role}}</td>
+                    <td>{{ComFunJS.converfilesize(el.Space)}}</td>
+                    <td>
+                        <div class="btn-click">
+                            <a class="cz-btn ft18 js-color" data-toggle="tooltip" title="重置密码" ms-click="resetmm(el)">
+                                <i class="iconfont icon-stop"></i>
+                            </a>
+                            <a class="cz-btn ft18 bj-color" data-toggle="tooltip" title="编辑" ms-click="selitem(el)">
+                                <i class="iconfont icon-bianji"></i>
+                            </a>
+                            <a class="cz-btn ft18 sc-color" data-toggle="tooltip" title="删除" ms-click="Del(el)">
+                                <i class="iconfont icon-shanchu"></i>
+                            </a>
+                        </div>
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div class="ml15 pb20" style="display: none">
+            <button type="button" class="btn btn-info">批量结束</button>
+            <button type="button" class="btn btn-info">批量删除</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ADDKJ" role="dialog">
+        <div class="modal-dialog" role="document" style="width: 500px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">用户管理</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label"><span class="Required " style="color: red">*</span>用户名</label>
+                            <input type="text" class="form-control szhl_require" style="width: 200px" placeholder="请输入登录名" ms-duplex="item.username" />
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label"><span class="Required " style="color: red">*</span>用户姓名</label>
+                            <input type="text" class="form-control szhl_require" style="width: 200px" placeholder="请输入用户名" ms-duplex="item.UserRealName" />
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label">所在分组</label>
+                            <select class="form-control" style="width: 200px" ms-duplex="item.Role">
+                                <option value="普通用户">普通用户</option>
+                                <option value="管理员">管理员</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-success" id="conaddForder" ms-click="Save()">确&nbsp;&nbsp;认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var tempindex = avalon.define({
+        $id: "LIST",
+        DataList: [],
+        item: { ID: "0", username: "", UserRealName: "", Role: "普通用户" },
+        InitWigetData: function (arr) {
+            tempindex.GetLIST();
+        },
+        GetLIST: function () {
+            $.getJSON('/adminapi/ExeAction/GETUSERS', { P2: "" }, function (resultData) {
+                if (resultData.ErrorMsg == "") {
+                    tempindex.DataList = resultData.Result;
+                }
+            })
+        },
+        Del: function (item, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            ComFunJS.winconfirm("确认要删除空间“" + item.username + "”吗？", function () {
+                $.getJSON("/adminapi/ExeAction/DELUSER", { P1: item.username }, function (jsonresult) {
+                    if ($.trim(jsonresult.ErrorMsg) == "") {
+                        tempindex.DataList.remove(item);
+                        ComFunJS.winsuccess("操作成功");
+                    }
+                });
+            }, function () { })
+        },
+        resetmm: function (item) {
+            ComFunJS.winconfirm("确认要重置密码吗？", function () {
+                $.getJSON('/adminapi/ExeActionAuth/UPMM', { P1: "abc123", P2: "abc123" }, function (resultData) {
+                    if (resultData.ErrorMsg == "") {
+                        top.ComFunJS.winsuccess("操作成功");
+                    }
+                })
+            }, function () { })
+
+        },
+        Save: function () {
+            if (!tempindex.item.username) {
+                ComFunJS.winwarning("请输入用户登录名");
+                return;
+            }
+            if (!tempindex.item.UserRealName) {
+                ComFunJS.winwarning("请输入姓名");
+                return;
+            }
+            $.getJSON("/adminapi/ExeAction/MANGUSER", { P1: JSON.stringify(tempindex.item.$model) }, function (jsonresult) {
+                if ($.trim(jsonresult.ErrorMsg) == "") {
+                    ComFunJS.winsuccess("操作成功");
+                    $('#UpdateZD').modal('hide');
+                    top.model.refpage();
+                }
+            });
+        },
+        selitem: function (item) {
+            tempindex.item = item;
+            $("#ADDKJ").modal('show')
+        },
+        add: function () {
+            tempindex.item.ID == "0";
+            $("#ADDKJ").modal('show')
+        }
+    })
+    //# TKFL.js;
+</script>

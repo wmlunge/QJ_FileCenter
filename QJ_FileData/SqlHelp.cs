@@ -12,8 +12,11 @@ namespace QJFile.Data
         public static string concat(string strConSQL)
         {
             string strReturn = strConSQL;
-            string strDbType = GetConfig("DBType");
-            if (strDbType == "0")
+            if (new QycodeB().Db.CurrentConnectionConfig.DbType == SqlSugar.DbType.Sqlite)
+            {
+                strReturn = strReturn.Replace("+", "||");
+            }
+            if (new QycodeB().Db.CurrentConnectionConfig.DbType == SqlSugar.DbType.MySql)
             {
                 strReturn = "CONCAT(" + strReturn.Replace('+', ',') + ")";
             }

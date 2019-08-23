@@ -44,7 +44,6 @@ body{
 	font-size:2em;
 	color:#fff;
 	font-weight:800;
-	text-transform:uppercase;
 	text-align:center;
 	margin-bottom:2em;
 /*-- w3layouts --*/
@@ -105,11 +104,9 @@ body{
 }
 .login-ic input[type="text"],.login-ic  input[type="password"] {
 	    float: left;
-    background: none;
     outline: none;
     font-size: 15px;
     font-weight: 400;
-    color: #fff;
     padding: 10px 16px;
     border: none;
     border-left: 1px solid #fff;

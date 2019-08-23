@@ -14,11 +14,7 @@ namespace QJFile.Data
     {
         public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
         public SimpleClient<T> CurrentDb { get { return new SimpleClient<T>(Db); } }//用来处理T表的常用操作
-        public static string ConnectionString = @"DataSource=F:\Code\QJFileCenter\QJ_FileData\bin\FileCenter.db";
-
-        //public static string ConnectionString = Appsettings.app(new string[] { "ConnectionStrings", "Connection" });//获取连接字符串
-        //public static string DBType = Appsettings.app("DBType");//获取连接字符串
-
+        public static string ConnectionString = @"DataSource="+ AppDomain.CurrentDomain.BaseDirectory + "FileCenter.db";
 
         public BaseEFDao()
         {
@@ -125,8 +121,26 @@ namespace QJFile.Data
             return Return > 0;
         }
 
+
         /// <summary>
-        /// 更新Entity(注意这里使用的傻瓜式更新,可能性能略低)
+        /// 批量更新
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public virtual bool Update(List<T> entities)
+        {
+            int Return = 0;
+            if (entities.Count() > 0)
+            {
+                Return = Db.Updateable(entities).With(SqlWith.UpdLock).ExecuteCommand();
+            }
+            return Return > 0;
+
+        }
+
+
+        /// <summary>
+        /// 更新Entity
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
