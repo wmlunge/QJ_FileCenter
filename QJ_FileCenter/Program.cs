@@ -6,6 +6,7 @@ using QJ_FileCenter;
 using System;
 using System.Net;
 using System.ServiceProcess;
+using QJFile.Data;
 
 namespace QJ_FileCenter
 {
@@ -20,6 +21,7 @@ namespace QJ_FileCenter
 
             Logger.Initialize(PathUtil.GetLog4netPath());
             Logger.LogError("开始");
+           
 
             try
             {
@@ -28,9 +30,12 @@ namespace QJ_FileCenter
                     UrlReservations = new UrlReservations() { CreateAutomatically = true }
                 };
                 AppRepository APPR = new AppRepository();
-                string url = string.Format("http://{0}:{1}", APPR.AppConfigModel.IP, APPR.AppConfigModel.NancyPort);
+                string strIP = appsetingB.GetValueByKey("ip");
+                string port = appsetingB.GetValueByKey("port");
+
+                string url = string.Format("http://{0}:{1}", strIP, port);
                 var rootPath = APPR.AppConfigModel.RootPath;
-                var nancyHost = new NancyHost(new RestBootstrapper(rootPath), hostConfiguration, new Uri(url));
+                var nancyHost = new NancyHost(new RestBootstrapper(), hostConfiguration, new Uri(url));
                 nancyHost.Start();
                 System.Console.WriteLine("文件中心服务开启,管理地址:" + url.ToString());
 

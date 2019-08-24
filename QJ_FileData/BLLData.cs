@@ -17,7 +17,7 @@ namespace QJFile.Data
 
     public class appsetingB : BaseEFDao<appseting>
     {
-        public static string GetValueByKey(string strKey)
+        public static string GetValueByKey(string strKey, string strDefault = "")
         {
             string strValue = "";
             var keys = new appsetingB().GetEntities(d => d.Key == strKey).ToList();
@@ -25,6 +25,11 @@ namespace QJFile.Data
             {
                 strValue = keys[0].Value;
             }
+            else
+            {
+                strValue = strDefault;
+            }
+            
             return strValue;
         }
     }
@@ -359,6 +364,11 @@ namespace QJFile.Data
     }
 
     public class FT_File_VesionB : BaseEFDao<FT_File_Vesion>
+    {
+
+    }
+
+    public class helpdataB : BaseEFDao<helpdata>
     {
 
     }

@@ -11,11 +11,9 @@ namespace QJ_FileCenter
 {
     public class RestBootstrapper : DefaultNancyBootstrapper
     {
-        private string _rootPath;
-        public RestBootstrapper(string rootPath)
+        public RestBootstrapper()
             : base()
         {
-            _rootPath = rootPath;
         }
 
 
@@ -71,13 +69,7 @@ namespace QJ_FileCenter
                 return base.FavIcon;
             }
         }
-        //protected override IRootPathProvider RootPathProvider
-        //{
-        //    get
-        //    {
-        //        return new CustomRootPathProvier(_rootPath);
-        //    }
-        //}
+    
 
     }
 
@@ -186,17 +178,6 @@ namespace QJ_FileCenter
         }
     }
 
-    //public class CustomRootPathProvier : IRootPathProvider
-    //{
-    //    private string _rootPath;
-    //    public CustomRootPathProvier(string rootPath):base()
-    //    {
-    //        _rootPath = rootPath;
-    //    }
-    //    public string GetRootPath()
-    //    {
-    //        return _rootPath;
-    //    }
-    //}
+
 
 }

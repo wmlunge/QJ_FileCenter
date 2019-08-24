@@ -222,6 +222,18 @@
     <Content Include="Web\CSS\viewer.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\Html\APP_ADD.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\Html\Page\bzzx.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\Html\Page\bzxxgl.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\Html\Page\bzview.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\Html\Page\yhgl.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -331,6 +343,82 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\js\range\range.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\emotion.css" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\emotion.js" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\0.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\bface.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\cface.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\fface.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\jxface2.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\neweditor-tab-bg.png" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\tface.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\wface.gif" />
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\yface.gif" />
+    <Content Include="Web\js\umeditor\dialogs\formula\formula.css" />
+    <Content Include="Web\js\umeditor\dialogs\formula\formula.html" />
+    <Content Include="Web\js\umeditor\dialogs\formula\formula.js" />
+    <Content Include="Web\js\umeditor\dialogs\formula\images\formula.png" />
+    <Content Include="Web\js\umeditor\dialogs\image\image.css" />
+    <Content Include="Web\js\umeditor\dialogs\image\image.js" />
+    <Content Include="Web\js\umeditor\dialogs\image\images\close.png" />
+    <Content Include="Web\js\umeditor\dialogs\image\images\upload1.png" />
+    <Content Include="Web\js\umeditor\dialogs\image\images\upload2.png" />
+    <Content Include="Web\js\umeditor\dialogs\link\link.js" />
+    <Content Include="Web\js\umeditor\dialogs\map\map.html" />
+    <Content Include="Web\js\umeditor\dialogs\map\map.js" />
+    <Content Include="Web\js\umeditor\dialogs\video\images\center_focus.jpg" />
+    <Content Include="Web\js\umeditor\dialogs\video\images\left_focus.jpg" />
+    <Content Include="Web\js\umeditor\dialogs\video\images\none_focus.jpg" />
+    <Content Include="Web\js\umeditor\dialogs\video\images\right_focus.jpg" />
+    <Content Include="Web\js\umeditor\dialogs\video\video.css" />
+    <Content Include="Web\js\umeditor\dialogs\video\video.js" />
+    <Content Include="Web\js\umeditor\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\lang\en\en.js" />
+    <Content Include="Web\js\umeditor\lang\en\images\addimage.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\alldeletebtnhoverskin.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\alldeletebtnupskin.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\background.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\button.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\copy.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\deletedisable.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\deleteenable.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\imglabel.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\listbackground.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\localimage.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\music.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\rotateleftdisable.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\rotateleftenable.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\rotaterightdisable.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\rotaterightenable.png" />
+    <Content Include="Web\js\umeditor\lang\en\images\upload.png" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\copy.png" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\imglabel.png" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\localimage.png" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\music.png" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\upload.png" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\zh-cn.js" />
+    <Content Include="Web\js\umeditor\themes\default\css\umeditor.css" />
+    <Content Include="Web\js\umeditor\themes\default\css\umeditor.min.css" />
+    <Content Include="Web\js\umeditor\themes\default\images\caret.png" />
+    <Content Include="Web\js\umeditor\themes\default\images\close.png" />
+    <Content Include="Web\js\umeditor\themes\default\images\icons.gif" />
+    <Content Include="Web\js\umeditor\themes\default\images\icons.png" />
+    <Content Include="Web\js\umeditor\themes\default\images\ok.gif" />
+    <Content Include="Web\js\umeditor\themes\default\images\pop-bg.png" />
+    <Content Include="Web\js\umeditor\themes\default\images\spacer.gif" />
+    <Content Include="Web\js\umeditor\themes\default\images\videologo.gif" />
+    <Content Include="Web\js\umeditor\third-party\jquery.min.js" />
+    <Content Include="Web\js\umeditor\umeditor.config.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\umeditor.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\umeditor.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\js\viewer-jquery.min.js">
@@ -894,7 +982,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Web\js\umeditor\net\" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

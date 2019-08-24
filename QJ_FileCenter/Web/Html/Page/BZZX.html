@@ -1,0 +1,69 @@
+﻿<div class="form-horizontal" ms-controller="WF_BZZX">
+    <div style="margin: 0 80px;">
+        <div>
+            <ul class="clearfix" style="display: block;padding:0">
+                <li class="add-item add-widthall" ms-if="pname">
+                    <label>上级菜单</label>&nbsp;&nbsp;&nbsp;<label>{{pname}}</label>
+                </li>
+                <li class="add-item add-width fl-left">
+                    <label class="add-item-label">章节</label>
+                    <div class="add-ic">
+                        <input type="text" class="form-control" ms-duplex="modelData.MenuChapter" placeholder="章节" />
+                    </div>
+                </li>
+                <li class="add-item add-width fl-right">
+                    <label class="add-item-label">菜单名称</label>
+                    <div class="add-ic">
+                        <input type="text" class="form-control" ms-duplex="modelData.MenuName" placeholder="菜单名称" />
+                    </div>
+                </li>
+                <li class="add-item add-widthall">
+                    <label class="add-item-label">内容标题</label>
+                    <div class="add-ic">
+                        <input type="text" class="form-control" ms-duplex="modelData.Title" placeholder="内容标题" />
+                    </div>
+                </li>
+                <li class="add-item add-widthall ">
+                    <label class="add-item-label">内容</label>
+                    <div class="add-ic">
+                        <textarea id="helpContent" ms-duplex="modelData.HelpContent" class="span2 szhl_UEEDIT" umheight="200"></textarea>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    var tempmodel = avalon.define({
+        $id: "WF_BZZX",
+        ColumnData: [],
+        modelData: { PID: 0, MenuName: "", Title: "", HelpContent: "", CRDate: "", CRUserName: "", MenuChapter: "" },
+        pname: "",
+        inittemp: function (sid) {
+            var tpey = ComFunJS.getQueryString("type");
+            var pidname = ComFunJS.getQueryString("name", "");
+            if (tpey == 3) {
+                $.getJSON('/adminapi/ExeAction/GETBZMENUBYID', { P1: sid }, function (resultData) {
+                    tempmodel.modelData = resultData.Result;
+                    tempmodel.pname = resultData.Result1.MenuName
+                    setTimeout("ComFunJS.initForm()", 500)
+                })
+            }
+            else if (tpey == 2) {
+                tempmodel.modelData.PID = sid;
+                tempmodel.pname = pidname;
+                ComFunJS.initForm();
+            }
+            else {
+                ComFunJS.initForm();
+            }
+        }, SaveData: function (callback, btdom) {
+            console.log(JSON.stringify(tempmodel.modelData.$model));
+            $.getJSON("/adminapi/ExeAction/ADDHMENU", { P1: JSON.stringify(tempmodel.modelData.$model) }, function (result) {
+                return callback.call(this,result);
+            });
+        }
+    })
+
+    //# sourceURL=BZZX.js;
+</script>

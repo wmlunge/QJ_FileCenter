@@ -1,0 +1,144 @@
+﻿<style>
+    .pt20 {
+        padding-top: 0px;
+    }
+
+    .jg-right {
+        padding-top: 20px;
+        min-height: 700px;
+    }
+</style>
+<div ms-controller="BZZXLIST" id="bzzx">
+    <div class="jg-left pull-left ft14">
+        <p class="mb10 ft16 padding20 c999" style="border-bottom:1px solid #e5e5e5;">
+            <i class="iconfont icon-help-bangzhu mr5"></i>帮助中心
+        </p>
+        <ul class="jg-list-box" ms-if="ColumnData.size()==0">
+            <li ms-click="Editm('',1)">
+                <a class="btn-link">
+                    <div class="jg-item">
+                        <b><span class="b">添加菜单</span></b>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        <ul class="jg-list-box" ms-repeat-item="ColumnData">
+            <li>
+                <div class="jg-item" >
+                    <b class="blod-font" ms-click="helpmenu(item,this)">
+                        <span ms-if="item.MenuChapter">{{item.MenuChapter}}</span>
+                        <span class="b">{{item.MenuName}}</span>
+                    </b>
+                    <div class="jg-sz">
+                        <i class="dropdown-toggle jh" style="color:#000" data-toggle="dropdown" aria-expanded="true">+</i>
+                        <ul class="dropdown-menu  menu-tip animated fadeInRight c666">
+                            <li>
+                                <a ms-click="Editm(item,1)">添加菜单</a>
+                            </li>
+                            <li>
+                                <a ms-click="Editm(item,2)">添加子菜单</a>
+                            </li>
+                            <li>
+                                <a ms-click="Editm(item,3)">修改菜单</a>
+                            </li>
+                            <li>
+                                <a ms-click="DelHM(item)">删除</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <ul class="children-list" ms-include="'tmplmenu'"></ul>
+            </li>
+        </ul>
+    </div>
+    <script type="avalon" id="tmplmenu">
+        <li ms-repeat-item="item.SubDept">
+            <div class="jg-item" >
+                <b ms-click="helpmenu(item,this)">
+                    <span ms-if="item.MenuChapter">{{item.MenuChapter}}</span>
+                    <span class="jg-name">{{item.MenuName}}</span>
+                </b>
+                <div class="jg-sz">
+                    <i class="dropdown-toggle jh " style="color:#000" data-toggle="dropdown" aria-expanded="true">+</i>
+                    <ul class="dropdown-menu  menu-tip animated fadeInRight c666">
+                        <li>
+                            <a ms-click="Editm(item,2)">添加子菜单</a>
+                        </li>
+                        <li>
+                            <a ms-click="Editm(item,3)">修改菜单</a>
+                        </li>
+                        <li>
+                            <a ms-click="DelHM(item)">删除</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <ul class="children-list" ms-include="'tmplmenu'"></ul>
+        </li>
+    </script>
+    <div class="jg-right padding20">
+        <div class="help-us" ms-if="bzcontent.Title">
+            <h2>{{bzcontent.Title}}</h2>
+            <p class="mt10 c999">
+                <span class="mr20"><i class="iconfont icon-help-user mr5"></i>发布者：{{bzcontent.CRUserName}}</span>
+                <span class="mr20"><i class="iconfont icon-time-last mr5"></i>更新时间：{{bzcontent.CRDate}}</span>
+            </p>
+        </div>
+        <div ms-html="bzcontent.HelpContent"></div>
+        <div style="clear:both;"></div>
+    </div>
+</div>
+
+<script>
+    var tempindex = avalon.define({
+        $id: "BZZXLIST",
+        ColumnData: [],
+        modelData: { PID: 0, MenuName: "", Title: "", HelpContent: "", CRDate: "", CRUserName: "", MenuChapter: "" },
+        pname: "",
+        InitWigetData: function () {
+            $.getJSON('/adminapi/ExeActionAuth/GETBZMENU', {}, function (resultData) {
+                tempindex.ColumnData = resultData.Result;
+            })
+        }, bzcontent: {}, helpmenu: function (item, m) {
+            $(m).parent().next(".children-list").slideToggle('fast');
+            $(".jg-item").removeClass("active");
+            $(m).parent().addClass("active");
+            if (item.SubDept.size() == 0) {
+                $.getJSON('/adminapi/ExeActionAuth/GETBZMENUBYID', { P1: item.ID }, function (resultData) {
+                    tempindex.bzcontent = resultData.Result;
+                })
+            }
+            else {
+                tempindex.bzcontent = {};
+            }
+        }, DelHM: function (item) {
+            ComFunJS.winconfirm("确定要删除" + item.MenuName + "吗？(子菜单会一并删除)", function () {
+                $.getJSON("/adminapi/ExeActionAuth/DELGZBGBYID", {  P1: item.ID },
+                function (result) {
+                    if (result.ErrorMsg == "") {
+                        tempindex.InitWigetData();
+                        ComFunJS.winsuccess("删除成功");
+                    }
+                });
+            })
+        }, Editm: function (item, type) {
+            if (type == 1) { //添加一级菜单
+                top.ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&ID=0&type=1", '添加菜单', "1000", "", function () {
+                    tempindex.InitWigetData();
+                });
+            }
+            else if (type == 2) {   //添加子菜单
+                top.ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&type=2&ID=" + item.ID + "&name=" + escape(item.MenuName), '添加菜单', "1000", "", function () {
+                    tempindex.InitWigetData();
+                });
+            }
+            else if (type == 3) {   //修改
+                top.ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&type=3&ID=" + item.ID, '编辑菜单', "1000", "", function () {
+                    tempindex.InitWigetData();
+                });
+            }
+        }
+    })
+
+    //# sourceURL=BZZXGL.js;
+</script>

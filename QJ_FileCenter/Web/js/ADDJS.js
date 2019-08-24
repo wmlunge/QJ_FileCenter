@@ -1,7 +1,7 @@
 ﻿var pmodel = avalon.define({
     $id: "APP_ADD",
     nowuser: ComFunJS.getnowuser(),//当前用户
-    PathCode: "/admin/loading",
+    PathCode: "loading.html",
     FormCode: ComFunJS.getQueryString("FormCode"),
     DataID: ComFunJS.getQueryString("ID", ""),//数据ID
 

@@ -82,6 +82,7 @@
     <Compile Include="model\FT_File_Vesion.cs" />
     <Compile Include="model\FT_Folder.cs" />
     <Compile Include="model\Qycode.cs" />
+    <Compile Include="model\helpdata.cs" />
     <Compile Include="model\user.cs" />
     <Compile Include="model\appseting.cs" />
     <Compile Include="model\userlog.cs" />

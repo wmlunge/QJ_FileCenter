@@ -64,7 +64,7 @@ namespace QJ_FileCenter
                 };
                 string url = string.Format("http://localhost:{0}", portNO);
 
-                var nancyHost = new NancyHost(new RestBootstrapper(rootPath), hostConfiguration, new Uri(url));
+                var nancyHost = new NancyHost(new RestBootstrapper(), hostConfiguration, new Uri(url));
                 nancyHost.Start();
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace QJ_FileCenter
 
                 string url = string.Format("https://localhost:{0}", portNO);
 
-                var nancyHost = new NancyHost(new RestBootstrapper(rootPath), hostConfiguration, new Uri(url));
+                var nancyHost = new NancyHost(new RestBootstrapper(), hostConfiguration, new Uri(url));
                 nancyHost.Start();
                 System.Console.WriteLine("地址" + url);
             }

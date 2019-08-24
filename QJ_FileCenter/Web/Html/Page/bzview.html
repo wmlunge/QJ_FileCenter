@@ -1,0 +1,76 @@
+﻿<style>
+    .pt20 {
+        padding-top: 0px;
+    }
+
+    .jg-right {
+        padding-top: 20px;
+        min-height: 650px;
+    }
+</style>
+<div ms-controller="BZZXLIST" id="bzzx">
+    <div class="jg-left pull-left ft14">
+        <p class="mb10 ft16 padding20 c999" style="border-bottom:1px solid #e5e5e5;"><i class="iconfont icon-help-bangzhu mr5"></i>帮助中心</p>
+        <ul class="jg-list-box" ms-repeat-item="modelData">
+            <li>
+                <div class="jg-item">
+                    <b class="blod-font" ms-click="helpmenu(item,this)">
+                        <span ms-if="item.MenuChapter">{{item.MenuChapter}}</span>
+                        <span class="b">{{item.MenuName}}</span>
+                    </b>
+                </div>
+                <ul class="children-list" ms-include="'tmplmenu'"></ul>
+            </li>
+        </ul>
+    </div>
+    <script type="avalon" id="tmplmenu">
+        <li ms-repeat-item="item.SubDept">
+            <div class="jg-item">
+                <b ms-click="helpmenu(item,this)">
+                    <span ms-if="item.MenuChapter">{{item.MenuChapter}}</span>
+                    <span class="jg-name">{{item.MenuName}}</span>
+                </b>
+            </div>
+            <ul class="children-list" ms-include="'tmplmenu'"></ul>
+        </li>
+    </script>
+    <div class="jg-right padding20">
+        <div class="help-us" ms-if="bzcontent.Title">
+            <h2>{{bzcontent.Title}}</h2>
+            <p class="mt10 c999">
+                <span class="mr20"><i class="iconfont icon-help-user mr5"></i>发布者：{{bzcontent.CRUserName}}</span>
+                <span class="mr20"><i class="iconfont icon-time-last mr5"></i>更新时间：{{bzcontent.CRDate}}</span>
+            </p>
+        </div>
+        <div ms-html="bzcontent.HelpContent"></div>
+        <div style="clear:both;"></div>
+    </div>
+</div>
+
+<script>
+    var tempindex = avalon.define({
+        $id: "BZZXLIST",
+        modelData: [],
+        InitWigetData: function () {
+            $.getJSON('/adminapi/ExeActionAuth/GETBZMENU', {}, function (resultData) {
+                tempindex.modelData = resultData.Result;
+            })
+        },
+        bzcontent: {},
+        helpmenu: function (item, m) {
+            $(m).parent().next(".children-list").slideToggle('fast');
+            $(".jg-item").removeClass("active");
+            $(m).parent().addClass("active");
+            if (item.SubDept.size() == 0) {
+                $.getJSON('/adminapi/ExeActionAuth/GETBZMENUBYID', { P1: item.ID }, function (resultData) {
+                    tempindex.bzcontent = resultData.Result;
+                })
+            }
+            else {
+                tempindex.bzcontent = {};
+            }
+        }
+    })
+
+    //# sourceURL=BZZXLIST.js;
+</script>

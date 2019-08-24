@@ -1321,5 +1321,85 @@ namespace QJ_FileCenter
         }
 
         #endregion
+
+
+
+
+        #region 帮助页面
+        public void ADDHMENU(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            helpdata hMenu = JsonConvert.DeserializeObject<helpdata>(P1);
+            if (hMenu.ID == 0)
+            {
+                hMenu.CRDate = DateTime.Now.ToString();
+                hMenu.CRUser = UserInfo.User.username;
+                hMenu.CRUserName = UserInfo.User.UserRealName;
+                new helpdataB().Insert(hMenu);
+            }
+            else
+            {
+                hMenu.CRDate = DateTime.Now.ToString();
+                new helpdataB().Update(hMenu);
+            }
+            msg.Result = hMenu;
+        }
+
+        public void DELGZBGBYID(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            try
+            {
+                int id = int.Parse(P1);
+                hMenu(id);
+                new helpdataB().Delete(d => d.ID == id);
+
+            }
+            catch (Exception)
+            {
+                msg.ErrorMsg = "";
+            }
+        }
+
+        public void hMenu(long id)
+        {
+            List<helpdata> hmlist = new helpdataB().GetEntities(d => d.PID == id).ToList();
+            if (hmlist.Count == 0)
+                return;
+            for (int i = 0; i < hmlist.Count; i++)
+            {
+                hMenu(hmlist[i].ID);
+                new helpdataB().Delete(d => d.ID == hmlist[i].ID);
+            }
+        }
+
+        public void GETBZMENU(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            string sql = string.Format("SELECT ID,MenuName,PID,Title,CRDate,CRUserName,MenuChapter FROM helpdata ");
+
+            DataTable dt = new helpdataB().GetDTByCommand(sql);
+            dt.Columns.Add("SubDept", Type.GetType("System.Object"));
+            DataTable menu = dt.FilterTable("PID is null OR PID=0 ");
+            msg.Result = GetNextWxUser(menu, dt);
+        }
+
+        public DataTable GetNextWxUser(DataTable dt, DataTable dtm)
+        {
+            foreach (DataRow dr in dt.Rows)
+            {
+                DataTable dtp = dtm.FilterTable(" PID=" + dr["ID"]);
+                dr["SubDept"] = GetNextWxUser(dtp, dtm);
+            }
+            return dt;
+        }
+        public void GETBZMENUBYID(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            int id = int.Parse(P1);
+            helpdata hm = new helpdataB().GetEntity(d => d.ID == id);
+            msg.Result = hm;
+            if (hm == null)
+                return;
+            if (hm.PID != null)
+                msg.Result1 = new helpdataB().GetEntity(d => d.ID == hm.PID);
+        }
+        #endregion
     }
 }
