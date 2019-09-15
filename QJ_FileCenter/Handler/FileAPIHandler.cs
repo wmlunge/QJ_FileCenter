@@ -23,7 +23,7 @@ namespace QJ_FileCenter.Handler
         public FileAPIHandler()
             : base()
         {
-            DocumentDomain documentDomain = new DocumentDomain(new DocumentRepository(), new AppRepository());
+            DocumentDomain documentDomain = new DocumentDomain(new DocumentRepository());
             userlog log = new userlog();
             Before += ctx =>
             {

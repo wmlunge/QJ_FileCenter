@@ -15,16 +15,14 @@ namespace QJ_FileCenter.Domains
     public class DocumentDomain : IDocumentDomain
     {
         private IDocumentRepository _documentRepository;
-        private Repositories.AppRepository _appRepository;
         private string rootPath;
         private string rootPath2;//2017-07-01新加
 
-        public DocumentDomain(IDocumentRepository documentRepository, AppRepository appRepository)
+        public DocumentDomain(IDocumentRepository documentRepository)
         {
             _documentRepository = documentRepository;
-            _appRepository = appRepository;
             rootPath = "";//2017-07-01改为空了,原来的(rootPath = _appRepository.AppConfigModel.RootPath;)
-            rootPath2 = _appRepository.AppConfigModel.RootPath;//2017-07-01新加
+            rootPath2 = appsetingB.GetValueByKey("path");//2017-07-01新加
         }
 
 
@@ -233,7 +231,7 @@ namespace QJ_FileCenter.Domains
                 if (!result)
                 {
                     //不存在，寻找分片内容。
-                    string chunkPath = Path.Combine(_appRepository.AppConfigModel.RootPath, md5);
+                    string chunkPath = Path.Combine(rootPath2, md5);
 
                     if (Directory.Exists(chunkPath))
                     {
@@ -260,7 +258,7 @@ namespace QJ_FileCenter.Domains
             var file = document.file;
             var md5 = document.md5;
             root.Name = md5;
-            var temp = Path.Combine(_appRepository.AppConfigModel.RootPath, qyCode + "//UnZipFolder", md5);
+            var temp = Path.Combine(rootPath2, qyCode + "//UnZipFolder", md5);
             if (!Directory.Exists(temp))
             {
                 Directory.CreateDirectory(temp);
@@ -309,7 +307,7 @@ namespace QJ_FileCenter.Domains
 
         public string GetUnZipFile(string md5, string name)
         {
-            var unzipname = Path.Combine(_appRepository.AppConfigModel.RootPath, "ZipTemp", md5, name);
+            var unzipname = Path.Combine(rootPath2, "ZipTemp", md5, name);
 
             if (File.Exists(unzipname))
                 return unzipname;
@@ -318,7 +316,7 @@ namespace QJ_FileCenter.Domains
 
         public string Compress(IEnumerable<dynamic> documents)
         {
-            var temp = Path.Combine(_appRepository.AppConfigModel.RootPath, "ZipTemp");
+            var temp = Path.Combine(rootPath2, "ZipTemp");
             if (!Directory.Exists(temp))
             {
                 Directory.CreateDirectory(temp);
@@ -360,7 +358,7 @@ namespace QJ_FileCenter.Domains
 
         public string CompressNestedFolder(IEnumerable<dynamic> documents, IEnumerable<Tuple<string, string>> zipEntryItems)
         {
-            var temp = Path.Combine(_appRepository.AppConfigModel.RootPath, "ZipTemp");
+            var temp = Path.Combine(rootPath2, "ZipTemp");
             if (!Directory.Exists(temp))
             {
                 Directory.CreateDirectory(temp);
@@ -404,7 +402,7 @@ namespace QJ_FileCenter.Domains
 
         public string GetZipFile(string md5)
         {
-            var temp = Path.Combine(_appRepository.AppConfigModel.RootPath, "ZipTemp");
+            var temp = Path.Combine(rootPath2, "ZipTemp");
             var zipName = string.Format("{0}\\{1}{2}", temp, md5, ".zip");
 
             if (File.Exists(zipName))

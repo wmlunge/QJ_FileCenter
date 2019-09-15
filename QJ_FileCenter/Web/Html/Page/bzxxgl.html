@@ -9,32 +9,22 @@
     }
 </style>
 <div ms-controller="BZZXLIST" id="bzzx">
-    <div class="jg-left pull-left ft14">
+    <div class="jg-left pull-left ft14" style="    width: 365px;">
         <p class="mb10 ft16 padding20 c999" style="border-bottom:1px solid #e5e5e5;">
             <i class="iconfont icon-help-bangzhu mr5"></i>帮助中心
+            <i class="dropdown-toggle jh" ms-if="isedit=='Y'" ms-click="Editm('',1)" style="color:#12b8f6;float: right;font-size: 26px;line-height: 20px;">+</i>
         </p>
-        <ul class="jg-list-box" ms-if="ColumnData.size()==0">
-            <li ms-click="Editm('',1)">
-                <a class="btn-link">
-                    <div class="jg-item">
-                        <b><span class="b">添加菜单</span></b>
-                    </div>
-                </a>
-            </li>
-        </ul>
+
         <ul class="jg-list-box" ms-repeat-item="ColumnData">
             <li>
-                <div class="jg-item" >
-                    <b class="blod-font" ms-click="helpmenu(item,this)">
-                        <span ms-if="item.MenuChapter">{{item.MenuChapter}}</span>
-                        <span class="b">{{item.MenuName}}</span>
+                <div class="jg-item">
+                    <b class="blod-font ">
+                        <span ms-if="item.MenuChapter" ms-click="helpmenu(item.ID,this)"><span style="margin-right: 5px;">▶</span>{{item.MenuChapter}}</span>
+                        <span class="b bttitle" ms-attr-id="'xw'+item.ID" ms-click="selxw(item.ID,this)">{{item.MenuName}}</span>
                     </b>
-                    <div class="jg-sz">
+                    <div class="jg-sz" ms-if="isedit=='Y'">
                         <i class="dropdown-toggle jh" style="color:#000" data-toggle="dropdown" aria-expanded="true">+</i>
                         <ul class="dropdown-menu  menu-tip animated fadeInRight c666">
-                            <li>
-                                <a ms-click="Editm(item,1)">添加菜单</a>
-                            </li>
                             <li>
                                 <a ms-click="Editm(item,2)">添加子菜单</a>
                             </li>
@@ -43,6 +33,9 @@
                             </li>
                             <li>
                                 <a ms-click="DelHM(item)">删除</a>
+                            </li>
+                            <li>
+                                <a  ms-href="/Web/Html/indexbz.html?id={{item.ID}}" target="_blank">预览{{item.ID}}</a>
                             </li>
                         </ul>
                     </div>
@@ -53,12 +46,12 @@
     </div>
     <script type="avalon" id="tmplmenu">
         <li ms-repeat-item="item.SubDept">
-            <div class="jg-item" >
-                <b ms-click="helpmenu(item,this)">
-                    <span ms-if="item.MenuChapter">{{item.MenuChapter}}</span>
-                    <span class="jg-name">{{item.MenuName}}</span>
+            <div class="jg-item">
+                <b>
+                    <span ms-if="item.MenuChapter" ms-click="helpmenu(item.ID,this)"><span style="margin-right: 5px;">▶</span>{{item.MenuChapter}}</span>
+                    <span class="jg-name bttitle" ms-attr-id="'xw'+item.ID" ms-click="selxw(item.ID,this)">{{item.MenuName}}</span>
                 </b>
-                <div class="jg-sz">
+                <div class="jg-sz" ms-if="isedit=='Y'">
                     <i class="dropdown-toggle jh " style="color:#000" data-toggle="dropdown" aria-expanded="true">+</i>
                     <ul class="dropdown-menu  menu-tip animated fadeInRight c666">
                         <li>
@@ -70,21 +63,52 @@
                         <li>
                             <a ms-click="DelHM(item)">删除</a>
                         </li>
+                        <li>
+                            <a  ms-href="/Web/Html/indexbz.html?id={{item.ID}}" target="_blank">预览{{item.ID}}</a>
+                        </li>
                     </ul>
                 </div>
             </div>
             <ul class="children-list" ms-include="'tmplmenu'"></ul>
         </li>
     </script>
-    <div class="jg-right padding20">
-        <div class="help-us" ms-if="bzcontent.Title">
-            <h2>{{bzcontent.Title}}</h2>
+    <div class="jg-right padding20" style="    margin-left: 365px;">
+        <div class="help-us">
+            <h2>
+                {{bzcontent.Title}}
+            </h2>
             <p class="mt10 c999">
                 <span class="mr20"><i class="iconfont icon-help-user mr5"></i>发布者：{{bzcontent.CRUserName}}</span>
-                <span class="mr20"><i class="iconfont icon-time-last mr5"></i>更新时间：{{bzcontent.CRDate}}</span>
+                <span class="mr20"><i class="iconfont icon-time-last mr5"></i>发布时间：{{bzcontent.CRDate}}</span>
+
+
+                <button ms-if="isedit=='Y'&&bztype=='0'" ms-click="qhtype()" class="btn btn-info">
+                    编   辑
+                </button>
+                <button ms-if="isedit=='Y'&&bztype=='1'" ms-click="baocun()" class="btn btn-success">
+                    保   存
+                </button>
+                <button ms-if="isedit=='Y'" class="btn btn-info" id="fujian" style="">
+                    上传文档或视频
+                </button>
             </p>
+
+
+
+            <div style="height:28px;margin-top:5px">
+                <!--<img src="/Web/images/qywd/wd1.png" style="width:45px;height:45px" alt="Alternate Text" />-->
+                <span ms-repeat-item="filedata"><i class="iconfont icon-bookmark" style="color:blue"></i> <a href="#" style="color:blue;" ms-click="viewitem(item)">{{item.filename}}</a></span>
+            </div>
         </div>
-        <div ms-html="bzcontent.HelpContent"></div>
+
+        <div ms-visible="bztype=='0'">
+            <div ms-html="bzcontent.HelpContent"></div>
+        </div>
+        <div ms-visible="bztype=='1'">
+            <script id="editor" type="text/plain" style="width:100%;min-height:450px;">
+            </script>
+        </div>
+
         <div style="clear:both;"></div>
     </div>
 </div>
@@ -93,33 +117,170 @@
     var tempindex = avalon.define({
         $id: "BZZXLIST",
         ColumnData: [],
-        modelData: { PID: 0, MenuName: "", Title: "", HelpContent: "", CRDate: "", CRUserName: "", MenuChapter: "" },
+        bzcontent: { PID: 0, MenuName: "", Title: "", HelpContent: "", CRDate: "", CRUserName: "", MenuChapter: "" },
         pname: "",
+        bztype: "0",
+        nowid: "0",
+        isedit: "N",
+        filedata: [],
+        initiddata: function () {
+            var domid = ComFunJS.getQueryString("id");
+            tempindex.selxw(domid, $('#xw' + domid)[0]);
+        },
+        qhtype: function () {
+            tempindex.bztype = (tempindex.bztype == '0' ? "1" : "0");
+        },
+        viewitem: function (item) {
+            ComFunJS.viewfile(this, item);
+        },//查看文件
         InitWigetData: function () {
+            tempindex.initue();
             $.getJSON('/adminapi/ExeActionAuth/GETBZMENU', {}, function (resultData) {
                 tempindex.ColumnData = resultData.Result;
+                if (ComFunJS.getQueryString("id")) {
+
+                    setTimeout("tempindex.initiddata()",1500)
+                } else {
+                    tempindex.selxw(tempindex.ColumnData[0].ID, $(".bttitle")[0])
+                }
+
             })
-        }, bzcontent: {}, helpmenu: function (item, m) {
-            $(m).parent().next(".children-list").slideToggle('fast');
-            $(".jg-item").removeClass("active");
-            $(m).parent().addClass("active");
-            if (item.SubDept.size() == 0) {
-                $.getJSON('/adminapi/ExeActionAuth/GETBZMENUBYID', { P1: item.ID }, function (resultData) {
-                    tempindex.bzcontent = resultData.Result;
-                })
-            }
-            else {
-                tempindex.bzcontent = {};
-            }
-        }, DelHM: function (item) {
-            ComFunJS.winconfirm("确定要删除" + item.MenuName + "吗？(子菜单会一并删除)", function () {
-                $.getJSON("/adminapi/ExeActionAuth/DELGZBGBYID", {  P1: item.ID },
-                function (result) {
-                    if (result.ErrorMsg == "") {
-                        tempindex.InitWigetData();
-                        ComFunJS.winsuccess("删除成功");
+            tempindex.isedit = ComFunJS.getQueryString("isedit")
+            var fileapi = ComFunJS.getRoot();
+            ComFunJS.loadJs("/Web/qj_upload.js", function () {
+                new QJUpload({
+                    uploadButtton: 'fujian',
+                    fileapiurl: fileapi,
+                    usercode: "qycode",
+                    secret: "qycode",
+                    upinfo: "上传组件",
+                    webupconfig: {
+                        fileNumLimit: 5,
+                        accept: {
+                            title: 'file',
+                            extensions: 'mp4,doc,docx,ppt,pptx,pdf'
+                        }
+                    },
+                    closeupwin: function (fileS, dom) {
+                        var fileData = JSON.parse(fileS);
+
+                        $.getJSON("/adminapi/ExeActionAuth/UPFILE", { P1: tempindex.nowid, files: fileS },
+                            function (result) {
+                                if (result.ErrorMsg == "") {
+                                    ComFunJS.winsuccess("操作成功");
+
+                                    for (var i = 0; i < fileData.length; i++) {
+                                        var tempname = fileData[i].filename;
+                                        fileData[i].FileExtendName = tempname.substr(tempname.lastIndexOf(".") + 1);
+                                    }
+                                    tempindex.filedata = fileData;
+                                }
+                            });
+
                     }
                 });
+            })
+
+        },
+        baocun: function () {
+
+            var content = UE.getEditor('editor').getContent();
+            $.getJSON("/adminapi/ExeActionAuth/UPBZ", { P1: tempindex.nowid, P2: content },
+                function (result) {
+                    if (result.ErrorMsg == "") {
+                        tempindex.bzcontent.HelpContent = content;
+                        ComFunJS.winsuccess("保存内容成功");
+                        tempindex.bztype = '0';
+                    }
+                });
+        },
+        initue: function () {
+            UE.registerUI('button', function (editor, uiName) {
+                //注册按钮执行时的command命令，使用命令默认就会带有回退操作
+                editor.registerCommand(uiName, {
+                    execCommand: function () {
+
+                    }
+                });
+                //创建一个button
+                var btn = new UE.ui.Button({
+                    //按钮的名字
+                    name: uiName,
+                    //提示
+                    title: uiName,
+                    //添加额外样式，指定icon图标，这里默认使用一个重复的icon
+                    cssRules: 'background-position: -380px 0px;',
+                    //点击时执行的命令
+                    onclick: function () {
+                        //这里可以不用执行命令,做你自己的操作也可
+                        editor.execCommand(uiName);
+                    }
+                });
+                //当点到编辑内容上时，按钮要做的状态反射
+
+                //因为你是添加button,所以需要返回这个button
+                return btn;
+            });
+            var ue = UE.getEditor('editor');
+            var fileapi = ComFunJS.getRoot();
+            ComFunJS.loadJs("/Web/qj_upload.js", function () {
+                new QJUpload({
+                    uploadButtton: 'edui271',
+                    fileapiurl: fileapi,
+                    usercode: "qycode",
+                    secret: "qycode",
+                    upinfo: "上传组件",
+                    webupconfig: {
+                        fileNumLimit: 5,
+                        accept: {
+                            title: 'Images',
+                            extensions: 'gif,jpg,jpeg,bmp,png',
+                            mimeTypes: 'image/*'
+                        }
+                    },
+                    closeupwin: function (fileS, dom) {
+                        var fileData = JSON.parse(fileS)
+                        var picurl = "";
+                        for (var i = 0; i < fileData.length; i++) {
+                            picurl = picurl + "<p><img  style='max-height:875px;max-width:1000px' src='" + ComFunJS.getfile(fileData[i].zyid) + "'/></p>";
+                        }
+                        ue.setContent(picurl, true);
+                    }
+                });
+            })
+
+        },
+        selxw: function (ID, dom) {
+            $(".jg-item").removeClass("active");
+            $(dom).parent().parent().addClass("active");
+            $.getJSON('/adminapi/ExeActionAuth/GETBZMENUBYID', { P1: ID }, function (resultData) {
+                tempindex.bzcontent = resultData.Result;
+                if (resultData.Result.Files) {
+                    var temparr = JSON.parse(resultData.Result.Files);
+                    for (var i = 0; i < temparr.length; i++) {
+                        var tempname = temparr[i].filename;
+                        temparr[i].FileExtendName = tempname.substr(tempname.lastIndexOf(".") + 1);
+                    }
+                    tempindex.filedata = temparr;
+                } else {
+                    tempindex.filedata = [];
+                }
+                UE.getEditor('editor').setContent(tempindex.bzcontent.HelpContent, '');
+            })
+            tempindex.nowid = ID;
+        },
+        helpmenu: function (ID, m) {
+            $(m).parent().parent().next(".children-list").slideToggle('fast');
+        },
+        DelHM: function (item) {
+            ComFunJS.winconfirm("确定要删除" + item.MenuName + "吗？(子菜单会一并删除)", function () {
+                $.getJSON("/adminapi/ExeActionAuth/DELGZBGBYID", { P1: item.ID },
+                    function (result) {
+                        if (result.ErrorMsg == "") {
+                            tempindex.InitWigetData();
+                            ComFunJS.winsuccess("删除成功");
+                        }
+                    });
             })
         }, Editm: function (item, type) {
             if (type == 1) { //添加一级菜单

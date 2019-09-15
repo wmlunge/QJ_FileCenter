@@ -6,6 +6,7 @@ using Nancy.TinyIoc;
 using System.Collections.Generic;
 using System.IO;
 using QJ_FileCenter.Repositories;
+using QJFile.Data;
 
 namespace QJ_FileCenter
 {
@@ -79,11 +80,11 @@ namespace QJ_FileCenter
         {
         }
 
-        public RootPathStartup(IRootPathProvider rootPathProvider, AppRepository appRepository)
+        public RootPathStartup(IRootPathProvider rootPathProvider)
         {
 
             GenericFileResponseEx.RootPaths.Add(rootPathProvider.GetRootPath());
-            GenericFileResponseEx.RootPaths.Add(appRepository.AppConfigModel.RootPath);
+            GenericFileResponseEx.RootPaths.Add(appsetingB.GetValueByKey("path"));
         }
     }
 

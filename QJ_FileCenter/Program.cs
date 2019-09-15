@@ -29,12 +29,11 @@ namespace QJ_FileCenter
                 {
                     UrlReservations = new UrlReservations() { CreateAutomatically = true }
                 };
-                AppRepository APPR = new AppRepository();
                 string strIP = appsetingB.GetValueByKey("ip");
                 string port = appsetingB.GetValueByKey("port");
 
                 string url = string.Format("http://{0}:{1}", strIP, port);
-                var rootPath = APPR.AppConfigModel.RootPath;
+                var rootPath = appsetingB.GetValueByKey("path");
                 var nancyHost = new NancyHost(new RestBootstrapper(), hostConfiguration, new Uri(url));
                 nancyHost.Start();
                 System.Console.WriteLine("文件中心服务开启,管理地址:" + url.ToString());

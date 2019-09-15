@@ -5,28 +5,28 @@
                 <li class="add-item add-widthall" ms-if="pname">
                     <label>上级菜单</label>&nbsp;&nbsp;&nbsp;<label>{{pname}}</label>
                 </li>
-                <li class="add-item add-width fl-left">
+                <li class="add-item add-width" style="width:70%">
                     <label class="add-item-label">章节</label>
                     <div class="add-ic">
                         <input type="text" class="form-control" ms-duplex="modelData.MenuChapter" placeholder="章节" />
                     </div>
                 </li>
-                <li class="add-item add-width fl-right">
+                <li class="add-item add-width" style="width:70%">
                     <label class="add-item-label">菜单名称</label>
                     <div class="add-ic">
                         <input type="text" class="form-control" ms-duplex="modelData.MenuName" placeholder="菜单名称" />
                     </div>
                 </li>
-                <li class="add-item add-widthall">
+                <li class="add-item add-width" style="width:70%">
+                    <label class="add-item-label">发布人</label>
+                    <div class="add-ic">
+                        <input type="text" class="form-control" ms-duplex="modelData.CRUserName" placeholder="发布人" />
+                    </div>
+                </li>
+                <li class="add-item add-widthall" style="width:70%">
                     <label class="add-item-label">内容标题</label>
                     <div class="add-ic">
                         <input type="text" class="form-control" ms-duplex="modelData.Title" placeholder="内容标题" />
-                    </div>
-                </li>
-                <li class="add-item add-widthall ">
-                    <label class="add-item-label">内容</label>
-                    <div class="add-ic">
-                        <textarea id="helpContent" ms-duplex="modelData.HelpContent" class="span2 szhl_UEEDIT" umheight="200"></textarea>
                     </div>
                 </li>
             </ul>
@@ -37,7 +37,7 @@
     var tempmodel = avalon.define({
         $id: "WF_BZZX",
         ColumnData: [],
-        modelData: { PID: 0, MenuName: "", Title: "", HelpContent: "", CRDate: "", CRUserName: "", MenuChapter: "" },
+        modelData: { PID: 0, MenuName: "", Title: "",  CRDate: "", CRUserName: "", MenuChapter: "" },
         pname: "",
         inittemp: function (sid) {
             var tpey = ComFunJS.getQueryString("type");

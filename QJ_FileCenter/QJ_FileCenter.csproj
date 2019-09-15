@@ -128,7 +128,6 @@
     <Compile Include="Domains\IDocumentDomain.cs" />
     <Compile Include="Handler\FileAPIHandler.cs" />
     <Compile Include="Handler\APIHandler.cs" />
-    <Compile Include="Models\AppConfigModel.cs" />
     <Compile Include="Models\NestedFolderModel.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -136,7 +135,6 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="Repositories\AppRepository.cs" />
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Repositories\IDocumentRepository.cs" />
     <Compile Include="RestBootstrapper.cs" />
@@ -188,6 +186,10 @@
     <None Include="Web\js\chosen\bower.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Web\js\ueditor\third-party\jquery-1.10.2.min.map" />
+    <None Include="Web\js\ueditor\third-party\video-js\font\vjs.eot" />
+    <None Include="Web\js\ueditor\third-party\video-js\font\vjs.ttf" />
+    <None Include="Web\js\ueditor\third-party\video-js\font\vjs.woff" />
     <None Include="Web\upload.min.js.map">
       <DependentUpon>upload.min.js</DependentUpon>
     </None>
@@ -223,6 +225,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\Html\APP_ADD.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\Html\indexbz.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\Html\Page\bzzx.html">
@@ -336,6 +341,9 @@
     <Content Include="Web\js\clipboard.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\js\indexbz.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\js\jquery.qrcode.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -345,35 +353,367 @@
     <Content Include="Web\js\range\range.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Web\js\umeditor\dialogs\emotion\emotion.css" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\emotion.js" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\0.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\bface.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\cface.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\fface.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\jxface2.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\neweditor-tab-bg.png" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\tface.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\wface.gif" />
-    <Content Include="Web\js\umeditor\dialogs\emotion\images\yface.gif" />
-    <Content Include="Web\js\umeditor\dialogs\formula\formula.css" />
-    <Content Include="Web\js\umeditor\dialogs\formula\formula.html" />
-    <Content Include="Web\js\umeditor\dialogs\formula\formula.js" />
-    <Content Include="Web\js\umeditor\dialogs\formula\images\formula.png" />
-    <Content Include="Web\js\umeditor\dialogs\image\image.css" />
-    <Content Include="Web\js\umeditor\dialogs\image\image.js" />
-    <Content Include="Web\js\umeditor\dialogs\image\images\close.png" />
-    <Content Include="Web\js\umeditor\dialogs\image\images\upload1.png" />
-    <Content Include="Web\js\umeditor\dialogs\image\images\upload2.png" />
-    <Content Include="Web\js\umeditor\dialogs\link\link.js" />
+    <Content Include="Web\js\ueditor\dialogs\anchor\anchor.html" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\attachment.css" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\attachment.html" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\attachment.js" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_chm.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_default.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_doc.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_exe.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_jpg.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_mp3.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_mv.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_pdf.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_ppt.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_psd.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_rar.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_txt.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\fileTypeImages\icon_xls.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\alignicon.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\alignicon.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\bg.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\file-icons.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\file-icons.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\icons.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\icons.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\image.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\progress.png" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\success.gif" />
+    <Content Include="Web\js\ueditor\dialogs\attachment\images\success.png" />
+    <Content Include="Web\js\ueditor\dialogs\background\background.css" />
+    <Content Include="Web\js\ueditor\dialogs\background\background.html" />
+    <Content Include="Web\js\ueditor\dialogs\background\background.js" />
+    <Content Include="Web\js\ueditor\dialogs\background\images\bg.png" />
+    <Content Include="Web\js\ueditor\dialogs\background\images\success.png" />
+    <Content Include="Web\js\ueditor\dialogs\charts\chart.config.js" />
+    <Content Include="Web\js\ueditor\dialogs\charts\charts.css" />
+    <Content Include="Web\js\ueditor\dialogs\charts\charts.html" />
+    <Content Include="Web\js\ueditor\dialogs\charts\charts.js" />
+    <Content Include="Web\js\ueditor\dialogs\charts\images\charts0.png" />
+    <Content Include="Web\js\ueditor\dialogs\charts\images\charts1.png" />
+    <Content Include="Web\js\ueditor\dialogs\charts\images\charts2.png" />
+    <Content Include="Web\js\ueditor\dialogs\charts\images\charts3.png" />
+    <Content Include="Web\js\ueditor\dialogs\charts\images\charts4.png" />
+    <Content Include="Web\js\ueditor\dialogs\charts\images\charts5.png" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\emotion.css" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\emotion.html" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\emotion.js" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\0.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\bface.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\cface.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\fface.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\jxface2.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\neweditor-tab-bg.png" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\tface.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\wface.gif" />
+    <Content Include="Web\js\ueditor\dialogs\emotion\images\yface.gif" />
+    <Content Include="Web\js\ueditor\dialogs\gmap\gmap.html" />
+    <Content Include="Web\js\ueditor\dialogs\help\help.css" />
+    <Content Include="Web\js\ueditor\dialogs\help\help.html" />
+    <Content Include="Web\js\ueditor\dialogs\help\help.js" />
+    <Content Include="Web\js\ueditor\dialogs\image\image.css" />
+    <Content Include="Web\js\ueditor\dialogs\image\image.html" />
+    <Content Include="Web\js\ueditor\dialogs\image\image.js" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\alignicon.jpg" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\bg.png" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\icons.gif" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\icons.png" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\image.png" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\progress.png" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\success.gif" />
+    <Content Include="Web\js\ueditor\dialogs\image\images\success.png" />
+    <Content Include="Web\js\ueditor\dialogs\insertframe\insertframe.html" />
+    <Content Include="Web\js\ueditor\dialogs\internal.js" />
+    <Content Include="Web\js\ueditor\dialogs\link\link.html" />
+    <Content Include="Web\js\ueditor\dialogs\map\map.html" />
+    <Content Include="Web\js\ueditor\dialogs\map\show.html" />
+    <Content Include="Web\js\ueditor\dialogs\music\music.css" />
+    <Content Include="Web\js\ueditor\dialogs\music\music.html" />
+    <Content Include="Web\js\ueditor\dialogs\music\music.js" />
+    <Content Include="Web\js\ueditor\dialogs\preview\preview.html" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\addimg.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\brush.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\delimg.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\delimgH.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\empty.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\emptyH.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\eraser.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\redo.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\redoH.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\scale.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\scaleH.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\size.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\undo.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\images\undoH.png" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\scrawl.css" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\scrawl.html" />
+    <Content Include="Web\js\ueditor\dialogs\scrawl\scrawl.js" />
+    <Content Include="Web\js\ueditor\dialogs\searchreplace\searchreplace.html" />
+    <Content Include="Web\js\ueditor\dialogs\searchreplace\searchreplace.js" />
+    <Content Include="Web\js\ueditor\dialogs\snapscreen\snapscreen.html" />
+    <Content Include="Web\js\ueditor\dialogs\spechars\spechars.html" />
+    <Content Include="Web\js\ueditor\dialogs\spechars\spechars.js" />
+    <Content Include="Web\js\ueditor\dialogs\table\dragicon.png" />
+    <Content Include="Web\js\ueditor\dialogs\table\edittable.css" />
+    <Content Include="Web\js\ueditor\dialogs\table\edittable.html" />
+    <Content Include="Web\js\ueditor\dialogs\table\edittable.js" />
+    <Content Include="Web\js\ueditor\dialogs\table\edittd.html" />
+    <Content Include="Web\js\ueditor\dialogs\table\edittip.html" />
+    <Content Include="Web\js\ueditor\dialogs\template\config.js" />
+    <Content Include="Web\js\ueditor\dialogs\template\images\bg.gif" />
+    <Content Include="Web\js\ueditor\dialogs\template\images\pre0.png" />
+    <Content Include="Web\js\ueditor\dialogs\template\images\pre1.png" />
+    <Content Include="Web\js\ueditor\dialogs\template\images\pre2.png" />
+    <Content Include="Web\js\ueditor\dialogs\template\images\pre3.png" />
+    <Content Include="Web\js\ueditor\dialogs\template\images\pre4.png" />
+    <Content Include="Web\js\ueditor\dialogs\template\template.css" />
+    <Content Include="Web\js\ueditor\dialogs\template\template.html" />
+    <Content Include="Web\js\ueditor\dialogs\template\template.js" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\bg.png" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\center_focus.jpg" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\file-icons.gif" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\file-icons.png" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\icons.gif" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\icons.png" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\image.png" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\left_focus.jpg" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\none_focus.jpg" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\progress.png" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\right_focus.jpg" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\success.gif" />
+    <Content Include="Web\js\ueditor\dialogs\video\images\success.png" />
+    <Content Include="Web\js\ueditor\dialogs\video\video.css" />
+    <Content Include="Web\js\ueditor\dialogs\video\video.html" />
+    <Content Include="Web\js\ueditor\dialogs\video\video.js" />
+    <Content Include="Web\js\ueditor\dialogs\webapp\webapp.html" />
+    <Content Include="Web\js\ueditor\dialogs\wordimage\fClipboard_ueditor.swf" />
+    <Content Include="Web\js\ueditor\dialogs\wordimage\imageUploader.swf" />
+    <Content Include="Web\js\ueditor\dialogs\wordimage\tangram.js" />
+    <Content Include="Web\js\ueditor\dialogs\wordimage\wordimage.html" />
+    <Content Include="Web\js\ueditor\dialogs\wordimage\wordimage.js" />
+    <Content Include="Web\js\ueditor\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\ueditor\lang\en\en.js" />
+    <Content Include="Web\js\ueditor\lang\en\images\addimage.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\alldeletebtnhoverskin.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\alldeletebtnupskin.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\background.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\button.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\copy.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\deletedisable.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\deleteenable.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\listbackground.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\localimage.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\music.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\rotateleftdisable.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\rotateleftenable.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\rotaterightdisable.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\rotaterightenable.png" />
+    <Content Include="Web\js\ueditor\lang\en\images\upload.png" />
+    <Content Include="Web\js\ueditor\lang\zh-cn\images\copy.png" />
+    <Content Include="Web\js\ueditor\lang\zh-cn\images\localimage.png" />
+    <Content Include="Web\js\ueditor\lang\zh-cn\images\music.png" />
+    <Content Include="Web\js\ueditor\lang\zh-cn\images\upload.png" />
+    <Content Include="Web\js\ueditor\lang\zh-cn\zh-cn.js" />
+    <Content Include="Web\js\ueditor\themes\default\css\ueditor.css" />
+    <Content Include="Web\js\ueditor\themes\default\css\ueditor.min.css" />
+    <Content Include="Web\js\ueditor\themes\default\dialogbase.css" />
+    <Content Include="Web\js\ueditor\themes\default\images\anchor.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\arrow.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\arrow_down.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\arrow_up.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\button-bg.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\cancelbutton.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\charts.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\cursor_h.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\cursor_h.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\cursor_v.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\cursor_v.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\dialog-title-bg.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\filescan.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\highlighted.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\icons-all.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\icons.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\icons.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\loaderror.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\loading.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\lock.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\neweditor-tab-bg.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\pagebreak.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\scale.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\sortable.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\spacer.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\sparator_v.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\table-cell-align.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\tangram-colorpicker.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\toolbar_bg.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\unhighlighted.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\upload.png" />
+    <Content Include="Web\js\ueditor\themes\default\images\videologo.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\word.gif" />
+    <Content Include="Web\js\ueditor\themes\default\images\wordpaste.png" />
+    <Content Include="Web\js\ueditor\themes\iframe.css" />
+    <Content Include="Web\js\ueditor\third-party\codemirror\codemirror.css" />
+    <Content Include="Web\js\ueditor\third-party\codemirror\codemirror.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\adapters\mootools-adapter.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\adapters\mootools-adapter.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\adapters\prototype-adapter.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\adapters\prototype-adapter.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\adapters\standalone-framework.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\adapters\standalone-framework.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\highcharts-more.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\highcharts-more.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\highcharts.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\highcharts.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\annotations.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\annotations.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\canvas-tools.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\canvas-tools.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\data.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\data.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\drilldown.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\drilldown.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\exporting.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\exporting.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\funnel.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\funnel.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\heatmap.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\heatmap.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\map.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\map.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\no-data-to-display.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\modules\no-data-to-display.src.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\themes\dark-blue.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\themes\dark-green.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\themes\gray.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\themes\grid.js" />
+    <Content Include="Web\js\ueditor\third-party\highcharts\themes\skies.js" />
+    <Content Include="Web\js\ueditor\third-party\jquery-1.10.2.js" />
+    <Content Include="Web\js\ueditor\third-party\jquery-1.10.2.min.js" />
+    <Content Include="Web\js\ueditor\third-party\snapscreen\UEditorSnapscreen.exe" />
+    <Content Include="Web\js\ueditor\third-party\SyntaxHighlighter\shCore.js" />
+    <Content Include="Web\js\ueditor\third-party\SyntaxHighlighter\shCoreDefault.css" />
+    <Content Include="Web\js\ueditor\third-party\video-js\font\vjs.svg" />
+    <Content Include="Web\js\ueditor\third-party\video-js\video-js.css" />
+    <Content Include="Web\js\ueditor\third-party\video-js\video-js.min.css" />
+    <Content Include="Web\js\ueditor\third-party\video-js\video-js.swf" />
+    <Content Include="Web\js\ueditor\third-party\video-js\video.dev.js" />
+    <Content Include="Web\js\ueditor\third-party\video-js\video.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\Uploader.swf" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.css" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.custom.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.custom.min.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.flashonly.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.flashonly.min.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.html5only.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.html5only.min.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.min.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.withoutimage.js" />
+    <Content Include="Web\js\ueditor\third-party\webuploader\webuploader.withoutimage.min.js" />
+    <Content Include="Web\js\ueditor\third-party\zeroclipboard\ZeroClipboard.js" />
+    <Content Include="Web\js\ueditor\third-party\zeroclipboard\ZeroClipboard.min.js" />
+    <Content Include="Web\js\ueditor\third-party\zeroclipboard\ZeroClipboard.swf" />
+    <Content Include="Web\js\ueditor\ueditor.all.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\ueditor\ueditor.all.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\ueditor\ueditor.config.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\ueditor\ueditor.parse.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\ueditor\ueditor.parse.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\emotion.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\emotion.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\0.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\bface.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\cface.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\fface.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\jxface2.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\neweditor-tab-bg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\tface.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\wface.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\emotion\images\yface.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\formula\formula.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\formula\formula.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\formula\formula.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\formula\images\formula.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\image\image.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\image\image.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\image\images\close.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\image\images\upload1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\image\images\upload2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\link\link.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\js\umeditor\dialogs\map\map.html" />
     <Content Include="Web\js\umeditor\dialogs\map\map.js" />
-    <Content Include="Web\js\umeditor\dialogs\video\images\center_focus.jpg" />
-    <Content Include="Web\js\umeditor\dialogs\video\images\left_focus.jpg" />
-    <Content Include="Web\js\umeditor\dialogs\video\images\none_focus.jpg" />
-    <Content Include="Web\js\umeditor\dialogs\video\images\right_focus.jpg" />
-    <Content Include="Web\js\umeditor\dialogs\video\video.css" />
-    <Content Include="Web\js\umeditor\dialogs\video\video.js" />
+    <Content Include="Web\js\umeditor\dialogs\video\images\center_focus.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\video\images\left_focus.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\video\images\none_focus.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\video\images\right_focus.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\video\video.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\dialogs\video\video.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\js\umeditor\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -395,22 +735,54 @@
     <Content Include="Web\js\umeditor\lang\en\images\rotaterightdisable.png" />
     <Content Include="Web\js\umeditor\lang\en\images\rotaterightenable.png" />
     <Content Include="Web\js\umeditor\lang\en\images\upload.png" />
-    <Content Include="Web\js\umeditor\lang\zh-cn\images\copy.png" />
-    <Content Include="Web\js\umeditor\lang\zh-cn\images\imglabel.png" />
-    <Content Include="Web\js\umeditor\lang\zh-cn\images\localimage.png" />
-    <Content Include="Web\js\umeditor\lang\zh-cn\images\music.png" />
-    <Content Include="Web\js\umeditor\lang\zh-cn\images\upload.png" />
-    <Content Include="Web\js\umeditor\lang\zh-cn\zh-cn.js" />
-    <Content Include="Web\js\umeditor\themes\default\css\umeditor.css" />
-    <Content Include="Web\js\umeditor\themes\default\css\umeditor.min.css" />
-    <Content Include="Web\js\umeditor\themes\default\images\caret.png" />
-    <Content Include="Web\js\umeditor\themes\default\images\close.png" />
-    <Content Include="Web\js\umeditor\themes\default\images\icons.gif" />
-    <Content Include="Web\js\umeditor\themes\default\images\icons.png" />
-    <Content Include="Web\js\umeditor\themes\default\images\ok.gif" />
-    <Content Include="Web\js\umeditor\themes\default\images\pop-bg.png" />
-    <Content Include="Web\js\umeditor\themes\default\images\spacer.gif" />
-    <Content Include="Web\js\umeditor\themes\default\images\videologo.gif" />
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\copy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\imglabel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\localimage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\music.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\lang\zh-cn\images\upload.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\lang\zh-cn\zh-cn.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\css\umeditor.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\css\umeditor.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\caret.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\close.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\icons.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\icons.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\ok.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\pop-bg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\spacer.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\js\umeditor\themes\default\images\videologo.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\js\umeditor\third-party\jquery.min.js" />
     <Content Include="Web\js\umeditor\umeditor.config.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

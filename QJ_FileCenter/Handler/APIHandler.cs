@@ -77,13 +77,19 @@ namespace QJ_FileCenter.Handler
                 int fileId = 0;
                 int.TryParse(p.fileid.Value.Split(',')[0], out fileId);
                 FT_File file = new FT_FileB().GetEntity(d => d.ID == fileId);
+                string strzyid = p.fileid.Value;
+                if (file != null)
+                {
+                    strzyid = file.zyid;
+                }
+              
                 string width = Context.Request.Query["width"].Value ?? "";
                 string height = Context.Request.Query["height"].Value ?? "";
                 Qycode qy = new QycodeB().GetALLEntities().FirstOrDefault();
-                string filename = Context.Request.Url.SiteBase + "/" + qy.Code + "/document/" + file.zyid;
+                string filename = Context.Request.Url.SiteBase + "/" + qy.Code + "/document/" + strzyid;
                 if (width + height != "")
                 {
-                    filename = Context.Request.Url.SiteBase + "/" + qy.Code + "/document/image/" + file.zyid + (width + height != "" ? ("/" + width + "/" + height) : "");
+                    filename = Context.Request.Url.SiteBase + "/" + qy.Code + "/document/image/" + strzyid + (width + height != "" ? ("/" + width + "/" + height) : "");
                 }
                 return Response.AsRedirect(filename);
 

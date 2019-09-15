@@ -1400,6 +1400,24 @@ namespace QJ_FileCenter
             if (hm.PID != null)
                 msg.Result1 = new helpdataB().GetEntity(d => d.ID == hm.PID);
         }
+
+        public void UPBZ(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            int id = int.Parse(P1);
+            helpdata hm = new helpdataB().GetEntity(d => d.ID == id);
+            hm.HelpContent = P2;
+            new helpdataB().Update(hm);
+        }
+
+        public void UPFILE(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            int id = int.Parse(P1);
+            string strFiles = context.Request("files") ?? "";
+            helpdata hm = new helpdataB().GetEntity(d => d.ID == id);
+            hm.Files = strFiles;
+            new helpdataB().Update(hm);
+        }
+
         #endregion
     }
 }

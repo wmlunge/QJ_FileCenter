@@ -63,9 +63,7 @@
                         pmodel.refiframe();
                     }
 
-                    pmodel.SaveExtData(result1.Result.ID);
-                    //删除草稿
-                    pmodel.DelDraft();
+                 
                 }
                 else {
                     if (pmodel.isPC) {

@@ -1,6 +1,7 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy.Hosting.Self;
 using QJ_FileCenter.Repositories;
+using QJFile.Data;
 using System;
 using System.Diagnostics;
 using System.ServiceProcess;
@@ -15,13 +16,12 @@ namespace QJ_FileCenter
 
         public QJ_FileCenterService()
         {
-            var appRepository = new AppRepository();
             InitializeComponent();
             try
             {
-                var nancyPort = appRepository.AppConfigModel.NancyPort;
-                var rootPath = appRepository.AppConfigModel.RootPath;
-                string ip = appRepository.AppConfigModel.IP;
+                var nancyPort = appsetingB.GetValueByKey("port");
+                var rootPath = appsetingB.GetValueByKey("path");
+                string ip = appsetingB.GetValueByKey("ip");
 
                 StartNancyHost(rootPath, ip, nancyPort);
             }
@@ -52,7 +52,7 @@ namespace QJ_FileCenter
         /// <summary>
         /// 启动Nancy服务
         /// </summary>
-        private void StartNancyHost(string rootPath,string IP, int portNO = 9100)
+        private void StartNancyHost(string rootPath,string IP, string portNO = "9100")
         {
             try
             {
