@@ -1,0 +1,65 @@
+﻿<div class="detail-con user-list ft14" ms-controller="UserCenter">
+    <div class="detail-item" style="display:none">
+        <span class="item-tit" style="margin-top:22px;">企业Log</span>
+        <ul class="clearfix list-unstyled pic-list">
+            <li>
+                <img ms-src="/Web/images/logo.png" onerror="javascript: this.src = '/Web/images/logo.png'" style="width:55px;height:55px;border-radius:3px;">
+            </li>
+            <li>
+                <a class=" cor-blue" ms-click="UploadHeadImage()" style="line-height: 55px;">修改</a>
+            </li>
+        </ul>
+    </div>
+    <div class="detail-item" ms-repeat-item="appdata">
+        <span class="item-tit">{{item.sm}}</span>
+        <input type="text" class="settings-input form-control" ms-duplex="item.Value">
+    </div>
+    <div class="detail-item" style="display:none">
+        <span class="item-tit">性别</span>
+        <div style="height:35px;padding-top:5px;">
+            <label class="mr20" ms-click="ChangeSex('N')">
+                <div class="icheckbox_square-blue mr5" ms-class-1="checked:UserData.https=='N'">
+                    <span class="iconfont icon-check ft12"></span>
+                </div>HTTPS
+            </label>
+            <label ms-click="ChangeSex('Y')">
+                <div class="icheckbox_square-blue mr5" ms-class-1="checked:UserData.https=='Y'">
+                    <span class="iconfont icon-check ft12"></span>
+                </div>HTTP
+            </label>
+        </div>
+    </div>
+
+    <div class="detail-item">
+        <button class="btn btn-info pl20 pr20" ms-click="SaveData(this)"><i class="fa fa-spinner fa-spin" style="display: none"></i>保存</button>
+        <span>修改后需要重新启动服务才能生效</span>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+
+    var tempindex = avalon.define({
+        $id: "UserCenter",
+        name: "员工编辑",
+        appdata: [],
+
+        InitWigetData: function (strId) {
+            $.getJSON("/adminapi/ExeAction/GETSETINFO", {}, function (result) {
+                if (result.ErrorMsg == "") {
+                    tempindex.appdata = result.Result;
+                }
+            });
+        }, SaveData: function (dom) {
+
+            $(dom).attr("disabled", true).find(".fa").show();//加上转圈样式
+            var modelValue = JSON.stringify(tempindex.appdata.$model);
+            $.getJSON("/adminapi/ExeAction/SAVESETINFO", { P1: modelValue, P2: "" }, function (result) {
+                $(dom).attr("disabled", false).find(".fa").hide();//加上转圈样式
+                if (result.ErrorMsg == "") {
+                    top.ComFunJS.winsuccess("修改用户信息成功");
+                }
+            });
+        }
+    });
+</script>

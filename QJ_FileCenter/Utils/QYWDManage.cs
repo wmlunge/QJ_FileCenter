@@ -24,6 +24,8 @@ namespace QJ_FileCenter
             msg.Result = UserInfo;
             msg.Result1 = appsetingB.GetValueByKey("sysname");
             msg.Result2 = appsetingB.GetValueByKey("qyname");
+            msg.Result3 = appsetingB.GetValueByKey("qyico");
+
 
         }
 
@@ -1168,6 +1170,36 @@ namespace QJ_FileCenter
             msg.Result = new QycodeB().GetALLEntities().Count();
             msg.Result1 = new DocumentB().GetALLEntities().Count();
             msg.Result2 = new DocumentB().GetALLEntities().Sum(d => long.Parse(d.filesize)).ToString();
+        }
+
+
+        /// <summary>
+        /// 获取配置信息
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="msg"></param>
+        /// <param name="P1"></param>
+        /// <param name="P2"></param>
+        /// <param name="UserInfo"></param>
+        public void GETSETINFO(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            msg.Result = new appsetingB().GetALLEntities();
+        }
+
+
+        /// <summary>
+        /// 保存配置信息
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="msg"></param>
+        /// <param name="P1"></param>
+        /// <param name="P2"></param>
+        /// <param name="UserInfo"></param>
+        public void SAVESETINFO(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            List<appseting> models = JsonConvert.DeserializeObject<List<appseting>>(P1);
+            new appsetingB().Update(models);
+
         }
 
 

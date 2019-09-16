@@ -7,7 +7,7 @@
     isshowload: true,
     isiframe: "N",
     XXCount: 0,//消息数量
-    QYData: { sysname: "", qyname: "" },
+    QYData: { sysname: "", qyname: "", qyico: ""},
     YYData: [],
     LMData: [],
 
@@ -172,6 +172,10 @@
                 model.UserInfo = resultData.Result;
                 model.QYData.sysname = resultData.Result1;
                 model.QYData.qyname = resultData.Result2;
+                model.QYData.qyico = resultData.Result3;
+
+
+                
                 $(document).attr("title", resultData.Result1 + "");//修改title值
                 // model.GetCompanyAuth();
                 ComFunJS.setCookie('fileapi', "");
@@ -243,6 +247,7 @@
     GetYYList: function () {
         var MenuResult = [
             { "ID": 26, "ModelName": "系统首页", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统首页", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/shouye.html", "isiframe": "" }] },
+            { "ID": 35, "ModelName": "系统配置", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统配置", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/appset.html", "isiframe": "" }] },
             { "ID": 27, "ModelName": "空间管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "KJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "空间管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qygl.html", "isiframe": "" }] },
             { "ID": 32, "ModelName": "用户管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "YHGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "用户管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/yhgl.html", "isiframe": "" }] },
             { "ID": 28, "ModelName": "文件管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "WJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/wjgl.html", "isiframe": "" }] },
