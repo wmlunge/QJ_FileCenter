@@ -7,7 +7,7 @@
     isshowload: true,
     isiframe: "N",
     XXCount: 0,//消息数量
-    QYData: { sysname: "", qyname: "", qyico: ""},
+    QYData: { sysname: "", qyname: "", qyico: "" },
     YYData: [],
     LMData: [],
 
@@ -173,12 +173,10 @@
                 model.QYData.sysname = resultData.Result1;
                 model.QYData.qyname = resultData.Result2;
                 model.QYData.qyico = resultData.Result3;
-
-
-                
                 $(document).attr("title", resultData.Result1 + "");//修改title值
                 // model.GetCompanyAuth();
                 ComFunJS.setCookie('fileapi', "");
+                ComFunJS.setCookie('qycode', resultData.Result4.Code + "," + resultData.Result4.secret);
 
                 model.GetYYList();
 

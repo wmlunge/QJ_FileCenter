@@ -25,8 +25,8 @@ namespace QJ_FileCenter
             msg.Result1 = appsetingB.GetValueByKey("sysname");
             msg.Result2 = appsetingB.GetValueByKey("qyname");
             msg.Result3 = appsetingB.GetValueByKey("qyico");
-
-
+            Qycode qycode = new QycodeB().GetALLEntities().FirstOrDefault();
+            msg.Result4 = qycode;
         }
 
 
@@ -1340,7 +1340,11 @@ namespace QJ_FileCenter
             }
             else
             {
-                File.Delete(strFile);
+                //存在即删除
+                if (File.Exists(strFile))
+                {
+                    File.Delete(strFile);
+                }
             }
 
 

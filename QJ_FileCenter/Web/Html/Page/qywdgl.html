@@ -344,6 +344,7 @@
         $id: "APP_QYWDM",
         name: "文档中心",
         itemtype: "2",//
+        qycode: ComFunJS.getCookie("qycode"),
         InitWigetData: function (para) {
             if (para) {
                 tempindex.itemtype = para;
@@ -547,11 +548,11 @@
                 new QJUpload({
                     uploadButtton: 'qjupload',
                     fileapiurl: fileapi,
-                    usercode: "qycode",
-                    secret: "qycode",
+                    usercode: tempindex.qycode.split(',')[0],
+                    secret: tempindex.qycode.split(',')[1],
                     upinfo: "上传组件",
                     webupconfig: {
-                        fileNumLimit: 5,
+                        fileNumLimit: 10,
                     },
                     closeupwin: function (fileData, dom) {
                         var nowfolderid = tempindex.Pathdata[tempindex.Pathdata.length - 1].ID;
