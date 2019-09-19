@@ -1,12 +1,12 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy.Hosting.Self;
+using QJ_FileCenter;
 using QJ_FileCenter.Domains;
 using QJ_FileCenter.Repositories;
-using QJ_FileCenter;
+using QJFile.Data;
 using System;
 using System.Net;
 using System.ServiceProcess;
-using QJFile.Data;
 
 namespace QJ_FileCenter
 {
@@ -22,46 +22,48 @@ namespace QJ_FileCenter
             Logger.Initialize(PathUtil.GetLog4netPath());
             Logger.LogError("开始");
 
-
-            //try
-            //{
-            //    var hostConfiguration = new HostConfiguration
-            //    {
-            //        UrlReservations = new UrlReservations() { CreateAutomatically = true }
-            //    };
-            //    string strIP = appsetingB.GetValueByKey("ip");
-            //    string port = appsetingB.GetValueByKey("port");
-
-            //    string url = string.Format("http://{0}:{1}", strIP, port);
-            //    var rootPath = appsetingB.GetValueByKey("path");
-            //    var nancyHost = new NancyHost(new RestBootstrapper(), hostConfiguration, new Uri(url));
-            //    nancyHost.Start();
-            //    System.Console.WriteLine("文件中心服务开启,管理地址:" + url.ToString());
-
-            //    Console.ReadLine();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError("启动NancyHost失败.");
-            //    Logger.LogError4Exception(ex);
-            //}
-
-
-
-            //Debug Code
-            if (!Environment.UserInteractive)
+            string strType = "0";//等于0时按照控制台模式运行，等于1时依附于Windows服务运行(打包时用到)，调试的时候设为0比较好使
+            if (strType == "0")
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[]
+                try
                 {
-                new QJ_FileCenterService()
-                };
-                ServiceBase.Run(ServicesToRun);
+                    var hostConfiguration = new HostConfiguration
+                    {
+                        UrlReservations = new UrlReservations() { CreateAutomatically = true }
+                    };
+                    string strIP = appsetingB.GetValueByKey("ip");
+                    string port = appsetingB.GetValueByKey("port");
+
+                    string url = string.Format("http://{0}:{1}", strIP, port);
+                    var rootPath = appsetingB.GetValueByKey("path");
+                    var nancyHost = new NancyHost(new RestBootstrapper(), hostConfiguration, new Uri(url));
+                    nancyHost.Start();
+                    System.Console.WriteLine("文件中心服务开启,管理地址:" + url.ToString());
+
+                    Console.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("启动NancyHost失败.");
+                    Logger.LogError4Exception(ex);
+                }
             }
             else
             {
-                QJ_FileCenterService service = new QJ_FileCenterService();
-                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);  // forces debug to keep VS running while we debug the service  
+                if (!Environment.UserInteractive)
+                {
+                    ServiceBase[] ServicesToRun;
+                    ServicesToRun = new ServiceBase[]
+                    {
+                    new QJ_FileCenterService()
+                    };
+                    ServiceBase.Run(ServicesToRun);
+                }
+                else
+                {
+                    QJ_FileCenterService service = new QJ_FileCenterService();
+                    System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);  // forces debug to keep VS running while we debug the service  
+                }
             }
         }
 
