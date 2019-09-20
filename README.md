@@ -23,7 +23,7 @@
 - 提升组件的性能
 ### 演示环境
 [点击此处进入演示环境](http://114.67.237.16:9100/Web/Login.html)
-演示账号:lyh,密码:123456
+演示账号:yhy,密码:123456
 ### 系统主要截图
 ![主页](https://images.gitee.com/uploads/images/2019/0919/161658_83335e13_11702.png "屏幕截图.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0919/161752_59784343_11702.png "屏幕截图.png")
