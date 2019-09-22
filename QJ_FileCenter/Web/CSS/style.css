@@ -32,7 +32,7 @@ img{max-width:100%;}
 body{
   font-family: 'Montserrat', sans-serif;
    font-size: 100%;
-   background: url(../images/bbb.jpg)no-repeat;
+   background: url(../images/bg.png)no-repeat;
        background-size: cover;
 }
 .login-form{

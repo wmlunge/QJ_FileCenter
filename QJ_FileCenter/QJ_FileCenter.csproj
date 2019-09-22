@@ -313,6 +313,9 @@
     <Content Include="Web\Html\Test.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\images\bg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\images\c-wj.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
