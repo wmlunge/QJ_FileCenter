@@ -294,8 +294,10 @@
             </ul>
         </div>
     </div>
+    <ul id="imgUI" style="display:none"></ul>
 
     <script type="text/javascript" src="/Web/JS/jquery-1.11.1.min.js"></script>
+    <script src="/Web/js/viewer-jquery.min.js"></script>
     <script src="/Web/JS/layer/layer.js"></script>
     <script src="/Web/JS/layer/extend/layer.ext.js"></script>
     <script src="/Web/JS/toastr.js"></script>
@@ -303,6 +305,7 @@
     <script src="/Web/JS/SZHLCommon.js?jsver=20160915"></script>
 
     <script>
+        var viewimg;
         var tempindex = avalon.define({
             $id: "QYWD_SHARE",
             ShareInfo: {},
@@ -398,11 +401,6 @@
             },//目录链接
             FolderList: [],
             FileList: [],
-            initimgs: function () {
-                $('#imgs').viewer({
-                    url: 'data-original',
-                });
-            },
             GetListData: function (PID) {
                 $.getJSON('/adminapi/ExeActionPub/GETFILELIST', {
                     P1: PID, P2: tempindex.ShareInfo.ComId
@@ -419,6 +417,25 @@
                         })
                         tempindex.FolderList = resultData.Result;
                         tempindex.FileList = resultData.Result1;
+
+                        //处理图片预览
+                        $('#imgUI').empty();
+                        if (viewimg && viewimg.data('viewer')) {
+                            viewimg.data('viewer').destroy();
+                        }
+                        for (var i = 0; i < resultData.Result1.length; i++) {
+                            if (ComFunJS.isPic(resultData.Result1[i].FileExtendName)) {
+                                var dom = $('<li><img id="slt' + resultData.Result1[i].ID + '" data-original="' + ComFunJS.getfile(resultData.Result1[i].ID) + '" src="' + tempindex.getsrc(resultData.Result1[i]) + '" alt="图片1"></li>');
+                                $('#imgUI').append(dom);
+                            }
+                        }
+                        if ($('#imgUI').find('li').length > 0) {
+                            viewimg = $('#imgUI').viewer({
+                                url: 'data-original',
+                            });
+                        }
+                        //处理图片预览
+
                     }
                 })
             },

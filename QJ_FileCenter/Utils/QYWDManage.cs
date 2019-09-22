@@ -1213,7 +1213,7 @@ namespace QJ_FileCenter
         public void UPMM(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
 
-            user User = new JH_Auth_UserB().GetALLEntities().FirstOrDefault();
+            user User = UserInfo.User;
             User.pasd = CommonHelp.GetMD5(P2);
             new JH_Auth_UserB().Update(User);
         }

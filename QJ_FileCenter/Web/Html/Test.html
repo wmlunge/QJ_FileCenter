@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+
+<!--<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="/Web/CSS/animate.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Web/CSS/msui.css">
+    <link rel="stylesheet" href="/Web/js/imgview/jquery.fs.boxer.css">
+    <style>
+        #boxer.mobile .boxer-meta {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+    </style>
+    <script src="http://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/Web/js/imgview/jquery.fs.boxer.min.js"></script>
+    <script>
+        avalon.ready(function () {
+            $('.boxer').boxer({
+                mobile: true
+            });
+        })
+    </script>
+</head>
+<body>
+
+    <div style="text-align: center;">
+        <a title="标题 闪电1" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/1b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/1s.jpg"></a>
+        <a title="标题 闪电2" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/2b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/2s.jpg"></a>
+        <a title="标题 闪电3" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/3b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/3s.jpg"></a>
+        <a title="标题 闪电4" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/4b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/4s.jpg"></a>
+    </div>
+</body>
+</html>-->
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <title>jQuery Lightbox效果插件Boxer演示4_dowebok</title>
+    <link href="/Web/CSS/animate.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Web/CSS/msui.css">
+    <link rel="stylesheet" href="/Web/CSS/viewer.min.css">
+
+    <link rel="stylesheet" href="/Web/js/imgview/jquery.fs.boxer.css">
+    <style>
+        #boxer.mobile .boxer-meta {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body class="ms-controller" ms-controller="indexM">
+    <h1 style="margin: 40px; font: 32px Microsoft Yahei; text-align: center;">jQuery Lightbox效果插件Boxer演示4</h1>
+
+    <div class="menu">
+        <a href="./">演示1（基本）</a>
+        <a href="index2.html">演示2（组图）</a>
+        <a href="index3.html">演示3（视频）</a>
+        <a class="cur" href="index4.html">演示4（移动设备）</a>
+        <a href="index5.html">演示5（固定）</a>
+        <a href="index6.html">演示6（iframe）</a>
+    </div>
+    <ul id="jq22">
+        <li><img data-original="http://idowebok.u.qiniudn.com/82/1b.jpg" src="http://idowebok.u.qiniudn.com/82/1s.jpg" alt="图片1"></li>
+        <li><img data-original="http://idowebok.u.qiniudn.com/82/2b.jpg" src="http://idowebok.u.qiniudn.com/82/2s.jpg" alt="图片2"></li>
+        <li><img data-original="http://idowebok.u.qiniudn.com/82/3b.jpg" src="http://idowebok.u.qiniudn.com/82/3s.jpg" alt="图片3"></li>
+        <li><img data-original="http://idowebok.u.qiniudn.com/82/4b.jpg" src="http://idowebok.u.qiniudn.com/82/4s.jpg" alt="图片4"></li>
+    </ul>
+    <div style="text-align: center;">
+        <a title="标题 闪电1" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/1b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/1s.jpg"></a>
+        <a title="标题 闪电2" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/2b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/2s.jpg"></a>
+        <a title="标题 闪电3" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/3b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/3s.jpg"></a>
+        <a title="标题 闪电4" rel="gallery" class="boxer" href="http://idowebok.u.qiniudn.com/82/4b.jpg"><img alt="" src="http://idowebok.u.qiniudn.com/82/4s.jpg"></a>
+    </div>
+
+    <script src="http://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/Web/js/jquery-1.11.1.min.js"></script>
+    <script src="/Web/js/viewer-jquery.min.js"></script>
+    <script src="/Web/js/layer/layer.js"></script>
+    <script src="/Web/js/avalon1.47.js"></script>
+    <script src="/Web/js/SZHLCommon.js"></script>
+    <script>
+        //$(function () {
+        //    $('.boxer').boxer({
+        //        mobile: true
+        //    });
+        //});
+        var model = avalon.define({
+            $id: "indexM",
+            wjjData: []
+        })
+        avalon.ready(function () {
+            //$('.boxer').boxer({
+            //    mobile: true
+            //});
+            $('#jq22').viewer({
+                url: 'data-original',
+            });
+        })
+    </script>

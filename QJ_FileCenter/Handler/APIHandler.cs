@@ -26,9 +26,15 @@ namespace QJ_FileCenter.Handler
             {
                 try
                 {
+                    //Logger.LogInfo("请求地址" + ctx.Request.Path);
                     if (ctx.Request.Path == "/adminapi/login")
                     {
                         return ctx.Response;
+                    }
+                    else
+                    if (ctx.Request.Path == "/")
+                    {
+                        return Response.AsRedirect("/Web/Login.html");
                     }
                     else
                     if (ctx.Request.Path.StartsWith("/adminapi/dfile"))
@@ -82,7 +88,7 @@ namespace QJ_FileCenter.Handler
                 {
                     strzyid = file.zyid;
                 }
-              
+
                 string width = Context.Request.Query["width"].Value ?? "";
                 string height = Context.Request.Query["height"].Value ?? "";
                 Qycode qy = new QycodeB().GetALLEntities().FirstOrDefault();
@@ -104,6 +110,8 @@ namespace QJ_FileCenter.Handler
                 {
                     msg.Result = "Y";
                     msg.Result1 = new JH_Auth_UserB().GetUserInfo(strUser, strpasd);
+                    Qycode qycode = new QycodeB().GetALLEntities().FirstOrDefault();
+                    msg.Result4 = qycode;
 
                 }
                 else

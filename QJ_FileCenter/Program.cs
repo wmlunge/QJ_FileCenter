@@ -21,9 +21,8 @@ namespace QJ_FileCenter
 
             Logger.Initialize(PathUtil.GetLog4netPath());
             Logger.LogError("开始");
-
-            string strType = "0";//等于0时按照控制台模式运行，等于1时依附于Windows服务运行(打包时用到)，调试的时候设为0比较好使
-            if (strType == "0")
+            string strAppType = CommonHelp.GetConfig("apptype","0");
+            if (strAppType == "0")
             {
                 try
                 {

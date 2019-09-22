@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>文件分享</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/Web/CSS/msui.css">
+
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1476090774_8365302.css">
+    <link href="/Web/CSS/szhlextend.css" rel="stylesheet" />
+    <style>
+        .success-ts {
+            padding: 3rem 0 .8rem 0;
+        }
+
+            .success-ts i.icon-chenggong {
+                font-size: 1.2rem;
+                color: #1bad28;
+            }
+
+        .look-success {
+            font-size: .6rem;
+        }
+
+            .look-success span {
+                margin: 0 .2rem;
+            }
+
+        .fx-link {
+            margin: 1rem;
+            border: 1px dashed #ccc;
+            padding: .5rem;
+            word-break: break-all;
+        }
+
+
+
+            .fx-link > div {
+                text-align: left;
+                position: relative;
+                font-size: .7rem;
+                margin-bottom: .2rem;
+                color: #999;
+            }
+    </style>
+</head>
+
+<body ms-controller="QYWDSHARE">
+    <div class="page-group">
+        <div class="page page-current" id="pageindex1">
+            <header class="bar bar-nav" style="background-color: #EFEFF4;">
+                <a class="button button-link button-nav pull-left" href="javascript:window.history.back(-1);">
+                    <span class="icon icon-left"></span>
+                    返回上一页
+                </a>
+
+                <h1 class="title"></h1>
+            </header>
+            <div class="content native-scroll text-center">
+                <div style="display:table">
+                    <div class=" success-ts">
+                        <i class="iconfont icon-chenggong">分享成功</i>
+                    </div>
+                    <div class="look-success">
+                        <a external target="_blank" ms-attr-href="ShareData.ShareURL">查看分享页面</a>
+                        <span>|</span>
+                        <a external ms-click="DelShare()" ms-if="ShareData.IsDel!='Y'">取消分享</a>
+                    </div>
+                    <div class="fx-link">
+                        <div>
+                            <span>链接：</span>{{ShareData.ShareURL}}
+                        </div>
+                        <div>
+                            <span>密码：</span>{{ShareData.SharePasd?ShareData.SharePasd:"无"}} <a ms-click="SetPassWord()">{{ShareData.ShareType=="0"?"设置":"取消"}}</a>
+                        </div>
+                        <div ms-if="ShareData.ShareDueDate">
+                            <span>到期时间：</span>{{ShareData.ShareDueDate}}（{{$.timeago(ShareData.ShareDueDate)}}）
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="/Web/js/jquery-1.11.1.min.js"></script>
+    <script src="/Web/js/avalon1.47.js"></script>
+    <script src="/Web/js/SZHLCommon.js"></script>
+    <script>
+        model = avalon.define({
+            $id: "QYWDSHARE",
+            ShareData: {},
+            shareId: ComFunJS.getQueryString("shareid"),
+            GetShareData: function () {
+                $.getJSON('/adminapi/ExeActionAuth/GETSHAREINFO', {
+                    P1: model.shareId
+                }, function (resultData) {
+                    if (resultData.ErrorMsg == "") {
+                        model.ShareData = resultData.Result;
+                    }
+                })
+            }, DelShare: function () {
+                $.getJSON('/adminapi/ExeActionAuth/DELSHARECODE', {
+                    "P1": model.ShareData.ID
+                }, function (result) {
+                    var result = $.parseJSON(result);
+                    if (result.ErrorMsg == "") {
+                        top.ComFunJS.winsuccess("取消成功");
+
+                        setTimeout("history.back();", 500)
+
+                    } else {
+                        top.ComFunJS.winwarning("取消失败，请重试");
+                    }
+                })
+            }, SetPassWord: function () {
+                $.getJSON('/adminapi/ExeActionAuth/MODIFYPASSWORD', {
+                    "P1": model.ShareData.ID, P2: model.ShareData.ShareType == "0" ? "1" : "0"
+                }, function (result) {
+                    if (result.ErrorMsg == "") {
+                        model.ShareData = result.Result;
+                        top.ComFunJS.winsuccess("操作成功" + model.ShareData.SharePasd);
+                    } else {
+                        top.ComFunJS.winwarning("设置提取码失败，请重试");
+                    }
+                })
+            },
+        })
+        avalon.ready(function () {
+            model.GetShareData();
+        })
+    </script>
+</body>
+
+
+
+</html>

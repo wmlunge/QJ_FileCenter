@@ -17,7 +17,13 @@
                         if (result.result == "Y") {
                             setCookie("user", $("#user").val());
                             setCookie("pasd", $("#pasd").val());
-                            location.href = "Html/index.html";
+                            setCookie('qycode', result.result4.code + "," + result.result4.secret);
+                            if (isPC()) {
+                                location.href = "Html/index.html";
+
+                            } else {
+                                location.href = "Html/indexM.html";
+                            }
                         } else {
                             alert("账号密码错误!")
                         }
@@ -32,6 +38,20 @@
             var exp = new Date();
             exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
             document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+        }
+        function isPC() {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = ["Android", "iPhone",
+                "SymbianOS", "Windows Phone",
+                "iPad", "iPod"];
+            var flag = true;
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
         }
     </script>
 </head>

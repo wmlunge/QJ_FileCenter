@@ -7,6 +7,8 @@
     <meta name="renderer" content="webkit|ie-comp|ie-stand" />
     <link rel="stylesheet" href="//at.alicdn.com/t/font_533449_y4cj8vk8wvvg3nmi.css">
     <link rel="stylesheet" type="text/css" href="/Web/CSS/animate.css">
+    <link rel="stylesheet" href="/Web/CSS/viewer.min.css">
+
     <link rel="stylesheet" type="text/css" href="/Web/CSS/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/Web/CSS/default.css">
     <link rel="stylesheet" type="text/css" href="/Web/CSS/index.css?ver=3">
@@ -39,7 +41,7 @@
         <div class="header box-shadow">
             <div class="head-center clearfix">
                 <div class="logo c666 pull-left">
-                    <img ms-src="{{QYData.qyico}}"   onerror="javascript: this.src = '/Web/images/logo.png'" style="max-height: 40px; margin-right: 10px;">{{QYData.sysname}}
+                    <img ms-src="{{QYData.qyico}}" onerror="javascript: this.src = '/Web/images/logo.png'" style="max-height: 40px; margin-right: 10px;">{{QYData.sysname}}
                 </div>
                 <div class="pull-right top-fun">
                     <ul class="clearfix">
@@ -70,7 +72,7 @@
                                 <i class="iconfont icon-shezhi tip" data-toggle="tooltip" title="个人/系统" data-placement="bottom"></i>
                             </a>
                         </li>
-                      
+
                         <li>
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" aria-haspopup="true">
                                 <i class="iconfont icon-pifu tip" data-toggle="tooltip" title="壁纸" data-placement="bottom"></i>
@@ -368,10 +370,13 @@
     <div id="nipic_search">
         <div class="tipSwitch"></div>
     </div>
+    <ul id="imgUI" style="display:none"></ul>
+
     <script type="text/javascript" src="/Web/JS/jquery-1.11.1.min.js"></script>
     <script src="/Web/JS/bootstrap.js"></script>
     <script src="/Web/JS/layer/layer.js"></script>
     <script src="/Web/JS/layer/extend/layer.ext.js"></script>
+    <script src="/Web/js/viewer-jquery.min.js"></script>
     <script src="/Web/JS/laypage/laypage.js"></script>
     <script src="/Web/JS/toastr.js"></script>
     <script src="/Web/JS/clipboard.js"></script>
@@ -382,7 +387,7 @@
     <script src="/Web/JS/index.js"></script>
     <script type="text/javascript">
 
-
+        var viewimg;
         var clipboard = new Clipboard(".copyBtn");
         clipboard.on('success', function (e) {
             top.ComFunJS.winsuccess("复制成功");

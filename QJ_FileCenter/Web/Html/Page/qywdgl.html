@@ -411,6 +411,26 @@
                     })
                     tempindex.FolderList = resultData.Result;
                     tempindex.FileList = resultData.Result1;
+
+
+                    //处理图片预览
+                    $('#imgUI').empty();
+                    if (viewimg && viewimg.data('viewer')) {
+                        viewimg.data('viewer').destroy();
+                    }
+                    for (var i = 0; i < resultData.Result1.length; i++) {
+                        if (ComFunJS.isPic(resultData.Result1[i].FileExtendName)) {
+                            var dom = $('<li><img id="slt' + resultData.Result1[i].ID + '" data-original="' + ComFunJS.getfile(resultData.Result1[i].ID) + '" src="' + tempindex.getsrc(resultData.Result1[i]) + '" alt="图片1"></li>');
+                            $('#imgUI').append(dom);
+                        }
+                    }
+                    if ($('#imgUI').find('li').length > 0) {
+                        viewimg = $('#imgUI').viewer({
+                            url: 'data-original',
+                        });
+                    }
+                    //处理图片预览
+
                 }
             })
         },

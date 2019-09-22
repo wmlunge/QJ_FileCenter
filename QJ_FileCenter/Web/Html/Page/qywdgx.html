@@ -91,14 +91,14 @@
     <div>
         <ol class="breadcrumb">
             <li ms-click="model.refpage('')"><a class="text-primary">共享文件</a></li>
-            <li ms-click="SelectLYType(seluser)"><a class="text-primary">{{seluser}}</a></li>
+            <li ms-click="SelectLYType(seluser,selusername)"><a class="text-primary">{{selusername}}</a></li>
             <li ms-repeat-path="Pathdata" ms-class="active:path.active" ms-click="gopath(path)"><a ms-class="text-primary:!path.active">{{path.Name}}</a></li>
         </ol>
     </div>
     <div id="tab">
         <div ms-if="showtype=='0'">
             <ul style="padding-left: 10px;" class="folder-list">
-                <li ms-repeat-el="gxlydata" ms-click="SelectLYType(el.CRUser)">
+                <li ms-repeat-el="gxlydata" ms-click="SelectLYType(el.CRUser,el.UserRealName)">
                     <div style="text-align: center">
                         <img src="/Web/images/qywd/file1.png" class="img70 mr5">
                     </div>
@@ -194,18 +194,18 @@
         itemtype: "4",//共享文档
         showtype: "0",
         seluser: "",//共享来源
+        selusername: "",
         InitWigetData: function (para) {
             $.getJSON('/adminapi/ExeAction/GETNBGXLY', {
-            }, function (resultData) {//P1为个人文件夹
+            }, function (resultData) {
                 if (resultData.ErrorMsg == "") {
-
                     tempindex.gxlydata = resultData.Result;
                 }
             })
         },
         Pathdata: [],
         gxlydata: [],
-        SelectLYType: function (username) {
+        SelectLYType: function (username, selusername) {
             tempindex.Pathdata.clear();
             tempindex.showtype = "1";
             $.getJSON('/adminapi/ExeAction/GETNBSHARELIST', {
@@ -222,6 +222,8 @@
                 tempindex.FolderList = resultData.Result;
                 tempindex.FileList = resultData.Result1;
                 tempindex.seluser = username;
+                tempindex.selusername = selusername;
+
                 tempindex.Pathdata.splice(1, tempindex.Pathdata.length - 1)
             })
 
@@ -273,6 +275,24 @@
                     })
                     tempindex.FolderList = resultData.Result;
                     tempindex.FileList = resultData.Result1;
+
+                    //处理图片预览
+                    $('#imgUI').empty();
+                    if (viewimg && viewimg.data('viewer')) {
+                        viewimg.data('viewer').destroy();
+                    }
+                    for (var i = 0; i < resultData.Result1.length; i++) {
+                        if (ComFunJS.isPic(resultData.Result1[i].FileExtendName)) {
+                            var dom = $('<li><img id="slt' + resultData.Result1[i].ID + '" data-original="' + ComFunJS.getfile(resultData.Result1[i].ID) + '" src="' + tempindex.getsrc(resultData.Result1[i]) + '" alt="图片1"></li>');
+                            $('#imgUI').append(dom);
+                        }
+                    }
+                    if ($('#imgUI').find('li').length > 0) {
+                        viewimg = $('#imgUI').viewer({
+                            url: 'data-original',
+                        });
+                    }
+                    //处理图片预览
                 }
             })
         },

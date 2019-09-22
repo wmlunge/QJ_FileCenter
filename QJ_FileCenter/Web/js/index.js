@@ -176,8 +176,6 @@
                 $(document).attr("title", resultData.Result1 + "");//修改title值
                 // model.GetCompanyAuth();
                 ComFunJS.setCookie('fileapi', "");
-                ComFunJS.setCookie('qycode', resultData.Result4.Code + "," + resultData.Result4.secret);
-
                 model.GetYYList();
 
             }

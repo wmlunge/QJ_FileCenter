@@ -191,7 +191,7 @@
     },
     viewfile: function (dom,item) {
         if (ComFunJS.isPic(item.FileExtendName)) { //如果是图片格式，显示图片
-            ComFunJS.viewbigimg(dom, ".imageYL")
+            $("#imgUI").find("#slt" + item.ID).trigger('click');
             return;
         }
         if (item.FileExtendName.toLowerCase() == "mp4") {
