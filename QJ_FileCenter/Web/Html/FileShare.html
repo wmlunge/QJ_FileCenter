@@ -107,12 +107,12 @@
                 }, function (result) {
                     var result = $.parseJSON(result);
                     if (result.ErrorMsg == "") {
-                        top.ComFunJS.winsuccess("取消成功");
+                        ComFunJS.winsuccess("取消成功");
 
                         setTimeout("history.back();", 500)
 
                     } else {
-                        top.ComFunJS.winwarning("取消失败，请重试");
+                        ComFunJS.winwarning("取消失败，请重试");
                     }
                 })
             }, SetPassWord: function () {
@@ -121,9 +121,9 @@
                 }, function (result) {
                     if (result.ErrorMsg == "") {
                         model.ShareData = result.Result;
-                        top.ComFunJS.winsuccess("操作成功" + model.ShareData.SharePasd);
+                        ComFunJS.winsuccess("操作成功" + model.ShareData.SharePasd);
                     } else {
-                        top.ComFunJS.winwarning("设置提取码失败，请重试");
+                        ComFunJS.winwarning("设置提取码失败，请重试");
                     }
                 })
             },

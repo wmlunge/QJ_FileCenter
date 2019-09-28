@@ -284,17 +284,17 @@
             })
         }, Editm: function (item, type) {
             if (type == 1) { //添加一级菜单
-                top.ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&ID=0&type=1", '添加菜单', "1000", "", function () {
+                ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&ID=0&type=1", '添加菜单', "1000", "", function () {
                     tempindex.InitWigetData();
                 });
             }
             else if (type == 2) {   //添加子菜单
-                top.ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&type=2&ID=" + item.ID + "&name=" + escape(item.MenuName), '添加菜单', "1000", "", function () {
+                ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&type=2&ID=" + item.ID + "&name=" + escape(item.MenuName), '添加菜单', "1000", "", function () {
                     tempindex.InitWigetData();
                 });
             }
             else if (type == 3) {   //修改
-                top.ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&type=3&ID=" + item.ID, '编辑菜单', "1000", "", function () {
+                ComFunJS.winviewform("/Web/Html/APP_ADD.html?PathCode=bzzx&type=3&ID=" + item.ID, '编辑菜单', "1000", "", function () {
                     tempindex.InitWigetData();
                 });
             }

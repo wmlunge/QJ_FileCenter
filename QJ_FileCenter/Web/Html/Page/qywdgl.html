@@ -358,8 +358,7 @@
             // 切换
         },
         Pathdata: [],
-        addtx: function (item, event) {
-            alert(1)
+        addtxaddtx: function (item, event) {
             event.stopPropagation();
 
         },
@@ -528,7 +527,7 @@
                     }, function (result) {
                         $(dom).removeClass("disabled").find("i").hide();
                         if ($.trim(result.ErrorMsg) == "") {
-                            top.ComFunJS.winsuccess("操作成功");
+                            ComFunJS.winsuccess("操作成功");
                             result.Result.issel = false;
                             result.Result.type = "folder";
 
@@ -615,7 +614,7 @@
                 if (code.length > 1) {
                     code = code.substring(0, code.length - 1)
                 }
-                top.ComFunJS.winviewform("/Web/Html/Tools/DownFolder.html?code=" + code, "下载文件", "550", "450")
+                ComFunJS.winviewform("/Web/Html/Tools/DownFolder.html?code=" + code, "下载文件", "550", "450")
             }
         },
         itemproperty: function () {
@@ -674,12 +673,12 @@
             var data = tempindex.SelItemData[0];
             if (dom.val() != data.Name) {
                 if ($.trim(dom.val()) == "") {
-                    top.ComFunJS.winwarning("不能为空");
+                    ComFunJS.winwarning("不能为空");
                     dom.val(data.Name);
                     return;
                 }
                 if (tempindex.checkfoldername(dom.val()) || tempindex.checkfilename(dom.val())) {
-                    top.ComFunJS.winwarning("该目录下已存在重名项");
+                    ComFunJS.winwarning("该目录下已存在重名项");
                     dom.val(data.Name);
                     return;
                 } else {
@@ -687,7 +686,7 @@
                         "P1": data.type, "P2": data.ID, "Name": dom.val()
                     }, function (result) {
                         if (result.ErrorMsg == "") {
-                            top.ComFunJS.winsuccess("修改成功");
+                            ComFunJS.winsuccess("修改成功");
                             $('#UpdateNameModal').modal('hide')
                             tempindex.FolderList.forEach(function (item) {
                                 if (item.ID == data.ID) {
@@ -728,7 +727,7 @@
                         "P2": tempindex.SelItemData[0].ID
                     }, function (result) {
                         if (result.ErrorMsg == "") {
-                            top.ComFunJS.winsuccess("授权成功");
+                            ComFunJS.winsuccess("授权成功");
                             $("#NBFenXiangModal").modal("hide");
                         }
                     })
@@ -738,7 +737,7 @@
                 }
 
             } else {
-                top.ComFunJS.winwarning("请选中一项要授权的文件夹");
+                ComFunJS.winwarning("请选中一项要授权的文件夹");
             }
         },//内部授权
         wjtx: function () {
@@ -750,7 +749,7 @@
                 P2: tempindex.SelItemData[0].ID
             }, function (result) {
                 if (result.ErrorMsg == "") {
-                    top.ComFunJS.winsuccess("取消成功");
+                    ComFunJS.winsuccess("取消成功");
                     $("#NBFenXiangModal").modal("hide");
                 }
             })
@@ -776,11 +775,11 @@
                         $("#FenXiangModal").modal("show");
                     } else {
 
-                        top.ComFunJS.winwarning("分享失败，请稍后重试");
+                        ComFunJS.winwarning("分享失败，请稍后重试");
                     }
                 })
             } else {
-                top.ComFunJS.winwarning("请选中一项要分享的文件或文件夹");
+                ComFunJS.winwarning("请选中一项要分享的文件或文件夹");
             }
         },
         isDueShow: false, SetDueShow: function () {
@@ -793,7 +792,7 @@
                 "P1": tempindex.ShareData.ID, "P2": tempindex.DueDate
             }, function (result) {
                 if (result.ErrorMsg == "") {
-                    top.ComFunJS.winsuccess("设置截止日期成功");
+                    ComFunJS.winsuccess("设置截止日期成功");
                     tempindex.ShareData.ShareDueDate = tempindex.DueDate.substring(0, 10);
                 }
             })
@@ -803,7 +802,7 @@
                 "P1": tempindex.ShareData.ID
             }, function (result) {
                 if (result.ErrorMsg == "") {
-                    top.ComFunJS.winsuccess("取消成功");
+                    ComFunJS.winsuccess("取消成功");
                     $("#FenXiangModal").modal("hide");
                 }
             })
@@ -814,29 +813,29 @@
             }, function (result) {
                 if (result.ErrorMsg == "") {
                     tempindex.ShareData = result.Result;
-                    top.ComFunJS.winsuccess("操作成功");
+                    ComFunJS.winsuccess("操作成功");
                 }
             })
         },
         moveitem: function () {
             if (tempindex.SelItemData.size()) {
-                top.ComFunJS.winbtnwin("/Web/Html/Tools/FolderSel.html?foldertype=" + tempindex.itemtype, "选择文件夹", "450", "500", {}, function (layero, index, btdom) {
+                ComFunJS.winbtnwin("/Web/Html/Tools/FolderSel.html?foldertype=" + tempindex.itemtype, "选择文件夹", "450", "500", {}, function (layero, index, btdom) {
                     var fjids = ""
                     var frameid = $("iframe", $(layero)).attr('id');
-                    var nowwin = ComFunJS.isIE() ? top.window.frames[frameid] : top.window.frames[frameid].contentWindow;
+                    var nowwin = ComFunJS.isIE() ? window.frames[frameid] : window.frames[frameid].contentWindow;
                     var fjdata = nowwin.model.selfolder.$model;
                     $.getJSON('/adminapi/ExeAction/PASTEITEM', {
                         "P1": fjdata.ID, P2: JSON.stringify(tempindex.SelItemData.$model), PASTETYPE: "PASTE"
                     }, function (result) {
                         if (result.ErrorMsg == "") {
                             tempindex.gopath(tempindex.Pathdata[tempindex.Pathdata.length - 1]);
-                            top.ComFunJS.winsuccess("移动成功");
+                            ComFunJS.winsuccess("移动成功");
                         }
                     })
-                    top.layer.close(index);
+                    layer.close(index);
                 })
             } else {
-                top.ComFunJS.winwarning("请选择要移动的文件");
+                ComFunJS.winwarning("请选择要移动的文件");
             }
         }, searchContent: "",
         getSearchFile: function () {

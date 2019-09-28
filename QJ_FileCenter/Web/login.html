@@ -16,8 +16,7 @@
                     if (result.errorMsg=="") {
                         if (result.result == "Y") {
                             setCookie("user", $("#user").val());
-                            setCookie("pasd", $("#pasd").val());
-                            setCookie('qycode', result.result4.code + "," + result.result4.secret);
+                            setCookie("filecode", result.result2);
                             if (isPC()) {
                                 location.href = "Html/index.html";
 

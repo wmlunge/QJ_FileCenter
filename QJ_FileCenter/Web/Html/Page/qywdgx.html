@@ -90,7 +90,7 @@
     </div>
     <div>
         <ol class="breadcrumb">
-            <li ms-click="model.refpage('')"><a class="text-primary">共享文件</a></li>
+            <li ms-click="refpage()"><a class="text-primary">共享文件</a></li>
             <li ms-click="SelectLYType(seluser,selusername)"><a class="text-primary">{{selusername}}</a></li>
             <li ms-repeat-path="Pathdata" ms-class="active:path.active" ms-click="gopath(path)"><a ms-class="text-primary:!path.active">{{path.Name}}</a></li>
         </ol>
@@ -205,6 +205,9 @@
         },
         Pathdata: [],
         gxlydata: [],
+        refpage: function () {
+            location.reload();
+        },
         SelectLYType: function (username, selusername) {
             tempindex.Pathdata.clear();
             tempindex.showtype = "1";
@@ -410,7 +413,7 @@
                 if (code.length > 1) {
                     code = code.substring(0, code.length - 1)
                 }
-                top.ComFunJS.winviewform("/Web/Html/Tools/DownFolder.html?code=" + code, "下载文件", "550", "450")
+                ComFunJS.winviewform("/Web/Html/Tools/DownFolder.html?code=" + code, "下载文件", "550", "450")
             }
         },//下载文件
         searchContent: "",

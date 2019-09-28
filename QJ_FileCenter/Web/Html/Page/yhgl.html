@@ -139,7 +139,7 @@
             ComFunJS.winconfirm("确认要重置密码吗？", function () {
                 $.getJSON('/adminapi/ExeActionAuth/UPMM', { P1: "abc123", P2: "abc123" }, function (resultData) {
                     if (resultData.ErrorMsg == "") {
-                        top.ComFunJS.winsuccess("操作成功");
+                        ComFunJS.winsuccess("操作成功");
                     }
                 })
             }, function () { })
@@ -158,7 +158,7 @@
                 if ($.trim(jsonresult.ErrorMsg) == "") {
                     ComFunJS.winsuccess("操作成功");
                     $('#UpdateZD').modal('hide');
-                    top.model.refpage();
+                    model.refpage();
                 }
             });
         },

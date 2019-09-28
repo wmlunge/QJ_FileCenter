@@ -501,7 +501,7 @@
                     if (code.length > 1) {
                         code = code.substring(0, code.length - 1)
                     }
-                    top.ComFunJS.winviewform("/Web/Html/Tools/DownFolderL.html?code=" + code, "下载文件", "550", "450")
+                    ComFunJS.winviewform("/Web/Html/Tools/DownFolderL.html?code=" + code, "下载文件", "550", "450")
                 }
             },
             download: function () {
@@ -510,7 +510,7 @@
                     ComFunJS.winold(ComFunJS.getfile(tempindex.ShareInfo.ID))
                 } else {
                     var code = tempindex.ShareInfo.ID + "|wj";
-                    top.ComFunJS.winviewform("/Web/Html/Tools/DownFolderL.html?code=" + code, "下载文件", "550", "450")
+                    ComFunJS.winviewform("/Web/Html/Tools/DownFolderL.html?code=" + code, "下载文件", "550", "450")
                 }
             },
             viewitem: function (item) {

@@ -162,40 +162,14 @@
         }
         return url;
     },
-    viewbigimg: function (dom, defacalss) {
-        if (!defacalss) {
-            defacalss = ".img-rounded";
-        }
-        var ImagesData = {
-            "title": "图片预览", //相册标题
-            "id": 123, //相册id
-            "start": $(defacalss).index(dom), //初始显示的图片序号，默认0
-            "data": []   //相册包含的图片，数组格式
-        };
-        $(defacalss).each(function () {
-            var image = {
-                "alt": $(this).attr("filename") ? $(this).attr("filename") : "",
-                "pid": "", //图片id
-                "src": ComFunJS.getRoot() + "/" + $(this).attr("imgyt"), //原图地址
-                "thumb": $(this).attr("src") //缩略图地址
-            }
-            ImagesData.data.push(image);
-        })
-        //使用相册
-        top.layer.ready(function () {
-            top.layer.photos({
-                photos: ImagesData //$(dom).parent().parent()
-            });
-        });
-        return;
-    },
+   
     viewfile: function (dom,item) {
         if (ComFunJS.isPic(item.FileExtendName)) { //如果是图片格式，显示图片
             $("#imgUI").find("#slt" + item.ID).trigger('click');
             return;
         }
         if (item.FileExtendName.toLowerCase() == "mp4") {
-            top.layer.open({
+            layer.open({
                 type: 2,
                 fix: true, //不固定
                 area: ['700px', '500px'],
@@ -478,11 +452,11 @@
 
     //弹出帮助函数
     winsuccess: function (content) {
-        top.toastr.success(content);
+        toastr.success(content);
 
     },//成功窗口
     winsuccessnew: function (content) {
-        top.toastr.success(content);
+        toastr.success(content);
 
     },//成功窗口New
     winprompt: function (callbact) {
@@ -492,7 +466,7 @@
     },
 
     winwarning: function (content) {
-        top.toastr.warning(content)
+        toastr.warning(content)
     },//警告窗口
     wintips: function (content, callback) {
         layer.msg(content, {
@@ -943,12 +917,12 @@ $(function () {
             type: "post",
             success: function (data, textStatus) {
                 if (data.ErrorMsg == "NOSESSIONCODE") {
-                    top.ComFunJS.winwarning("页面超时!")
-                    top.window.location.href = "/Login";
+                    ComFunJS.winwarning("页面超时!")
+                    window.location.href = "/Login";
                     return;
                 }
                 if (data.ErrorMsg) {
-                    top.ComFunJS.winwarning(data.ErrorMsg)
+                    ComFunJS.winwarning(data.ErrorMsg)
                 }
                 fn.success(data, textStatus);
             },
@@ -976,12 +950,12 @@ $(function () {
             data: data,
             success: function (data, textStatus) {
                 if (data.ErrorMsg == "NOSESSIONCODE") {
-                    top.ComFunJS.winwarning("页面超时!")
-                    top.window.location.href = "/Login";
+                    ComFunJS.winwarning("页面超时!")
+                    window.location.href = "/Login";
                     return;
                 }
                 if (data.ErrorMsg) {
-                    top.ComFunJS.winwarning(data.ErrorMsg)
+                    ComFunJS.winwarning(data.ErrorMsg)
                 }
                 fn.success(data, textStatus);
             },
@@ -989,7 +963,7 @@ $(function () {
             beforeSend: function (XHR) {
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                top.ComFunJS.winwarning("请求执行有误,请检查系统运行环境")
+                ComFunJS.winwarning("请求执行有误,请检查系统运行环境")
             },
             complete: function (XHR, TS) {
 

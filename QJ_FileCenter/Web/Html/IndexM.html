@@ -696,6 +696,7 @@
             isadd: "",
             type: "",
             Pathdata: [],
+            UserInfo: {},
             isQX: false,
             selWJ: [],
             qycode: ComFunJS.getCookie("qycode"),
@@ -712,6 +713,18 @@
                 }
 
             },
+            GetUserData: function (callbact) {
+                $.getJSON('/adminapi/ExeAction/GETUSERINFO', {}, function (resultData) {
+                    if (resultData.ErrorMsg == "") {
+                        model.UserInfo = resultData.Result;
+                        ComFunJS.setCookie('qycode', resultData.Result4.Code + "," + resultData.Result4.secret);
+                        ComFunJS.setCookie("user", resultData.Result.User.username);
+                        if (callbact) {
+                            return callbact.call(this);
+                        }
+                    }
+                })
+            }, //获取用户信息
             SelectLYType: function (username, selusername) {
                 model.Pathdata.clear();
                 model.showtype = "1";
@@ -956,11 +969,11 @@
                             location.href = "fileshare.html?shareid=" + result.Result.ID;
                         } else {
 
-                            top.ComFunJS.winwarning("分享失败，请稍后重试");
+                            ComFunJS.winwarning("分享失败，请稍后重试");
                         }
                     })
                 } else {
-                    top.ComFunJS.winwarning("请选中要分享的文件");
+                    ComFunJS.winwarning("请选中要分享的文件");
                 }
             },
         });
@@ -977,6 +990,11 @@
                 strType = "1";
             }
             model.type = strType;
+
+            var filecode = ComFunJS.getQueryString("filecode");
+            if (filecode) {
+                ComFunJS.setCookie("filecode", filecode);
+            }
             var typename = "企业空间";
             if (strType == "2") {
                 typename = "个人空间";
@@ -997,49 +1015,52 @@
             //$(".tab-item").removeClass("active");
             //$(".tab-item").eq(strType * 1 - 1).addClass("active");
             model.GetListData(model.type);
-            model.initFile();
+            model.GetUserData(function () {
+                model.initFile();
+
+            })
           
 
         })
 
-        function UploadLoad() {
-            var str = strId;
-            if (document.getElementById("file").files.length > 0) {
-                var formData = new FormData();
-                formData.append("upFile", document.getElementById("file").files[0]);
-                $.ajax({
-                    url: "/API/VIEWAPI.ashx?ACTION=XTGL_UPLOADFILES&P1=" + str + "&r=" + Math.random(),
-                    type: "POST",
-                    data: formData,
-                    /**
-                    *必须false才会自动加上正确的Content-Type
-                    */
-                    contentType: false,
-                    /**
-                    * 必须false才会避开jQuery对 formdata 的默认处理
-                    * XMLHttpRequest会对 formdata 进行正确的处理
-                    */
-                    processData: false,
-                    success: function (result) {
-                        var r = $.parseJSON(result);
-                        if (r.ErrorMsg == "") {
-                            document.getElementById("file").outerHTML = document.getElementById("file").outerHTML;
-                            $("#file").change(function () {
-                                UploadLoad(str);
-                            });
-                            if (r.Result1.length == 0) {
-                                r.Result.forEach(function (item) {
-                                    item.issel = false;
-                                    item.type = "file";
-                                })
-                                model.wjData.push(r.Result[0]);
-                            }
-                            ComFunJS.winsuccess("上传成功！");
-                        }
-                    }
-                });
-            }
-        }
+        //function UploadLoad() {
+        //    var str = strId;
+        //    if (document.getElementById("file").files.length > 0) {
+        //        var formData = new FormData();
+        //        formData.append("upFile", document.getElementById("file").files[0]);
+        //        $.ajax({
+        //            url: "/API/VIEWAPI.ashx?ACTION=XTGL_UPLOADFILES&P1=" + str + "&r=" + Math.random(),
+        //            type: "POST",
+        //            data: formData,
+        //            /**
+        //            *必须false才会自动加上正确的Content-Type
+        //            */
+        //            contentType: false,
+        //            /**
+        //            * 必须false才会避开jQuery对 formdata 的默认处理
+        //            * XMLHttpRequest会对 formdata 进行正确的处理
+        //            */
+        //            processData: false,
+        //            success: function (result) {
+        //                var r = $.parseJSON(result);
+        //                if (r.ErrorMsg == "") {
+        //                    document.getElementById("file").outerHTML = document.getElementById("file").outerHTML;
+        //                    $("#file").change(function () {
+        //                        UploadLoad(str);
+        //                    });
+        //                    if (r.Result1.length == 0) {
+        //                        r.Result.forEach(function (item) {
+        //                            item.issel = false;
+        //                            item.type = "file";
+        //                        })
+        //                        model.wjData.push(r.Result[0]);
+        //                    }
+        //                    ComFunJS.winsuccess("上传成功！");
+        //                }
+        //            }
+        //        });
+        //    }
+        //}
     </script>
 </head>
 <body class="ms-controller" ms-controller="indexM">

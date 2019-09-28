@@ -17,6 +17,7 @@
     ishasLeft: false,//是否要隐藏左侧菜单
     FunData: [],//选中模块
     isnull: false,//是否有数据
+    MenuResult: [],
     setyy: function () {
         model.yytype = (model.yytype == "WORK" ? "XT" : "WORK");
         $(".nav-list ul li:visible").eq(0).click();
@@ -138,7 +139,7 @@
                 }
             })
             localStorage.setItem("WIGETDATAV5", JSON.stringify(temp));
-            top.ComFunJS.winsuccess("操作成功");
+            ComFunJS.winsuccess("操作成功");
         }
     },//设置当前模块到控制台
     PageCode: "/Web/Html/loading.html",//需要加载的模板
@@ -166,17 +167,22 @@
 
         $(".nav-list ul li:visible").eq(0).click();
     },//应用类别
-    GetUserData: function () {
+    GetUserData: function (callbact) {
         $.getJSON('/adminapi/ExeAction/GETUSERINFO', {}, function (resultData) {
             if (resultData.ErrorMsg == "") {
                 model.UserInfo = resultData.Result;
                 model.QYData.sysname = resultData.Result1;
                 model.QYData.qyname = resultData.Result2;
                 model.QYData.qyico = resultData.Result3;
+                ComFunJS.setCookie('qycode', resultData.Result4.Code + "," + resultData.Result4.secret);
+                ComFunJS.setCookie("user", resultData.Result.User.username);
                 $(document).attr("title", resultData.Result1 + "");//修改title值
                 // model.GetCompanyAuth();
                 ComFunJS.setCookie('fileapi', "");
                 model.GetYYList();
+                if (callbact) {
+                    return callbact.call(this);
+                }
 
             }
         })
@@ -241,18 +247,8 @@
     UseYYList: [],
     UseSysYYList: [],
     GetYYList: function () {
-        var MenuResult = [
-            { "ID": 26, "ModelName": "系统首页", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统首页", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/shouye.html", "isiframe": "" }] },
-            { "ID": 35, "ModelName": "系统配置", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "系统配置", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/appset.html", "isiframe": "" }] },
-            { "ID": 27, "ModelName": "空间管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "KJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "空间管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qygl.html", "isiframe": "" }] },
-            { "ID": 32, "ModelName": "用户管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "YHGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "用户管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/yhgl.html", "isiframe": "" }] },
-            { "ID": 28, "ModelName": "文件管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "WJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/wjgl.html", "isiframe": "" }] },
-            { "ID": 29, "ModelName": "日志管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "RZGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "接口调用日志", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/rzgl.html", "isiframe": "" }] },
-            { "ID": 31, "ModelName": "企业空间管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYKJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "企业空间管理", "ExtData": "1", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywdgl.html", "isiframe": "" }] },
-            { "ID": 30, "ModelName": "个人空间", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "GRKJ", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "个人空间", "ExtData": "2", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywdgl.html", "isiframe": "" }] },
-            { "ID": 33, "ModelName": "企业空间", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYKJ", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "企业空间", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywd.html", "isiframe": "" }] },
-            { "ID": 34, "ModelName": "用户共享", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "YHGX", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 44, "ModelID": 27, "PageName": "用户共享", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywdgx.html", "isiframe": "" }] }
-        ];
+
+        var MenuResult = model.MenuResult;
         MenuResult.forEach(function (val, i) {
             val.issel = val.issel == "True";
         })
@@ -264,7 +260,6 @@
             })
         }
         // YYData
-
         var temp = [];
         for (var i = 0; i < MenuResult.length; i++) {
             if ($.inArray(MenuResult[i].ModelType, temp) == -1) {
@@ -296,17 +291,17 @@
             })
         }
         if (retmsg !== "") {
-            top.layer.tips(retmsg, dom);
+            layer.tips(retmsg, dom);
             return;
         }
         if (pwd != pwd2) {
             retmsg = "确认密码不一致";
-            top.layer.tips(retmsg, dom);
+            layer.tips(retmsg, dom);
             return;
         }
         $.getJSON('/adminapi/ExeActionAuth/UPMM', { P1: pwd, P2: pwd2 }, function (resultData) {
             if (resultData.ErrorMsg == "") {
-                top.ComFunJS.winsuccess("操作成功");
+                ComFunJS.winsuccess("操作成功");
                 $('#UpdatePDModal').modal('hide');
             }
         })
@@ -466,7 +461,37 @@
     },//鼠标移动控制显示和隐藏
 })
 avalon.ready(function () {
-    model.GetUserData();
+    var MenuResult = [
+        { "ID": 26, "ModelName": "系统首页", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 1, "ModelID": 27, "PageName": "系统首页", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/shouye.html", "isiframe": "" }] },
+        { "ID": 35, "ModelName": "系统配置", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "XMGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 2, "ModelID": 27, "PageName": "系统配置", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/appset.html", "isiframe": "" }] },
+        { "ID": 27, "ModelName": "空间管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "KJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 3, "ModelID": 27, "PageName": "空间管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qygl.html", "isiframe": "" }] },
+        { "ID": 32, "ModelName": "用户管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "YHGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 4, "ModelID": 27, "PageName": "用户管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/yhgl.html", "isiframe": "" }] },
+        { "ID": 28, "ModelName": "文件管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "WJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 5, "ModelID": 27, "PageName": "文件管理", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/wjgl.html", "isiframe": "" }] },
+        { "ID": 29, "ModelName": "日志管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "RZGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 6, "ModelID": 27, "PageName": "接口调用日志", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/rzgl.html", "isiframe": "" }] },
+        { "ID": 31, "ModelName": "企业空间管理", "ModelType": "系统设置", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYKJGL", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "XT", "Token": "", "FunData": [{ "ID": 7, "ModelID": 27, "PageName": "企业空间管理", "ExtData": "1", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywdgl.html", "isiframe": "" }] },
+        { "ID": 30, "ModelName": "个人空间", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "GRKJ", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 8, "ModelID": 27, "PageName": "个人空间", "ExtData": "2", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywdgl.html", "isiframe": "" }] },
+        { "ID": 33, "ModelName": "企业空间", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "QYKJ", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 9, "ModelID": 27, "PageName": "企业空间", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywd.html", "isiframe": "" }] },
+        { "ID": 34, "ModelName": "用户共享", "ModelType": "工作台", "ModelUrl": "/VIEW/AppPage/APP.html", "ModelCode": "YHGX", "ComId": 0, "ORDERID": 1, "IsSys": 1, "WXUrl": "", "IsKJFS": 0, "PModelCode": "WORK", "Token": "", "FunData": [{ "ID": 10, "ModelID": 27, "PageName": "用户共享", "ExtData": "", "PageUrl": "", "FunOrder": "", "PageCode": "/Web/Html/Page/qywdgx.html", "isiframe": "" }] }
+    ];
+    model.MenuResult = MenuResult;
+    var filecode = ComFunJS.getQueryString("filecode");
+    if (filecode) {
+        ComFunJS.setCookie("filecode", filecode);
+    }
+    model.GetUserData(function () {
+        var pagemode = ComFunJS.getQueryString("code");
+        if (pagemode) {
+            for (var i = 0; i < MenuResult.length; i++) {
+                if (MenuResult[i].FunData[0].ID == pagemode) {
+                    model.selmenulev2(MenuResult[i].FunData[0], null);
+                }
+
+            }
+        }
+       
+    });
+  
+   
 })
 
 model.page.$watch("pagecount", function () {

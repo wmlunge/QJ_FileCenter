@@ -57,7 +57,7 @@
             $.getJSON("/adminapi/ExeAction/SAVESETINFO", { P1: modelValue, P2: "" }, function (result) {
                 $(dom).attr("disabled", false).find(".fa").hide();//加上转圈样式
                 if (result.ErrorMsg == "") {
-                    top.ComFunJS.winsuccess("修改用户信息成功");
+                    ComFunJS.winsuccess("修改用户信息成功");
                 }
             });
         }

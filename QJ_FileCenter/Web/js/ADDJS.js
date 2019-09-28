@@ -42,7 +42,7 @@
         var errmsg = "";
         errmsg = pmodel.CheckData();//验证错误
         if (errmsg) {
-            top.ComFunJS.winwarning(errmsg);
+            ComFunJS.winwarning(errmsg);
             if (!pmodel.isPC) {
                 $("table").show();
             }
@@ -56,7 +56,7 @@
             tempmodel.SaveData(function (result1) {
                 if ($.trim(result1.ErrorMsg) == "") {
 
-                    top.ComFunJS.winsuccess("操作成功");
+                    ComFunJS.winsuccess("操作成功");
                     if (tempmodel && $.isFunction(tempmodel.Complate)) {
                         setTimeout("tempmodel.Complate();", 1000);
                     } else {
@@ -152,10 +152,10 @@
     },
     refiframe: function () {//刷新父框架
         if (pmodel.isPC) {
-            if (typeof (top.tempindex.GetLIST) == 'function') {
-                setTimeout("top.tempindex.GetLIST()", 1000)
+            if (typeof (tempindex.GetLIST) == 'function') {
+                setTimeout("tempindex.GetLIST()", 1000)
             } else {
-                setTimeout("top.model.refpage()", 1000)
+                setTimeout("model.refpage()", 1000)
             }
             setTimeout("parent.layer.closeAll()", 1000)
 

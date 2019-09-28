@@ -21,12 +21,20 @@ namespace QJ_FileCenter
 
         public void GETUSERINFO(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
-            msg.Result = UserInfo;
-            msg.Result1 = appsetingB.GetValueByKey("sysname");
-            msg.Result2 = appsetingB.GetValueByKey("qyname");
-            msg.Result3 = appsetingB.GetValueByKey("qyico");
-            Qycode qycode = new QycodeB().GetALLEntities().FirstOrDefault();
-            msg.Result4 = qycode;
+            try
+            {
+                msg.Result = UserInfo;
+                msg.Result1 = appsetingB.GetValueByKey("sysname");
+                msg.Result2 = appsetingB.GetValueByKey("qyname");
+                msg.Result3 = appsetingB.GetValueByKey("qyico");
+                Qycode qycode = new QycodeB().GetALLEntities().FirstOrDefault();
+                msg.Result4 = qycode;
+            }
+            catch (Exception ex)
+            {
+                CommonHelp.WriteLOG(ex.Message.ToString());
+            }
+
         }
 
 
@@ -70,20 +78,52 @@ namespace QJ_FileCenter
                     user nmodel = new JH_Auth_UserB().GetEntity(d => d.username == model.username);
                     if (nmodel != null)
                     {
-                        msg.ErrorMsg = "存储空间已存在";
+                        msg.ErrorMsg = "用户名已存在";
                     }
                 }
             }
             if (model.ID == 0)
             {
                 model.Space = 0;
-                model.pasd = CommonHelp.GetMD5("abc123");
+                if (P2 == "")
+                {
+                    P2 = CommonHelp.GetConfig("depad", "qijiekeji");
+                }
+                model.pasd = CommonHelp.GetMD5(P2);
                 new JH_Auth_UserB().Insert(model);
             }
             else
             {
                 new JH_Auth_UserB().Update(model);
             }
+        }
+
+
+        public void TBUSER(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            List<string> ListUSER = P1.SplitTOList(',');
+            for (int i = 0; i < ListUSER.Count; i++)
+            {
+                string strUserName = ListUSER[i].Split('$')[0];
+                string strUserRealName = ListUSER[i].Split('$')[1];
+                user model = new user();
+                user nmodel = new JH_Auth_UserB().GetEntity(d => d.username == strUserName);
+                if (nmodel != null)
+                {
+                    new JH_Auth_UserB().Update(nmodel);
+                }
+                else
+                {
+                    model.username = strUserName;
+                    model.UserRealName = strUserRealName;
+                    model.Space = 0;
+                    model.Role = "普通用户";
+                    model.pasd = CommonHelp.GetMD5(CommonHelp.GetConfig("depad", "qijiekeji"));
+                    new JH_Auth_UserB().Insert(model);
+                }
+            }
+           
+
         }
 
         /// <summary>

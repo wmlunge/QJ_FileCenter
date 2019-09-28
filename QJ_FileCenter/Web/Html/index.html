@@ -200,7 +200,7 @@
                         <!-- 上边切换导航 -->
                         <div class="menu-general ft16 box-shadow">
                             <ul>
-                                <li ms-repeat-el="model.FunData" ms-class-1="active:el.PageName==model.FunData[0].PageName" ms-click="selmenulev2(el,this)" ms-visible="el.isshow">
+                                <li ms-repeat-el="model.FunData" ms-class-1="active:el.PageName==model.FunData[0].PageName" ms-click="selmenulev2(el,this)">
                                     <a>{{el.PageName}}</a><i ms-if="el.PageName=='微信企业号'" style="position: absolute; right: -19px; top: -10px;">
                                         <img src="/Web/images/tuijian.gif" />
                                     </i>
@@ -390,12 +390,12 @@
         var viewimg;
         var clipboard = new Clipboard(".copyBtn");
         clipboard.on('success', function (e) {
-            top.ComFunJS.winsuccess("复制成功");
+            ComFunJS.winsuccess("复制成功");
 
         });
 
         clipboard.on('error', function (e) {
-            top.ComFunJS.winsuccess("复制失败，请重试");
+            ComFunJS.winsuccess("复制失败，请重试");
         });
         // 切换
         $(function () {

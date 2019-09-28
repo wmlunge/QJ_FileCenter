@@ -138,7 +138,7 @@
                 }
             })
             localStorage.setItem("WIGETDATAV5", JSON.stringify(temp));
-            top.ComFunJS.winsuccess("操作成功");
+            ComFunJS.winsuccess("操作成功");
         }
     },//设置当前模块到控制台
     PageCode: "/Web/Html/loading.html",//需要加载的模板
@@ -287,17 +287,17 @@
             })
         }
         if (retmsg !== "") {
-            top.layer.tips(retmsg, dom);
+            layer.tips(retmsg, dom);
             return;
         }
         if (pwd != pwd2) {
             retmsg = "确认密码不一致";
-            top.layer.tips(retmsg, dom);
+            layer.tips(retmsg, dom);
             return;
         }
         $.getJSON('/adminapi/ExeActionAuth/UPMM', { P1: pwd, P2: pwd2 }, function (resultData) {
             if (resultData.ErrorMsg == "") {
-                top.ComFunJS.winsuccess("操作成功");
+                ComFunJS.winsuccess("操作成功");
                 $('#UpdatePDModal').modal('hide');
             }
         })

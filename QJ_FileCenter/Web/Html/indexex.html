@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_533449_y4cj8vk8wvvg3nmi.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/animate.css">
+    <link rel="stylesheet" href="/Web/CSS/viewer.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/default.css">
+    <link rel="stylesheet" type="text/css" href="/Web/CSS/index.css?ver=3">
+
+    <style>
+        .ms-controller, .ms-important, [ms-controller], [ms-important] {
+            visibility: hidden;
+        }
+
+        .szhl_getPeoples {
+            display: none;
+        }
+
+        .modal {
+            top: 100px;
+        }
+
+        .modal-backdrop {
+            background-color: transparent;
+            display: none;
+        }
+
+        .chosen-container {
+            width: 98% !important;
+        }
+    </style>
+</head>
+<body ms-controller="IndexV5" ondblclick="return false;">
+    <div class="worker">
+
+        <div class="work">
+           
+                    <div class="nomargin">
+                  
+                        <!-- 下边内容 -->
+                        <div ms-visible="isshowload" class=" ft16 mt10 pt20 c666 clearfix" ms-include-src="PageCode" data-include-rendered='Temprender'>
+                        </div>
+                    </div>
+             
+        </div>
+    </div>
+    <div id="nipic_search">
+        <div class="tipSwitch"></div>
+    </div>
+    <ul id="imgUI" style="display:none"></ul>
+
+    <script type="text/javascript" src="/Web/JS/jquery-1.11.1.min.js"></script>
+    <script src="/Web/JS/bootstrap.js"></script>
+    <script src="/Web/JS/layer/layer.js"></script>
+    <script src="/Web/JS/layer/extend/layer.ext.js"></script>
+    <script src="/Web/js/viewer-jquery.min.js"></script>
+    <script src="/Web/JS/laypage/laypage.js"></script>
+    <script src="/Web/JS/toastr.js"></script>
+    <script src="/Web/JS/clipboard.js"></script>
+    <script src="/Web/JS/avalon1.47.js?ver=1"></script>
+    <script src="/Web/JS/chosen/chosen.jquery.min.js?ver=1"></script>
+    <script src="/Web/JS/range/range.js"></script>
+    <script src="/Web/JS/SZHLCommon.js"></script>
+    <script src="/Web/JS/index.js"></script>
+    <script type="text/javascript">
+
+        var viewimg;
+        var clipboard = new Clipboard(".copyBtn");
+        clipboard.on('success', function (e) {
+            ComFunJS.winsuccess("复制成功");
+
+        });
+
+        clipboard.on('error', function (e) {
+            ComFunJS.winsuccess("复制失败，请重试");
+        });
+        // 切换
+        $(function () {
+          
+            $(document).on("mouseover", ".tip", function () {
+                $(this).tooltip('show');
+            });//提示工具
+            $(document).on("click", ".nav-list li", function () {
+                $(this).addClass("active").siblings().removeClass("active")
+            });//一级菜单
+            $(document).on("click", ".menu-general li", function () {
+                $(this).addClass("active").siblings().removeClass("active")
+            });//二级菜单
+            $(document).on("click", ".default-tab .icheckbox_square-blue", function () {
+                $(this).toggleClass("checked");
+                if ($(this).parent().is("th")) {
+                    var obj = $(this).parent().parent().parent().parent().find("tbody");
+                    if ($(this).hasClass("checked")) {
+                        obj.find(".icheckbox_square-blue").addClass("checked");
+                    }
+                    else {
+                        obj.find(".icheckbox_square-blue").removeClass("checked");
+                    }
+                }
+                else {
+                    var obj = $(this).parent().parent().parent().parent().find("thead");
+                    if (!$(this).hasClass("checked")) {
+                        obj.find(".icheckbox_square-blue").removeClass("checked");
+                    }
+                }
+            });//勾选框
+            $(document).on("click", ".tab-type li span", function () {
+                $(this).addClass("active").parent().siblings().children().removeClass("active")
+            });//筛选类型
+            $(document).on("dblclick", ".layui-layer-shade", function () {
+                layer.closeAll();
+            });//筛选类型
+
+
+
+            //$(".shuaxin").click(function () {
+            //    $(this).toggleClass("dh")
+            //})
+            // 聊天窗口的显示隐藏
+
+            ////保持页面永远能到底部
+            //var h2 = window.innerHeight - 90;
+            //document.getElementById("leftlayout").style.minHeight = h2 + "px";
+
+
+
+
+        });
+    </script>
+
+
+</body>
+</html>

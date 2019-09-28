@@ -1,5 +1,6 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy;
+using Nancy.Authentication.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -8,6 +9,7 @@ using QJ_FileCenter.Domains;
 using QJ_FileCenter.Models;
 using QJFile.Data;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -32,6 +34,11 @@ namespace QJ_FileCenter.Handler
                         return ctx.Response;
                     }
                     else
+                    if (ctx.Request.Path == "/adminapi/getuser")
+                    {
+                        return ctx.Response;
+                    }
+                    else
                     if (ctx.Request.Path == "/")
                     {
                         return Response.AsRedirect("/Web/Login.html");
@@ -48,10 +55,34 @@ namespace QJ_FileCenter.Handler
                     }
                     else
                     {
-                        string strUser = ctx.Request.Cookies["user"];
-                        string strpasd = ctx.Request.Cookies["pasd"];
-                        var users = new JH_Auth_UserB().GetEntities(d => d.username == strUser && d.pasd == CommonHelp.GetMD5(strpasd)).ToList();
+                        string strUser = "";
+                        string strpasd = "";
+                        string strDay = "";
+                        string filecode = "";
+                        List<user> users = new List<user>();
+                        if (ctx.Request.Cookies.ContainsKey("user"))
+                        {
+                            strUser = ctx.Request.Cookies["user"];
+                        }
+                        if (ctx.Request.Cookies.ContainsKey("filecode"))
+                        {
+                            filecode = ctx.Request.Cookies["filecode"];
+                        }
+                        if (string.IsNullOrEmpty(filecode))
+                        {
+                            filecode = ctx.Request.Query["filecode"];
+                        }
+                        if (string.IsNullOrEmpty(filecode))
+                        {
+                            filecode = ctx.Request.Form["filecode"];
+                        }
+                        if (!string.IsNullOrEmpty(filecode))
+                        {
+                            strUser = new CacheHelp().Get(filecode);
+                            users = new JH_Auth_UserB().GetEntities(d => d.username == strUser).ToList();
+                            new CacheHelp().Set(filecode, strUser);
 
+                        }
                         if (users.Count() != 1)
                         {
                             msg.ErrorMsg = "NOSESSIONCODE";
@@ -109,15 +140,45 @@ namespace QJ_FileCenter.Handler
                 if (users.Count() == 1)
                 {
                     msg.Result = "Y";
-                    msg.Result1 = new JH_Auth_UserB().GetUserInfo(strUser, strpasd);
-                    Qycode qycode = new QycodeB().GetALLEntities().FirstOrDefault();
-                    msg.Result4 = qycode;
+                    string strToken = CommonHelp.GenerateToken(strUser);
+                    msg.Result2 = strToken;
+                    new CacheHelp().Set(strToken, strUser);
 
                 }
                 else
                 {
                     msg.Result = "N";
                 }
+                //JsonConvert.SerializeObject(Model).Replace("null", "\"\"");
+                return Response.AsJson(msg);
+            };
+            Post["/adminapi/getuser"] = p =>
+            {
+                string strUser = Context.Request.Form["user"];
+                string Secret = Context.Request.Form["Secret"];
+                string strlotusSecret = CommonHelp.GetConfig("lotusSecret", "www.qijiekeji.com");
+                Logger.LogError("用户" + strUser + strlotusSecret + "获取Code" + Secret);
+                if (Secret == strlotusSecret)
+                {
+                    var users = new JH_Auth_UserB().GetEntities(d => d.username == strUser);
+                    if (users.Count() == 1)
+                    {
+                        string strToken = CommonHelp.GenerateToken(strUser);
+                        msg.Result = strToken;
+                        new CacheHelp().Set(strToken, strUser);
+                    }
+                    else
+                    {
+                        msg.ErrorMsg = "找不到用户信息";
+                        return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
+                    }
+                }
+                else
+                {
+                    msg.ErrorMsg = "Secret不匹配";
+                    return Response.AsText(JsonConvert.SerializeObject(msg), "text/html; charset=utf-8");
+                }
+
                 //JsonConvert.SerializeObject(Model).Replace("null", "\"\"");
                 return Response.AsJson(msg);
             };
