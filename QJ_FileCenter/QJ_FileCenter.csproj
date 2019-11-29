@@ -211,6 +211,9 @@
     <Content Include="bin\Aspose.Pdf.dll" />
     <Content Include="bin\Aspose.Slides.dll" />
     <Content Include="bin\Aspose.Words.dll" />
+    <Content Include="bin\ffmpeg.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="bitbug_favicon.ico" />
     <Content Include="Web\CSS\BootOver.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

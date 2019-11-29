@@ -137,7 +137,7 @@
         },
         resetmm: function (item) {
             ComFunJS.winconfirm("确认要重置密码吗？", function () {
-                $.getJSON('/adminapi/ExeActionAuth/UPMM', { P1: "abc123", P2: "abc123" }, function (resultData) {
+                $.getJSON('/adminapi/ExeActionAuth/CZMM', { P1: item.username, P2: "" }, function (resultData) {
                     if (resultData.ErrorMsg == "") {
                         ComFunJS.winsuccess("操作成功");
                     }

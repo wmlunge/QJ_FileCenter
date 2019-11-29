@@ -122,7 +122,7 @@ namespace QJ_FileCenter
                     new JH_Auth_UserB().Insert(model);
                 }
             }
-           
+
 
         }
 
@@ -146,6 +146,7 @@ namespace QJ_FileCenter
                 Folder.CRUser = UserInfo.User.username;
                 Folder.CRDate = DateTime.Now;
                 Folder.ComId = 1;
+                Folder.ViewAuthUsers = "0";//默认不在回收站
                 new FT_FolderB().Insert(Folder);
 
 
@@ -246,6 +247,47 @@ namespace QJ_FileCenter
 
 
         }
+
+
+
+        /// <summary>
+        /// 放入回收站
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="msg"></param>
+        /// <param name="P1"></param>
+        /// <param name="P2"></param>
+        /// <param name="UserInfo"></param>
+        public void RECYCLE(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            JArray DELITEM = (JArray)JsonConvert.DeserializeObject(P1);
+            foreach (var item in DELITEM)
+            {
+                if (item["type"].ToString() == "file")
+                {
+                    FT_File File=  new FT_FileB().GetEntity(d => d.ID.ToString() == item["ID"].ToString());
+                    File.IsRecycle = "1";
+                    new FT_FileB().Update(File);
+                }
+                else
+                {
+                    FT_Folder File = new FT_FolderB().GetEntity(d => d.ID.ToString() == item["ID"].ToString());
+                    File.ViewAuthUsers = "1";
+                    new FT_FolderB().Update(File);
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// 彻底删除文件或文件夹
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="msg"></param>
+        /// <param name="P1"></param>
+        /// <param name="P2"></param>
+        /// <param name="UserInfo"></param>
         public void DELFLODER(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
             JArray DELITEM = (JArray)JsonConvert.DeserializeObject(P1);
@@ -307,6 +349,7 @@ namespace QJ_FileCenter
                         newfile.ComId = 1;
                         newfile.UPUser = UserInfo.User.username;
                         newfile.FolderID = int.Parse(P2);
+                        newfile.IsRecycle = "0";//默认不在回收站
                         newfile.FileExtendName = item["filename"].ToString().Substring(index + 1).ToLower();
                         if (new List<string>() { "txt", "html", "doc", "mp4", "flv", "ogg", "jpg", "gif", "png", "bmp", "jpeg" }.Contains(newfile.FileExtendName.ToLower()))
                         {
@@ -455,11 +498,7 @@ namespace QJ_FileCenter
                 return;
             }
         }
-        public void GETFOLDERLIST(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            int FolderID = int.Parse(P1);//
-            msg.Result = new FT_FolderB().GetEntities("  PFolderID=" + FolderID);
-        }
+       
         /// <summary>
         /// 搜索文件
         /// </summary>
@@ -477,19 +516,7 @@ namespace QJ_FileCenter
 
 
 
-        public void GETFOLDERTREE(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            List<FT_FolderB.FoldFileItem> ListID = new List<FT_FolderB.FoldFileItem>();
-            if (P1 == "1")
-            {
-                msg.Result = new FT_FolderB().GetWDTREE(int.Parse(P1), ref ListID);
-            }
-            if (P1 == "2")
-            {
-                msg.Result = new FT_FolderB().GetWDTREE(int.Parse(P1), ref ListID, UserInfo.User.username);
-            }
-            msg.Result1 = ListID;
-        }
+   
 
         /// <summary>
         /// 添加外部分享链接
@@ -846,33 +873,6 @@ namespace QJ_FileCenter
             msg.Result = strData;
         }
 
-        public void ADDVERSION(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            int FolderID = int.Parse(P2);
-            JArray Files = (JArray)JsonConvert.DeserializeObject(P1);
-            var date = DateTime.Now;
-            List<FT_File> ListData = new List<FT_File>();
-            foreach (var item in Files)
-            {
-                int index = item["filename"].ToString().LastIndexOf('.');
-
-                FT_File newfile = new FT_File();
-                newfile.Name = item["filename"].ToString().Substring(0, index);
-                newfile.FileMD5 = item["md5"].ToString();
-                newfile.FileSize = item["filesize"].ToString();
-                newfile.FileVersin = 0;
-                newfile.CRDate = date;
-                newfile.ComId = 0;
-                newfile.CRUser = UserInfo.User.username;
-                newfile.FolderID = FolderID;
-                newfile.FileExtendName = item["filename"].ToString().Substring(index + 1);
-                if (new List<string>() { "pdf", "txt", "html", "doc", "docx", "ppt", "pptx", "mp4", "flv", "ogg" }.Contains(newfile.FileExtendName))
-                {
-                    newfile.ISYL = "Y";
-                }
-                ListData.Add(newfile);
-            }
-        }
 
         #region 获取应用附件列表
         /// <summary>
@@ -1055,108 +1055,7 @@ namespace QJ_FileCenter
 
 
 
-        public void GETZYFLJSON(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-
-            var query = new FT_FolderB().GetALLEntities();
-            JArray arr = new JArray();
-            foreach (var item in query.Where(d => d.PFolderID == 1).OrderBy(d => d.CRDate))
-            {
-                JObject jsonitem =
-                new JObject(
-                    new JProperty("name", item.Name),
-                    new JProperty("sort", "1"),
-                    new JProperty("id", item.ID),
-                    new JProperty("pid", item.PFolderID),
-                    new JProperty("kcflitem",
-                        new JArray(
-                            from p in query.Where(d => d.PFolderID == item.ID)
-                            orderby p.CRDate
-                            select new JObject(
-                                new JProperty("name", p.Name),
-                                new JProperty("id", p.ID),
-                                 new JProperty("pid", p.PFolderID),
-                                new JProperty("sort", "1")))));
-
-                arr.Add(jsonitem);
-            }
-
-            msg.Result = arr;
-        }
-        public void ADDZYFL(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            try
-            {
-                string strName = P1;
-                int PID = int.Parse(P2);
-                int ID = int.Parse(context.Request("selid").ToString());
-
-                FT_Folder MODEL = new FT_Folder();
-                if (strName.Trim() != "")
-                {
-                    MODEL.ID = ID;
-                    MODEL.PFolderID = PID;
-                    MODEL.Name = strName;
-
-                    MODEL.CRUser = UserInfo.User.username;
-                    MODEL.CRDate = DateTime.Now;
-                    MODEL.ComId = 0;
-                    if (MODEL.ID == 0)
-                    {
-                        new FT_FolderB().Insert(MODEL);
-                        //更新文件夹路径Code
-                        MODEL.Remark = MODEL.Remark + "-" + MODEL.ID;
-                        new FT_FolderB().Update(MODEL);
-                    }
-                    else
-                    {
-                        new FT_FolderB().Update(MODEL);
-                    }
-                }
-                else
-                {
-                    msg.ErrorMsg = "请输入内容";
-                }
-            }
-            catch (Exception ex)
-            {
-                msg.ErrorMsg = ex.Message;
-            }
-        }
-
-
-        public void DELZYFL(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            int ID = int.Parse(P1);
-            new FT_FolderB().Delete(d => d.ID == ID);
-
-        }
-        public void GETZYGLLIST(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            string strWhere = " 1=1 ";
-            if (P1 != "")
-            {
-                strWhere += string.Format(" And  title like '%{0}%'", P1);
-            }
-            if (context.Request("type") != "" && context.Request("type") != null)
-            {
-                strWhere += string.Format(" And  FolderID = '{0}'", context.Request("type") ?? "");
-            }
-            int page = 0;
-            int pagecount = 8;
-            int.TryParse(context.Request("p") ?? "1", out page);
-            int.TryParse(context.Request("pagecount") ?? "8", out pagecount);//页数
-            page = page == 0 ? 1 : page;
-            int total = 0;
-
-            // var dt = new FT_FileB().Db.Queryable<FT_File>().Where(strWhere).OrderBy(it => it.CRDate, OrderByType.Desc).ToPageList(page, pagecount, ref total);
-            var dt = new FT_FileB().getDT(strWhere, page, pagecount, ref total);
-
-            msg.Result = dt;
-            msg.Result1 = total;
-
-        }
-
+  
         public void DELFILE(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
             int ID = int.Parse(P1);
@@ -1165,38 +1064,7 @@ namespace QJ_FileCenter
         }
 
 
-        public void ZYADD(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            int FOLERID = int.Parse(P2);
-
-            List<JObject> ss = JsonConvert.DeserializeObject<List<JObject>>(P1);
-            foreach (var s in ss)
-            {
-                string Title = s["filename"].ToString();
-                FT_File file = new FT_File();
-                file.Name = Title.Substring(0, Title.LastIndexOf('.'));
-                file.zyid = s["zyid"].ToString();
-                file.FileExtendName = Title.Substring(Title.LastIndexOf('.')).Trim('.');
-                file.FolderID = FOLERID;
-                file.CRDate = DateTime.Now;
-                file.FileSize = s["filesize"].ToString();
-                file.ComId = 0;
-                file.CRUser = UserInfo.User.username;
-                new FT_FileB().Insert(file);
-
-
-            }
-        }
-
-        public void UPDZY(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
-        {
-            String zyid = context.Request("ZYID") ?? "0";
-            FT_File model = new FT_FileB().GetEntity(d => d.zyid == zyid);
-            model.Name = P1;
-            new FT_FileB().Update(model);
-            msg.Result = model;
-
-        }
+      
 
         #endregion
 
@@ -1257,6 +1125,16 @@ namespace QJ_FileCenter
             User.pasd = CommonHelp.GetMD5(P2);
             new JH_Auth_UserB().Update(User);
         }
+
+
+        //重置密码
+        public void CZMM(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            user User = new JH_Auth_UserB().GetEntity(d=>d.username== P1);
+            User.pasd = CommonHelp.GetMD5("abc123");
+            new JH_Auth_UserB().Update(User);
+        }
+        
 
 
         public void MANGEQY(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)

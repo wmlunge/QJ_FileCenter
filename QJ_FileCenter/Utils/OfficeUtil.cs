@@ -2,6 +2,7 @@
 using QJFile.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -24,16 +25,21 @@ namespace QJ_FileCenter
             OfficeConverter Converter = new OfficeConverter();
             if (new List<string>() { ".doc", ".docx" }.Contains(File.Extension.ToLower()))
             {
-                Converter.WordToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, null, 400);
+                Converter.WordToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, null, 200);
             }
             if (new List<string>() { ".pdf" }.Contains(File.Extension.ToLower()))
             {
-                Converter.PdfToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 400);
+                Converter.PdfToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 200);
             }
             if (new List<string>() { ".ppt", ".pptx" }.Contains(File.Extension.ToLower()))
             {
-                Converter.PPTToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 400);
+                Converter.PPTToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 200);
             }
+            if (new List<string>() { ".mp4", ".avi" }.Contains(File.Extension.ToLower()))
+            {
+              //  Converter.PPTToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 200);
+            }
+
         }
 
 
@@ -302,6 +308,62 @@ namespace QJ_FileCenter
             return ExcelHtml;
         }
 
+        public void videoToMp4(Document VideoFile)
+        {
+
+            //Process p = new Process();
+
+            //p.StartInfo.FileName = path + "ffmpeg";
+
+            ////p.StartInfo.FileName = path + "ffmpeg.exe";
+
+            //p.StartInfo.UseShellExecute = false;
+            //string srcFileName = "";
+            //string destFileName = "";
+            //string newFileName = "";
+            //string mbgs = "." + comboBox2.SelectedItem.ToString();
+
+            //srcFileName = VideoFile.FullPath;
+            //newFileName = lv.Items[i].SubItems[0].Text.Split('.')[0];
+
+            //destFileName = "\"" + label3.Text + "\\" + newFileName + DateTime.Now.ToString("yyyyMMddhhmmss");
+            ////FFMPEG - i  C://1.mp4 - c:v libx264 -strict - 2 C://2.mp4
+            //p.StartInfo.Arguments = "-i " + srcFileName + " -y  -vcodec h264 -b 500000 " + destFileName + mbgs + "\"";    //执行参数
+            //p.StartInfo.UseShellExecute = false;  ////不使用系统外壳程序启动进程
+            //p.StartInfo.CreateNoWindow = true;  //不显示dos程序窗口
+            //p.StartInfo.RedirectStandardInput = true;
+            //p.StartInfo.RedirectStandardOutput = true;
+            //p.StartInfo.RedirectStandardError = true;//把外部程序错误输出写到StandardError流中
+            //p.ErrorDataReceived += new DataReceivedEventHandler(Error);
+            //p.OutputDataReceived += new DataReceivedEventHandler(Output);
+            //p.StartInfo.UseShellExecute = false;
+            //p.Start();
+            //p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            //p.BeginErrorReadLine();//开始异步读取
+            //p.WaitForExit();//阻塞等待进程结束
+            //p.Close();//关闭进程
+            //p.Dispose();//释放资源
+        }
+
+        private void Output(object sendProcess, System.Diagnostics.DataReceivedEventArgs output)
+        {
+            if (!String.IsNullOrEmpty(output.Data))
+            {
+                //处理方法...
+                string message = output.Data;
+                CommonHelp.WriteLOG(message);
+            }
+        }
+        private void Error(object sendProcess, System.Diagnostics.DataReceivedEventArgs output)
+        {
+            if (!String.IsNullOrEmpty(output.Data))
+            {
+                //处理方法...
+                string message = output.Data;
+                CommonHelp.WriteLOG(message);
+
+            }
+        }
     }
     #endregion
 }

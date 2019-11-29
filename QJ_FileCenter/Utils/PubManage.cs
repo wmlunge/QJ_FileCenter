@@ -232,9 +232,36 @@ namespace QJ_FileCenter
 
 
 
+        public void GETBZMENU(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            string sql = string.Format("SELECT ID,MenuName,PID,Title,CRDate,CRUserName,MenuChapter FROM helpdata ");
 
+            DataTable dt = new helpdataB().GetDTByCommand(sql);
+            dt.Columns.Add("SubDept", Type.GetType("System.Object"));
+            DataTable menu = dt.FilterTable("PID is null OR PID=0 ");
+            msg.Result = GetNextWxUser(menu, dt);
+        }
 
+        public DataTable GetNextWxUser(DataTable dt, DataTable dtm)
+        {
+            foreach (DataRow dr in dt.Rows)
+            {
+                DataTable dtp = dtm.FilterTable(" PID=" + dr["ID"]);
+                dr["SubDept"] = GetNextWxUser(dtp, dtm);
+            }
+            return dt;
+        }
 
+        public void GETBZMENUBYID(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
+        {
+            int id = int.Parse(P1);
+            helpdata hm = new helpdataB().GetEntity(d => d.ID == id);
+            msg.Result = hm;
+            if (hm == null)
+                return;
+            if (hm.PID != null)
+                msg.Result1 = new helpdataB().GetEntity(d => d.ID == hm.PID);
+        }
 
 
     }
