@@ -1131,7 +1131,7 @@ namespace QJ_FileCenter
         public void CZMM(JObject context, Msg_Result msg, string P1, string P2, JH_Auth_UserB.UserInfo UserInfo)
         {
             user User = new JH_Auth_UserB().GetEntity(d=>d.username== P1);
-            User.pasd = CommonHelp.GetMD5("abc123");
+            User.pasd = CommonHelp.GetMD5(CommonHelp.GetConfig("depad", "qijiekeji"));
             new JH_Auth_UserB().Update(User);
         }
         

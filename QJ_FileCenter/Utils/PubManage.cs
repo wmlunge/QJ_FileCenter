@@ -53,7 +53,7 @@ namespace QJ_FileCenter
                     string strSql = string.Format(@"SELECT share.CRUserName,share.RefType,share.ShareDueDate,share.CRDate,CASE WHEN share.RefType='file' then f.Name WHEN share.RefType='wj'  THEN folder.Name END Name 
                                             ,CASE WHEN share.RefType='file' then f.ID WHEN share.RefType='wj'  THEN folder.ID END  ID ,f.FileExtendName,f.FileSize,share.ComId,f.ISYL,f.FileMD5,f.YLUrl
                                             from FT_File_Share share 
-                                            LEFT join FT_File f on share.RefID=f.ID and share.ComId=f.ComId and share.RefType='file'
+                                            LEFT join FT_File f on share.RefID=f.ID  and share.RefType='file'
                                             LEFT join  FT_Folder folder on share.RefID=folder.ID and share.RefType='wj' where share.ID={0} and share.IsDel!='Y'", ID);
                     DataTable dt = new FT_File_ShareB().GetDTByCommand(strSql);
                     if (dt.Rows.Count > 0)
