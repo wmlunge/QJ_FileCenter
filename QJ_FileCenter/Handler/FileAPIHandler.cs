@@ -193,7 +193,7 @@ namespace QJ_FileCenter.Handler
                 {
                     var md5s = id.Split(',');
 
-                    var documents = documentDomain.Fetch("",md5s);
+                    var documents = documentDomain.Fetch("", md5s);
 
                     if (documents != null && documents.Any())
                     {
@@ -211,7 +211,7 @@ namespace QJ_FileCenter.Handler
                 }
                 else
                 {
-                    var document = documentDomain.Fetch(p.id);
+                    var document = documentDomain.Fetch("", p.id);
 
                     if (document == null)
                     {
@@ -234,7 +234,7 @@ namespace QJ_FileCenter.Handler
                 {
                     var md5s = id.Split(',');
 
-                    var documents = documentDomain.Fetch("",md5s);
+                    var documents = documentDomain.Fetch("", md5s);
 
                     if (documents != null && documents.Any())
                     {
@@ -252,7 +252,7 @@ namespace QJ_FileCenter.Handler
                 }
                 else
                 {
-                    var document = documentDomain.Fetch("",p.id);
+                    var document = documentDomain.Fetch("", p.id);
 
                     if (document == null)
                     {
@@ -491,13 +491,23 @@ namespace QJ_FileCenter.Handler
                 }
                 else
                 {
-                    string[] range_info = (string[])Request.Headers["Range"];
-                    string strRange = range_info[0].ToString();
                     string mimeType = "video/mp4";
                     string extension = ".mp4";
                     string file = tempfile + "_low.mp4";
                     string name = file;
-                    return Response.AsVideoFile(document.FullPath, mimeType, extension, name, strRange);
+
+                    string[] range_info = (string[])Request.Headers["Range"];
+                    if (range_info.Length == 0)
+                    {
+                        return Response.AsFileV1(file, mimeType, extension, document.ID.ToString() + "_low.mp4");
+                    }
+                    else
+                    {
+                        string strRange = range_info[0].ToString();
+
+                        return Response.AsVideoFile(document.FullPath, mimeType, extension, name, strRange);
+                    }
+
 
                 }
             };
