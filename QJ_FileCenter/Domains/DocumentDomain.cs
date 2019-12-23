@@ -167,7 +167,7 @@ namespace QJ_FileCenter.Domains
 
         public dynamic Fetch(string qyCode, string md5)
         {
-            var doc = new DocumentB().GetEntities(d => d.Qycode == qyCode &&( d.ID == md5 || d.Md5 == md5)).FirstOrDefault();
+            var doc = new DocumentB().GetEntities(d => ( d.ID == md5 || d.Md5 == md5)).FirstOrDefault();
             if (doc == null) return null;
             return new
             {
@@ -184,19 +184,11 @@ namespace QJ_FileCenter.Domains
             Document doc = new DocumentB().GetEntities(d => d.ID == zyid || d.Md5 == zyid).FirstOrDefault();
             if (doc == null) return null;
             return doc;
-            //    new
-            //{
-            //    md5 = doc.Md5,
-            //    contenttype = doc.ContentType,
-            //    name = Path.GetFileNameWithoutExtension(doc.FileName),
-            //    extension = doc.Extension.TrimStart('.'),
-            //    rdate = doc.RDate,
-            //    file = doc.FullPath,
-            //};
+        
         }
         public IEnumerable<dynamic> Fetch(string qyCode, string[] md5s)
         {
-            var docs = new DocumentB().GetEntities(d => d.Qycode == qyCode && (md5s.Contains(d.ID)|| md5s.Contains(d.Md5)));
+            var docs = new DocumentB().GetEntities(d => (md5s.Contains(d.ID)|| md5s.Contains(d.Md5)));
             return docs.Select(o => new
             {
                 md5 = o.Md5,

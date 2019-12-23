@@ -6,31 +6,59 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/Web/CSS/bootstrap.min.css">
     <title>视频播放</title>
-
-    
 </head>
+<body style="background-color: #2b2b2b; ">
+    <div class="container-fluid" style="padding:0px">
+        <nav id="bs-navbar" class="collapse navbar-collapse navbar-inverse">
+            <ul class="nav navbar-nav">
 
-<body style="margin:0;">
-    <div id="video" style="display: flex;height:500px"></div>
+                <li class="active">
+                    <a href="http://www.qijiekeji.com/" target="_blank">企捷科技</a>
+                </li>
+                <li>
+                    <a id="filename"></a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" >
+                <li><a href="http://www.qijiekeji.com/" target="_blank">Lotus云盘</a></li>
+            </ul>
+        </nav>
+        <div style="position: absolute;width: 80%;top: 10%; height: 80%; left: 10%;">
+            <div id="video" style="display: flex;"></div>
+        </div>
+
+    </div>
     <script type="text/javascript" src="/Web/js/ckplayer/ckplayer/ckplayer.js"></script>
     <script src="/Web/js/jquery-1.11.1.min.js" type="text/javascript"></script>
     <script src="/Web/js/SZHLCommon.js?jsver=20160915"></script>
-    
-    <script type="text/javascript">
-         var id = ComFunJS.getQueryString("zyid");
-        var videosrc = ComFunJS.getRoot() + "/document/viedo/" + id;
-        var videoObject = {
-            container: '#video', //容器的ID或className
-            variable: 'player',//播放函数名称
-            poster: '/Web/images/bbb.jpg',//封面图片
-            video: [//视频地址列表形式
-                [videosrc, 'video/mp4', '中文标清', 0]
-            ]
-        };
-        var player = new ckplayer(videoObject);
-    </script>
 
+    <script type="text/javascript">
+       // var url = "http://px.qijiekeji.com/201912/1.mp4";
+
+        var id = ComFunJS.getQueryString("zyid");
+        $.get("/document/info/" + id, {}, function (jsonresult) {
+            var filename = jsonresult[0].fileName;
+            var isyl = jsonresult[0].isyl;
+            $("#filename").text(filename)
+            if (isyl == "2") {
+                var videosrc = ComFunJS.getRoot() + "/document/viedo/" + id;
+                var videoObject = {
+                    container: '#video', //容器的ID或className
+                    variable: 'player',//播放函数名称
+                    poster: '/Web/images/bbb.jpg',//封面图片
+                    video: [//视频地址列表形式
+                        [videosrc, 'video/mp4', '中文标清', 0]
+                    ]
+                };
+                var player = new ckplayer(videoObject);
+            } else {
+                $("#video").append("<span style='color: wheat'>视频正在转码中,无法播放</span>")
+            }
+        });
+      
+    </script>
 </body>
 </html>
 

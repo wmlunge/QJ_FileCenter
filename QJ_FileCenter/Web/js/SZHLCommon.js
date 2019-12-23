@@ -154,6 +154,12 @@
     isPic: function (extname) {
         return $.inArray(extname.toLowerCase(), ['jpg', 'jpeg', 'gif', 'png', 'bmp']) != -1
     },
+    isVideo: function (extname) {
+        return $.inArray(extname.toLowerCase(), ['avi', 'mp4', 'flv', 'rmvb', 'mkv', 'ogg', 'mov']) != -1
+    },
+    isMusic: function (extname) {
+        return $.inArray(extname.toLowerCase(), ['mp3']) != -1
+    },
     getfile: function (fileid) {
         //var url = ComFunJS.yuming + "/ToolS/DownFile.aspx?szhlcode=" + ComFunJS.getCookie("szhlcode");
         var url = "/adminapi/dfile/";
@@ -162,31 +168,28 @@
         }
         return url;
     },
-   
-    viewfile: function (dom,item) {
+
+    viewfile: function (dom, item) {
         if (ComFunJS.isPic(item.FileExtendName)) { //如果是图片格式，显示图片
             $("#imgUI").find("#slt" + item.ID).trigger('click');
             return;
         }
-        if (item.FileExtendName.toLowerCase() == "mp4") {
-            layer.open({
-                type: 2,
-                fix: true, //不固定
-                area: ['700px', '500px'],
-                maxmin: false,
-                content: "/Web/Html/Tools/showvideo.html?zyid=" + item.zyid,
-                title: "",
-                shadeClose: false, //加上边框
-                scrollbar: false,
-                shade: 0.4,
-                shift: 0
-            });
+        if (ComFunJS.isVideo(item.FileExtendName)) {
+            window.open("/Web/Html/Tools/showvideo.html?zyid=" + item.zyid);
+            return;
         }
         if (ComFunJS.isOffice(item.FileExtendName)) {
             window.open("/Web/Html/Tools/doc.html?zyid=" + item.zyid)
         }
-
-
+        if (ComFunJS.isMusic(item.FileExtendName)) {
+            var zyid = item.zyid + ",";
+            $(".music").each(function () {
+                if ($(this).attr("zyid") != item.zyid) {
+                    zyid = zyid + $(this).attr("zyid") + ",";
+                }
+            })
+            window.open("/Web/Html/Tools/mp3.html?zyid=" + zyid)
+        }
     },//文件查看方法
 
     FindItem: function (arrs, func) {

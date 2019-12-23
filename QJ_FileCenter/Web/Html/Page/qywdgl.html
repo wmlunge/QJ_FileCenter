@@ -132,9 +132,8 @@
                                 <img ms-attr-filename="file.name" ms-attr-src="getsrc(file)" ms-click="viewitem(file)" ms-attr-imgyt="{{ComFunJS.getfile(file.ID)}}" ms-class-1="imageYL:ComFunJS.isPic(file.FileExtendName)" class="img40 mr5" onerror="javascript: this.src = '/Web/images/qywd/file.png'">{{file.Name}}
                             </div>
                         </td>
-                        <td class="tl">
-                            <a class="btn btn-link" ms-if="file.ISYL||file.FileExtendName.toLowerCase()=='mp4'" ms-click="viewitem(file)">{{file.FileExtendName.toLowerCase()=="mp4"?"播放":"预览"}}</a>
-                        </td>
+                        <td class="tc"><a class="btn btn-link" ms-class-1="music:file.FileExtendName=='mp3'" ms-attr-zyid="file.zyid" ms-if="file.ISYL" ms-click="viewitem(file)">{{(file.FileExtendName=="mp4"||file.FileExtendName=="mp3")?"播放":"预览"}}</a></td>
+
                         <td class="tc"></td>
                         <td>{{ComFunJS.converfilesize(file.FileSize)}}</td>
                         <td>{{file.FileExtendName}}</td>

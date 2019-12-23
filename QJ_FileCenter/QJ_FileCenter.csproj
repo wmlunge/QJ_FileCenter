@@ -214,6 +214,9 @@
     <Content Include="bin\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="bin\qt-faststart.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="bitbug_favicon.ico" />
     <Content Include="Web\CSS\BootOver.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -269,6 +272,9 @@
     <Content Include="Web\Html\Page\qywdgx.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\Html\Tools\01.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\Html\Tools\APP_QYWD_SX.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -311,6 +317,15 @@
     <Content Include="Web\Html\Tools\FolderSel.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\Html\Tools\jaudio.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\CSS\mp3.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\Html\Tools\mp3.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web\Html\Tools\Share.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -327,6 +342,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\images\bg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\images\bg1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\images\c-wj.png">

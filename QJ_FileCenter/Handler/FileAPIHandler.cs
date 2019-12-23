@@ -1,18 +1,18 @@
 ﻿using glTech.Log4netWrapper;
 using Nancy;
-using QJ_FileCenter.Models;
+using Nancy.Helpers;
+using Newtonsoft;
 using QJ_FileCenter;
+using QJ_FileCenter.Domains;
+using QJ_FileCenter.Models;
+using QJ_FileCenter.Repositories;
+using QJFile.Data;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Newtonsoft;
-using QJ_FileCenter.Domains;
-using QJFile.Data;
-using QJ_FileCenter.Repositories;
-using System.Collections.Generic;
 using System.Text;
-using Nancy.Helpers;
 
 namespace QJ_FileCenter.Handler
 {
@@ -164,15 +164,14 @@ namespace QJ_FileCenter.Handler
                 return View["FileUpload"];
             };
 
-            Get["/{qycode}/document/info/{id}"] = p =>
+            Get["/document/info/{id}"] = p =>
             {
-                string strCode = p.qycode;
                 string idS = p.id;
-                string[] ids = idS.Split(',');
+                string[] ids = idS.Trim(',').Split(',');
                 List<Document> spaces = new DocumentB().GetEntities(d => d.Qycode == "-1").ToList();
                 foreach (string id in ids)
                 {
-                    Document space = new DocumentB().GetEntities(d => d.Qycode == strCode && d.ID == id).FirstOrDefault();
+                    Document space = new DocumentB().GetEntities(d => d.ID == id).FirstOrDefault();
                     if (space != null)
                     {
                         spaces.Add(space);
@@ -183,6 +182,7 @@ namespace QJ_FileCenter.Handler
 
             };
 
+            //下一版废弃
             Get["/{qycode}/document/{id}"] = p =>
             {
                 log.useraction = "下载文件";
@@ -193,7 +193,7 @@ namespace QJ_FileCenter.Handler
                 {
                     var md5s = id.Split(',');
 
-                    var documents = documentDomain.Fetch(qycode, md5s);
+                    var documents = documentDomain.Fetch("",md5s);
 
                     if (documents != null && documents.Any())
                     {
@@ -202,7 +202,7 @@ namespace QJ_FileCenter.Handler
                         var extension = "zip";
                         var name = "打包下载的文件";
                         var file = documentDomain.Compress(documents);
-                        return Response.AsFile(file, mimeType, extension, name);
+                        return Response.AsFileV1(file, mimeType, extension, name);
                     }
                     else
                     {
@@ -211,7 +211,7 @@ namespace QJ_FileCenter.Handler
                 }
                 else
                 {
-                    var document = documentDomain.Fetch(qycode, p.id);
+                    var document = documentDomain.Fetch(p.id);
 
                     if (document == null)
                     {
@@ -222,7 +222,48 @@ namespace QJ_FileCenter.Handler
                     string file = document.file;
                     string name = document.name;
 
-                    return Response.AsFile(file, mimeType, extension, name);
+                    return Response.AsFileV1(file, mimeType, extension, name);
+                }
+            };
+            Get["/document/{id}"] = p =>
+            {
+                log.useraction = "下载文件";
+
+                string id = p.id;
+                if (!string.IsNullOrEmpty(id) && id.Contains(","))
+                {
+                    var md5s = id.Split(',');
+
+                    var documents = documentDomain.Fetch("",md5s);
+
+                    if (documents != null && documents.Any())
+                    {
+                        //压缩，并返回
+                        var mimeType = "application/zip";
+                        var extension = "zip";
+                        var name = "打包下载的文件";
+                        var file = documentDomain.Compress(documents);
+                        return Response.AsFileV1(file, mimeType, extension, name);
+                    }
+                    else
+                    {
+                        return "找不到该文件" + p.id;
+                    }
+                }
+                else
+                {
+                    var document = documentDomain.Fetch("",p.id);
+
+                    if (document == null)
+                    {
+                        return "找不到该文件 " + p.id;
+                    }
+                    string mimeType = document.contenttype;
+                    string extension = document.extension;
+                    string file = document.file;
+                    string name = document.name;
+
+                    return Response.AsFileV1(file, mimeType, extension, name);
                 }
             };
 
@@ -234,7 +275,7 @@ namespace QJ_FileCenter.Handler
                 var mimeType = "application/zip";
                 var extension = "zip";
                 var name = "打包下载的文件";
-                return Response.AsFile(filename, mimeType, extension, name);
+                return Response.AsFileV1(filename, mimeType, extension, name);
             };
             Get["/{qycode}/document/image/{id}"] = p =>
             {
@@ -335,7 +376,7 @@ namespace QJ_FileCenter.Handler
                 var mimeType = "application/zip";
                 var extension = "zip";
                 var name = "打包下载的文件";
-                return Response.AsFile(filename, mimeType, extension, name);
+                return Response.AsFileV1(filename, mimeType, extension, name);
             };
 
             Post["/{qycode}/document/nestedfolder"] = p =>
@@ -357,7 +398,7 @@ namespace QJ_FileCenter.Handler
                         var extension = "zip";
                         var name = subFolderModel.Name;
                         string file = documentDomain.CompressNestedFolder(documents, zipItems);
-                        return Response.AsFile(file, mimeType, extension, name);
+                        return Response.AsFileV1(file, mimeType, extension, name);
                     }
                     else
                     {
@@ -439,18 +480,54 @@ namespace QJ_FileCenter.Handler
             Get["/document/viedo/{id}"] = p =>
             {
                 Document document = documentDomain.Fetch(p.id);
+                string tempfile = document.Directory.TrimEnd('\\') + "\\" + document.Md5 + "\\" + document.Md5;
                 if (document == null)
                 {
                     return "找不到文件 " + p.id;
                 }
+                if (document.isyl != "2")
+                {
+                    return "正在生成可预览文件 ";
+                }
                 else
                 {
-                    FileStream fileStream = new FileStream(document.FullPath, FileMode.Open);
-                    return Response.FromStream(fileStream, "octet-stream");
+                    string[] range_info = (string[])Request.Headers["Range"];
+                    string strRange = range_info[0].ToString();
+                    string mimeType = "video/mp4";
+                    string extension = ".mp4";
+                    string file = tempfile + "_low.mp4";
+                    string name = file;
+                    return Response.AsVideoFile(document.FullPath, mimeType, extension, name, strRange);
+
+                }
+            };
+            //获取视频封面
+            Get["/document/viedo/img/{id}"] = p =>
+            {
+                Document document = documentDomain.Fetch(p.id);
+                string tempfile = document.Directory.TrimEnd('\\') + "\\" + document.Md5 + "\\" + document.Md5;
+                if (document == null)
+                {
+                    return "找不到文件 " + p.id;
+                }
+                if (document.isyl != "2")
+                {
+                    return "正在生成可预览文件 ";
+                }
+                else
+                {
+                    string mimeType = "image/jpeg";
+                    string extension = ".jpg";
+                    string file = tempfile + ".jpg";
+                    string name = file;
+                    return Response.AsPreviewFile(file, mimeType, extension, name);
                 }
 
 
+
+
             };
+
 
             //获取office转换后的图片
             Get["/document/YL/{id}/{index}"] = p =>

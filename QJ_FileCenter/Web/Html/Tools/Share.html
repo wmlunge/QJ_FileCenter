@@ -249,7 +249,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a ms-if="file.ISYL||(file.FileExtendName.toLowerCase()=='mp4'&&ComFunJS.isPC())" class="btn btn-link" ms-click="viewitem(file)">{{file.FileExtendName.toLowerCase()=="mp4"&&ComFunJS.isPC()?"播放":"预览"}}</a>
+                                                <a class="btn btn-link" ms-class-1="music:file.FileExtendName=='mp3'" ms-attr-zyid="file.zyid" ms-if="file.ISYL&&ComFunJS.isPC()" ms-click="viewitem(file)">{{(file.FileExtendName=="mp4"||file.FileExtendName=="mp3")?"播放":"预览"}}</a>
                                             </td>
                                             <td class="tc"></td>
                                             <td>{{ComFunJS.converfilesize(file.FileSize)}}</td>

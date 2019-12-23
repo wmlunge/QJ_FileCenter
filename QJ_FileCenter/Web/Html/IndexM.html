@@ -855,15 +855,7 @@
 
             },
             viewfile: function (item) {
-                if (ComFunJS.isPic(item.FileExtendName)) {
-                    $("#imgUI").find("#slt" + item.ID).trigger('click');
-                }
-                if (item.FileExtendName.toLowerCase() == "mp4") {
-                    location.href = "/Web/Html/Tools/showvideo.html?zyid=" + item.zyid;
-                }
-                if (ComFunJS.isOffice(item.FileExtendName)) {
-                    location.href = "/Web/Html/Tools/doc.html?zyid=" + item.zyid;
-                }
+                ComFunJS.viewfile(this, item);
             },//文件查看方法
             initFile: function () {
                 var fileapi = ComFunJS.getRoot();

@@ -35,9 +35,9 @@ namespace QJ_FileCenter
             {
                 Converter.PPTToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 200);
             }
-            if (new List<string>() { ".mp4", ".avi" }.Contains(File.Extension.ToLower()))
+            if (new List<string>() { ".mp4", ".flv", ".ogg", ".avi", ".mov", ".rmvb", ".mkv"}.Contains(File.Extension.ToLower()))
             {
-              //  Converter.PPTToImage(File, File.FullPath.Substring(0, File.FullPath.LastIndexOf('.')), 0, 0, 200);
+                Converter.CovVideo(File);
             }
 
         }
@@ -308,41 +308,115 @@ namespace QJ_FileCenter
             return ExcelHtml;
         }
 
-        public void videoToMp4(Document VideoFile)
+        public void CovVideo(Document file)
         {
+            file.isyl = "1";
+            new DocumentB().Update(file);
+            string path = AppDomain.CurrentDomain.BaseDirectory;
 
-            //Process p = new Process();
+            Task<string> TaskCover = Task.Factory.StartNew<string>(() =>
+            {
+                //p.StartInfo.UseShellExecute = false;
+                //string srcFileName = "";
+                //string destFileName = "";
+                //string newFileName = "";
+                //string mbgs = "." + comboBox2.SelectedItem.ToString();
 
-            //p.StartInfo.FileName = path + "ffmpeg";
+                //srcFileName = VideoFile.FullPath;
+                //newFileName = lv.Items[i].SubItems[0].Text.Split('.')[0];
 
-            ////p.StartInfo.FileName = path + "ffmpeg.exe";
+                //destFileName = "\"" + label3.Text + "\\" + newFileName + DateTime.Now.ToString("yyyyMMddhhmmss");
+                ////FFMPEG - i  D://SP.mp4 - c:v libx264 -strict - 2 D://SPZ.mp4
+                ///ffmpeg -i D://SP.mp4 -vcodec h264 "D://SPZ.mp4"
 
-            //p.StartInfo.UseShellExecute = false;
-            //string srcFileName = "";
-            //string destFileName = "";
-            //string newFileName = "";
-            //string mbgs = "." + comboBox2.SelectedItem.ToString();
+                //p.StartInfo.Arguments = "-i " + srcFileName + " -y  -vcodec h264 -b 500000 " + destFileName + mbgs + "\"";    //执行参数
+                // p.StartInfo.Arguments = "-i " + srcFileName + " -vcodec h264 " + destFileName ;    //执行参数
+                //F:\Code\LotusFileCenter\QJ_FileCenter\bin>ffmpeg -i D://1.mp4 -b 64k -vcodec h264 "D://1Z.mp4"
+                //ffmpeg -i input -vf scale=iw/2:-1 output 调整分辨率
+                // ffmpeg - i D://1.mp4 -vf scale=iw/2:-1  -vcodec h264 "D://1Z.mp4"
+                // ffmpeg - i D://1.mp4 -vf scale=540:960 -b:a 48K  -vcodec h264 "D://1Z2.mp4"
+                //F:\Code\LotusFileCenter\QJ_FileCenter\bin\ffmpeg 
 
-            //srcFileName = VideoFile.FullPath;
-            //newFileName = lv.Items[i].SubItems[0].Text.Split('.')[0];
+                //ffmpeg - i D:\\2.MP4 - y - f image2 - t 0.001 - s 352x240 D:\\2.jpg
+                string strFolder = file.Directory.TrimEnd('\\') + "\\" + file.Md5;
+                string tempfile = strFolder + "\\" + file.Md5;
+                if (!Directory.Exists(strFolder))
+                {
+                    Directory.CreateDirectory(strFolder);
+                }
+                #region 截图
+                Process p1 = new Process();
+                p1.StartInfo.FileName = path + @"\ffmpeg.exe";
+                p1.StartInfo.Arguments = "-i " + file.FullPath + " -y -f image2 -t 0.001 -s 352x240 " + tempfile + ".jpg";
+                p1.StartInfo.UseShellExecute = false;  ////不使用系统外壳程序启动进程
+                p1.StartInfo.CreateNoWindow = true;  //不显示dos程序窗口
+                p1.StartInfo.RedirectStandardInput = true;
+                p1.StartInfo.RedirectStandardOutput = true;
+                p1.StartInfo.RedirectStandardError = true;//把外部程序错误输出写到StandardError流中
+                p1.ErrorDataReceived += new DataReceivedEventHandler(Error);
+                p1.OutputDataReceived += new DataReceivedEventHandler(Output);
+                p1.StartInfo.UseShellExecute = false;
+                p1.Start();
+                p1.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                p1.BeginErrorReadLine();//开始异步读取
+                p1.WaitForExit();//阻塞等待进程结束
+                p1.Close();//关闭进程
+                p1.Dispose();//释放资源
+                #endregion
 
-            //destFileName = "\"" + label3.Text + "\\" + newFileName + DateTime.Now.ToString("yyyyMMddhhmmss");
-            ////FFMPEG - i  C://1.mp4 - c:v libx264 -strict - 2 C://2.mp4
-            //p.StartInfo.Arguments = "-i " + srcFileName + " -y  -vcodec h264 -b 500000 " + destFileName + mbgs + "\"";    //执行参数
-            //p.StartInfo.UseShellExecute = false;  ////不使用系统外壳程序启动进程
-            //p.StartInfo.CreateNoWindow = true;  //不显示dos程序窗口
-            //p.StartInfo.RedirectStandardInput = true;
-            //p.StartInfo.RedirectStandardOutput = true;
-            //p.StartInfo.RedirectStandardError = true;//把外部程序错误输出写到StandardError流中
-            //p.ErrorDataReceived += new DataReceivedEventHandler(Error);
-            //p.OutputDataReceived += new DataReceivedEventHandler(Output);
-            //p.StartInfo.UseShellExecute = false;
-            //p.Start();
-            //p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            //p.BeginErrorReadLine();//开始异步读取
-            //p.WaitForExit();//阻塞等待进程结束
-            //p.Close();//关闭进程
-            //p.Dispose();//释放资源
+
+
+                #region 转换视频
+                Process p = new Process();
+                p.StartInfo.FileName = path + @"\ffmpeg.exe";
+                p.StartInfo.Arguments = "-i " + file.FullPath + " -vf scale=960:540 -b:a 48K   -vcodec h264 \"" + tempfile + "_temp.mp4\"";
+                p.StartInfo.UseShellExecute = false;  ////不使用系统外壳程序启动进程
+                p.StartInfo.CreateNoWindow = true;  //不显示dos程序窗口
+                p.StartInfo.RedirectStandardInput = true;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.RedirectStandardError = true;//把外部程序错误输出写到StandardError流中
+                p.ErrorDataReceived += new DataReceivedEventHandler(Error);
+                p.OutputDataReceived += new DataReceivedEventHandler(Output);
+                p.StartInfo.UseShellExecute = false;
+                p.Start();
+                p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                p.BeginErrorReadLine();//开始异步读取
+                p.WaitForExit();//阻塞等待进程结束
+                p.Close();//关闭进程
+                p.Dispose();//释放资源
+                #endregion
+
+
+
+
+
+
+                #region 边看边播
+                Process p2 = new Process();
+                p2.StartInfo.FileName = path + @"\qt-faststart.exe ";
+                p2.StartInfo.Arguments = tempfile + "_temp.mp4  " + tempfile + "_low.mp4";
+                p2.StartInfo.UseShellExecute = false;  ////不使用系统外壳程序启动进程
+                p2.StartInfo.CreateNoWindow = true;  //不显示dos程序窗口
+                p2.StartInfo.RedirectStandardInput = true;
+                p2.StartInfo.RedirectStandardOutput = true;
+                p2.StartInfo.RedirectStandardError = true;//把外部程序错误输出写到StandardError流中
+                p2.ErrorDataReceived += new DataReceivedEventHandler(Error);
+                p2.OutputDataReceived += new DataReceivedEventHandler(Output);
+                p2.StartInfo.UseShellExecute = false;
+                p2.Start();
+                p2.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                p2.BeginErrorReadLine();//开始异步读取
+                p2.WaitForExit();//阻塞等待进程结束
+                p2.Close();//关闭进程
+                p2.Dispose();//释放资源
+                #endregion
+
+                file.ylinfo = "";
+                file.isyl = "2";
+                new DocumentB().Update(file);
+                return "success";
+            });
+
         }
 
         private void Output(object sendProcess, System.Diagnostics.DataReceivedEventArgs output)
@@ -351,7 +425,34 @@ namespace QJ_FileCenter
             {
                 //处理方法...
                 string message = output.Data;
-                CommonHelp.WriteLOG(message);
+                CommonHelp.WriteLOG("Output" + message);
+
+                ////去获取时长
+                //string partitio1 = @"Duration: \d{2}:\d{2}:\d{2}.\d{2}";
+                //if (RegexHelper.IsMatch(partitio1, output.Data))
+                //{
+                //    string partition = @"(?<=Duration: )\d{2}:\d{2}:\d{2}.\d{2}";
+                //    string timespan = RegexHelper.Matchs(output.Data, partition).FirstOrDefault();
+                //    TimeSpan span;
+                //    if (TimeSpan.TryParse(timespan, out span))
+                //    {
+                //        Console.WriteLine(span.TotalMilliseconds);
+                //    }
+                //}
+
+                ////获取时刻
+                //string partitio2 = @"time=\d{2}:\d{2}:\d{2}.\d{2}";
+                //if (RegexHelper.IsMatch(partitio2, output.Data))
+                //{
+                //    string partition = @"(?<=time=)\d{2}:\d{2}:\d{2}.\d{2}";
+
+                //    string timespan = RegexHelper.Matchs(output.Data, partition).FirstOrDefault();
+                //    TimeSpan span;
+                //    if (TimeSpan.TryParse(timespan, out span))
+                //    {
+                //        Console.WriteLine(span.TotalMilliseconds);
+                //    }
+                //}
             }
         }
         private void Error(object sendProcess, System.Diagnostics.DataReceivedEventArgs output)
@@ -359,8 +460,8 @@ namespace QJ_FileCenter
             if (!String.IsNullOrEmpty(output.Data))
             {
                 //处理方法...
-                string message = output.Data;
-                CommonHelp.WriteLOG(message);
+               // string message = output.Data;
+              //  CommonHelp.WriteLOG("Error" + message);
 
             }
         }

@@ -351,7 +351,7 @@ namespace QJ_FileCenter
                         newfile.FolderID = int.Parse(P2);
                         newfile.IsRecycle = "0";//默认不在回收站
                         newfile.FileExtendName = item["filename"].ToString().Substring(index + 1).ToLower();
-                        if (new List<string>() { "txt", "html", "doc", "mp4", "flv", "ogg", "jpg", "gif", "png", "bmp", "jpeg" }.Contains(newfile.FileExtendName.ToLower()))
+                        if (new List<string>() { "txt", "html", "mp3", "doc", "mp4", "flv", "ogg", "avi", "mov", "rmvb", "mkv", "jpg", "gif", "png", "bmp", "jpeg" }.Contains(newfile.FileExtendName.ToLower()))
                         {
                             newfile.ISYL = "Y";
                         }
